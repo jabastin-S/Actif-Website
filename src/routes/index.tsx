@@ -15,6 +15,7 @@ import { SDGSection } from "@/components/actif/SDGSection";
 import { FinalCTA } from "@/components/actif/FinalCTA";
 import { Contact } from "@/components/actif/Contact";
 import { Footer } from "@/components/actif/Footer";
+import { ChatbotIcon } from "@/components/actif/ChatbotIcon";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -40,6 +41,7 @@ function Index() {
         <FinalCTA />
         <Contact />
       </main>
+      <ChatbotIcon />
       <Footer />
     </div>
   );
