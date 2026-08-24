@@ -12,10 +12,10 @@ The website must NOT look like a normal textile/manufacturing/company website.
 
 It should feel like a combination of:
 
-* A premium international fashion/lifestyle brand
-* A luxury textile house
-* A sophisticated architectural portfolio
-* A modern sustainability-focused manufacturing company
+- A premium international fashion/lifestyle brand
+- A luxury textile house
+- A sophisticated architectural portfolio
+- A modern sustainability-focused manufacturing company
 
 The visual quality should feel **expensive, editorial, elegant, minimal and highly intentional**.
 
@@ -73,15 +73,15 @@ The website must be:
 
 Take broad inspiration from the visual sophistication and clean fashion-commerce presentation of **Westside's website**, especially:
 
-* Large visual compositions
-* Strong typography
-* Editorial layouts
-* Clean navigation
-* Large immersive imagery/video
-* Generous whitespace
-* Sophisticated product presentation
-* Smooth transitions
-* Premium micro-interactions
+- Large visual compositions
+- Strong typography
+- Editorial layouts
+- Clean navigation
+- Large immersive imagery/video
+- Generous whitespace
+- Sophisticated product presentation
+- Smooth transitions
+- Premium micro-interactions
 
 BUT:
 
@@ -95,21 +95,21 @@ The final website must be an original ACTIF identity.
 
 Do NOT create:
 
-* Generic SaaS cards
-* Blue corporate gradients
-* Generic Bootstrap-looking sections
-* Plain white backgrounds
-* Repetitive 3-column cards everywhere
-* Stock-photo hero sections
-* Generic textile factory photos
-* Cheap-looking animations
-* Excessive rounded cards
-* Giant gradients
-* Template-like layouts
-* Random decorative blobs
-* Generic AI-generated illustrations
-* Excessive glassmorphism
-* Excessive shadows
+- Generic SaaS cards
+- Blue corporate gradients
+- Generic Bootstrap-looking sections
+- Plain white backgrounds
+- Repetitive 3-column cards everywhere
+- Stock-photo hero sections
+- Generic textile factory photos
+- Cheap-looking animations
+- Excessive rounded cards
+- Giant gradients
+- Template-like layouts
+- Random decorative blobs
+- Generic AI-generated illustrations
+- Excessive glassmorphism
+- Excessive shadows
 
 The website should feel **art-directed**, not template-generated.
 
@@ -123,35 +123,35 @@ Create a refined pastel luxury palette inspired by the PDF.
 
 Primary background:
 
-* Warm ivory
-* Soft cream
-* Bone white
-* Very subtle warm beige
+- Warm ivory
+- Soft cream
+- Bone white
+- Very subtle warm beige
 
 Secondary colors:
 
-* Muted sage green
-* Soft eucalyptus
-* Dusty blue
-* Muted teal
-* Dusty rose
-* Warm sand
-* Champagne
-* Subtle muted terracotta
+- Muted sage green
+- Soft eucalyptus
+- Dusty blue
+- Muted teal
+- Dusty rose
+- Warm sand
+- Champagne
+- Subtle muted terracotta
 
 Accent:
 
-* Very restrained **antique/gentle gold**
+- Very restrained **antique/gentle gold**
 
 Text:
 
-* Deep charcoal
-* Almost-black green charcoal
+- Deep charcoal
+- Almost-black green charcoal
 
 Dark sections:
 
-* Deep forest green
-* Very dark desaturated green
+- Deep forest green
+- Very dark desaturated green
 
 Do NOT use bright saturated colors.
 
@@ -207,9 +207,9 @@ Avoid overly bold, generic corporate fonts.
 
 The website must NOT rely on:
 
-* Plain static backgrounds
-* Stock photographs as the primary visual
-* A single static hero image
+- Plain static backgrounds
+- Stock photographs as the primary visual
+- A single static hero image
 
 The website should have **movement throughout the experience**.
 
@@ -235,15 +235,15 @@ foreground fabric movement
 
 The video should visually represent:
 
-* flowing fabric
-* knitted textile
-* yarn
-* soft folds
-* fabric texture
-* fibres moving
-* subtle weaving
-* premium bedding/textile surfaces
-* manufacturing details
+- flowing fabric
+- knitted textile
+- yarn
+- soft folds
+- fabric texture
+- fibres moving
+- subtle weaving
+- premium bedding/textile surfaces
+- manufacturing details
 
 The motion must be extremely slow and elegant.
 
@@ -263,10 +263,10 @@ The code must be structured so the real ACTIF video can later replace the fallba
 
 Use:
 
-* `autoplay`
-* `muted`
-* `loop`
-* `playsInline`
+- `autoplay`
+- `muted`
+- `loop`
+- `playsInline`
 
 Optimize the video for web performance.
 
@@ -329,14 +329,14 @@ ACTIF logo/wordmark.
 
 Center/right:
 
-* About
-* Why Actif
-* Sustainability
-* Manufacturing
-* Products
-* Capabilities
-* Certifications
-* Contact
+- About
+- Why Actif
+- Sustainability
+- Manufacturing
+- Products
+- Capabilities
+- Certifications
+- Contact
 
 Add a subtle CTA:
 
@@ -364,18 +364,18 @@ The entire website should feel cinematic.
 
 Use:
 
-* Smooth scrolling
-* Scroll-triggered text reveals
-* Image/video parallax
-* Mask reveals
-* Fade + upward movement
-* Horizontal scrolling sections
-* Scale transitions
-* Slow background movement
-* Text stagger animations
-* Number count-up animations
-* Hover transformations
-* Section transition animations
+- Smooth scrolling
+- Scroll-triggered text reveals
+- Image/video parallax
+- Mask reveals
+- Fade + upward movement
+- Horizontal scrolling sections
+- Scale transitions
+- Slow background movement
+- Text stagger animations
+- Number count-up animations
+- Hover transformations
+- Section transition animations
 
 Animation principles:
 
@@ -487,11 +487,11 @@ A vertical list on the left.
 
 When the user hovers over an item:
 
-* typography expands
-* an abstract textile visual changes
-* a subtle icon appears
-* background texture changes
-* the selected capability becomes visually dominant
+- typography expands
+- an abstract textile visual changes
+- a subtle icon appears
+- background texture changes
+- the selected capability becomes visually dominant
 
 ---
 
@@ -511,37 +511,37 @@ Create three major pillars:
 
 ## ENVIRONMENTAL
 
-* Solar & Wind Energy
-* Water Stewardship
-* Green Chemical Processing
-* Responsible Waste
-* Sustainable Materials
+- Solar & Wind Energy
+- Water Stewardship
+- Green Chemical Processing
+- Responsible Waste
+- Sustainable Materials
 
 ## SOCIAL
 
-* Safe Workplace
-* Ethical Labour
-* Skill Development
-* Employee Wellbeing
-* Consumer Safety
+- Safe Workplace
+- Ethical Labour
+- Skill Development
+- Employee Wellbeing
+- Consumer Safety
 
 ## GOVERNANCE
 
-* Global Compliance
-* Supply Chain Transparency
-* Digital Product Passport
-* Traceability Systems
-* Continuous Improvement
+- Global Compliance
+- Supply Chain Transparency
+- Digital Product Passport
+- Traceability Systems
+- Continuous Improvement
 
 Instead of ordinary cards, create three large vertically stacked/interactive panels.
 
 Use subtle organic animations:
 
-* leaves
-* fibres
-* water ripples
-* particles
-* textile threads
+- leaves
+- fibres
+- water ripples
+- particles
+- textile threads
 
 The animations must be extremely subtle.
 
@@ -583,11 +583,11 @@ Each stage should appear as a physical node connected by a fine animated line.
 
 As the user scrolls:
 
-* the line progressively draws itself
-* nodes activate
-* icons animate
-* supporting descriptions appear
-* subtle textile/fibre animation moves through the entire timeline
+- the line progressively draws itself
+- nodes activate
+- icons animate
+- supporting descriptions appear
+- subtle textile/fibre animation moves through the entire timeline
 
 At the bottom:
 
@@ -801,20 +801,20 @@ Headline:
 
 Products:
 
-* Bed Sheets
-* Fitted Sheets
-* Pillow Cases
-* Duvet Covers
-* Baby Collection
-* Hospitality Collection
+- Bed Sheets
+- Fitted Sheets
+- Pillow Cases
+- Duvet Covers
+- Baby Collection
+- Hospitality Collection
 
 Materials:
 
-* Cotton
-* Bamboo
-* Tencel
-* Linen
-* Blends
+- Cotton
+- Bamboo
+- Tencel
+- Linen
+- Blends
 
 Do NOT use generic ecommerce product cards.
 
@@ -826,11 +826,11 @@ Large fabric/product visual.
 
 When the user changes product:
 
-* fabric visual changes
-* title transitions
-* description changes
-* material information appears
-* background subtly changes
+- fabric visual changes
+- title transitions
+- description changes
+- material information appears
+- background subtly changes
 
 Use premium bedding/fabric visuals.
 
@@ -920,9 +920,9 @@ Create an elegant interactive grid.
 
 When hovering:
 
-* SDG block enlarges slightly
-* supporting description appears
-* background textile animation changes subtly
+- SDG block enlarges slightly
+- supporting description appears
+- background textile animation changes subtly
 
 End:
 
@@ -950,12 +950,12 @@ Huge headline:
 
 Supporting capabilities:
 
-* ESG Manufacturing
-* DPP Ready
-* Traceable Supply Chains
-* Integrated Production
-* Export Excellence
-* Long-Term Partnership
+- ESG Manufacturing
+- DPP Ready
+- Traceable Supply Chains
+- Integrated Production
+- Export Excellence
+- Long-Term Partnership
 
 This section should feel like the ending of a luxury brand film.
 
@@ -983,13 +983,13 @@ Create a premium inquiry CTA:
 
 Possible fields:
 
-* Name
-* Company
-* Email
-* Phone
-* Country
-* Product Interest
-* Message
+- Name
+- Company
+- Email
+- Phone
+- Country
+- Product Interest
+- Message
 
 Keep the form minimal and luxurious.
 
@@ -1049,17 +1049,17 @@ Never make the watermark overpower the content.
 
 Throughout the website introduce subtle visual motifs inspired by:
 
-* yarn
-* knitted loops
-* fabric fibres
-* weaving
-* thread
-* textile folds
-* linen texture
-* cotton
-* leaves
-* water
-* natural materials
+- yarn
+- knitted loops
+- fabric fibres
+- weaving
+- thread
+- textile folds
+- linen texture
+- cotton
+- leaves
+- water
+- natural materials
 
 Use these as animated visual elements.
 
@@ -1085,27 +1085,27 @@ Examples:
 
 Buttons:
 
-* subtle magnetic movement
-* underline animation
-* soft expansion
+- subtle magnetic movement
+- underline animation
+- soft expansion
 
 Navigation:
 
-* smooth active indicator
+- smooth active indicator
 
 Cards/panels:
 
-* slight image scale
-* typography movement
-* subtle border transition
+- slight image scale
+- typography movement
+- subtle border transition
 
 Images:
 
-* slow zoom on hover
+- slow zoom on hover
 
 Text:
 
-* character/word reveal only where appropriate
+- character/word reveal only where appropriate
 
 Cursor:
 On desktop, optionally create a very subtle custom cursor interaction.
@@ -1144,10 +1144,10 @@ The user should feel like they are moving through different fabric layers.
 
 The website must be excellent on:
 
-* Desktop
-* Laptop
-* Tablet
-* Mobile
+- Desktop
+- Laptop
+- Tablet
+- Mobile
 
 Desktop should feel cinematic.
 
@@ -1183,11 +1183,11 @@ horizontal swipe gallery
 
 Ensure:
 
-* No horizontal overflow
-* No broken animations
-* No text clipping
-* No oversized elements
-* No performance-heavy effects on low-end mobile
+- No horizontal overflow
+- No broken animations
+- No text clipping
+- No oversized elements
+- No performance-heavy effects on low-end mobile
 
 ---
 
@@ -1197,16 +1197,16 @@ Because the website uses animation and video, performance is extremely important
 
 Implement:
 
-* Lazy loading
-* Video optimization
-* Poster image fallback
-* Responsive video loading
-* Reduced-motion support
-* IntersectionObserver for animations
-* Avoid unnecessary re-renders
-* Compress large assets
-* Lazy-load below-the-fold visuals
-* Avoid loading every video simultaneously
+- Lazy loading
+- Video optimization
+- Poster image fallback
+- Responsive video loading
+- Reduced-motion support
+- IntersectionObserver for animations
+- Avoid unnecessary re-renders
+- Compress large assets
+- Lazy-load below-the-fold visuals
+- Avoid loading every video simultaneously
 
 For users with:
 
@@ -1222,15 +1222,15 @@ Use a modern frontend architecture.
 
 Preferred:
 
-* React
-* Vite
-* Tailwind CSS
-* Framer Motion / Motion
-* Lucide icons
-* HTML5 video
-* CSS transforms
-* IntersectionObserver
-* Canvas/SVG where appropriate
+- React
+- Vite
+- Tailwind CSS
+- Framer Motion / Motion
+- Lucide icons
+- HTML5 video
+- CSS transforms
+- IntersectionObserver
+- Canvas/SVG where appropriate
 
 Keep the code modular.
 
@@ -1335,32 +1335,32 @@ The supplied PDF is the source of truth.
 
 Use its actual:
 
-* company name
-* positioning
-* descriptions
-* product categories
-* materials
-* manufacturing capabilities
-* capacity figures
-* certifications
-* ESG information
-* SDGs
-* contact information
+- company name
+- positioning
+- descriptions
+- product categories
+- materials
+- manufacturing capabilities
+- capacity figures
+- certifications
+- ESG information
+- SDGs
+- contact information
 
 Do NOT invent:
 
-* client logos
-* customer names
-* revenue
-* employee count
-* factory size
-* additional certifications
-* awards
-* production numbers
-* years of experience
-* sustainability percentages
-* export percentages
-* certifications not mentioned in the source
+- client logos
+- customer names
+- revenue
+- employee count
+- factory size
+- additional certifications
+- awards
+- production numbers
+- years of experience
+- sustainability percentages
+- export percentages
+- certifications not mentioned in the source
 
 If information is not available, design the section without inventing information.
 
@@ -1425,16 +1425,6 @@ Do not use generic stock photography as the main visual identity.
 Make the website feel like a **luxury textile brand film that happens to be interactive.**
 
 Build the complete responsive website now.
-
-This project was built with [Lovable](https://lovable.dev).
-
-## Build with Lovable
-
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/7b98b732-7806-4286-ab34-a84ac1f385b5).
-
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
 
 ## Development
 

@@ -59,8 +59,8 @@ export function AboutSection() {
 
           <Reveal delay={0.15}>
             <p className="body-copy mt-10 max-w-xl text-lg">
-              A vertically integrated knit-to-pack manufacturer delivering premium,
-              responsibly-made knitted bed linen for global brands.
+              A vertically integrated knit-to-pack manufacturer delivering premium, responsibly-made
+              knitted bed linen for global brands.
             </p>
           </Reveal>
 

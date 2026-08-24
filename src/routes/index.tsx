@@ -1,24 +1,46 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Navbar } from "@/components/actif/Navbar";
+import { Hero } from "@/components/actif/Hero";
+import { AboutSection } from "@/components/actif/AboutSection";
+import { WhyActif } from "@/components/actif/WhyActif";
+import { ESGSection } from "@/components/actif/ESGSection";
+import { ManufacturingJourney } from "@/components/actif/ManufacturingJourney";
+import { SupplyChain } from "@/components/actif/SupplyChain";
+import { HygieneWellness } from "@/components/actif/HygieneWellness";
+import { ValueAddedFinishes } from "@/components/actif/ValueAddedFinishes";
+import { Capacity } from "@/components/actif/Capacity";
+import { ProductPortfolio } from "@/components/actif/ProductPortfolio";
+import { Certifications } from "@/components/actif/Certifications";
+import { SDGSection } from "@/components/actif/SDGSection";
+import { FinalCTA } from "@/components/actif/FinalCTA";
+import { Contact } from "@/components/actif/Contact";
+import { Footer } from "@/components/actif/Footer";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
 function Index() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
+    <div className="relative min-h-screen bg-ivory font-sans text-charcoal selection:bg-sage/40">
+      <Navbar />
+      <main>
+        <Hero />
+        <AboutSection />
+        <WhyActif />
+        <ESGSection />
+        <ManufacturingJourney />
+        <SupplyChain />
+        <HygieneWellness />
+        <ValueAddedFinishes />
+        <Capacity />
+        <ProductPortfolio />
+        <Certifications />
+        <SDGSection />
+        <FinalCTA />
+        <Contact />
+      </main>
+      <Footer />
     </div>
   );
 }

@@ -11,16 +11,16 @@ export function Reveal({
   className,
 }: {
   children: ReactNode;
-  delay?: number;
-  y?: number;
-  className?: string;
+  delay?: number | undefined;
+  y?: number | undefined;
+  className?: string | undefined;
 }) {
   const reduced = useReducedMotion();
   return (
     <motion.div
       className={className}
-      initial={reduced ? undefined : { opacity: 0, y }}
-      whileInView={reduced ? undefined : { opacity: 1, y: 0 }}
+      initial={reduced ? {} : { opacity: 0, y }}
+      whileInView={reduced ? {} : { opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-12% 0px" }}
       transition={{ duration: 1.15, delay, ease: EASE }}
     >
@@ -36,16 +36,16 @@ export function MaskReveal({
   className,
 }: {
   children: ReactNode;
-  delay?: number;
-  className?: string;
+  delay?: number | undefined;
+  className?: string | undefined;
 }) {
   const reduced = useReducedMotion();
   return (
     <span className={cn("block overflow-hidden", className)}>
       <motion.span
         className="block"
-        initial={reduced ? undefined : { y: "110%" }}
-        whileInView={reduced ? undefined : { y: "0%" }}
+        initial={reduced ? {} : { y: "110%" }}
+        whileInView={reduced ? {} : { y: "0%" }}
         viewport={{ once: true, margin: "-10% 0px" }}
         transition={{ duration: 1.3, delay, ease: EASE }}
       >
@@ -62,8 +62,8 @@ export function WordReveal({
   delay = 0,
 }: {
   text: string;
-  className?: string;
-  delay?: number;
+  className?: string | undefined;
+  delay?: number | undefined;
 }) {
   const reduced = useReducedMotion();
   const words = text.split(" ");
@@ -73,8 +73,8 @@ export function WordReveal({
         <span key={`${word}-${i}`} className="inline-block overflow-hidden align-bottom">
           <motion.span
             className="inline-block"
-            initial={reduced ? undefined : { y: "105%", opacity: 0 }}
-            whileInView={reduced ? undefined : { y: "0%", opacity: 1 }}
+            initial={reduced ? {} : { y: "105%", opacity: 0 }}
+            whileInView={reduced ? {} : { y: "0%", opacity: 1 }}
             viewport={{ once: true, margin: "-8% 0px" }}
             transition={{ duration: 1.1, delay: delay + i * 0.055, ease: EASE }}
           >
@@ -95,8 +95,8 @@ export function SectionLabel({
 }: {
   index: string;
   title: string;
-  tone?: "dark" | "light";
-  className?: string;
+  tone?: "dark" | "light" | undefined;
+  className?: string | undefined;
 }) {
   return (
     <Reveal className={className}>
@@ -126,9 +126,9 @@ export function AnimatedCounter({
   className,
 }: {
   value: number;
-  suffix?: string;
-  duration?: number;
-  className?: string;
+  suffix?: string | undefined;
+  duration?: number | undefined;
+  className?: string | undefined;
 }) {
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true, margin: "-15% 0px" });
@@ -166,8 +166,8 @@ export function Watermark({
   tone = "dark",
   className,
 }: {
-  tone?: "dark" | "light";
-  className?: string;
+  tone?: "dark" | "light" | undefined;
+  className?: string | undefined;
 }) {
   return (
     <div
@@ -194,13 +194,43 @@ export function Section({
   children,
   className,
 }: {
-  id?: string;
+  id?: string | undefined;
   children: ReactNode;
-  className?: string;
+  className?: string | undefined;
 }) {
   return (
     <section id={id} className={cn("relative w-full overflow-hidden", className)}>
       {children}
     </section>
+  );
+}
+
+export function SectionHeader({
+  label,
+  headline,
+  className,
+  tone = "dark",
+}: {
+  label: string;
+  headline: string;
+  className?: string | undefined;
+  tone?: "dark" | "light" | undefined;
+}) {
+  const labelParts = label.split(" — ");
+  const index = labelParts[0] || "";
+  const title = labelParts[1] || "";
+
+  return (
+    <div className={cn("flex flex-col gap-6", className)}>
+      <SectionLabel index={index} title={title} tone={tone} />
+      <h2
+        className={cn(
+          "display max-w-4xl text-4xl sm:text-5xl lg:text-6xl",
+          tone === "dark" ? "text-charcoal" : "text-on-forest",
+        )}
+      >
+        <WordReveal text={headline} />
+      </h2>
+    </div>
   );
 }
