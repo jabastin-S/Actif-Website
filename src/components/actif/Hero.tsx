@@ -1,148 +1,115 @@
-import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
 import { useRef, useState } from "react";
+import { motion, useScroll, useTransform } from "motion/react";
+import { useMotionOk } from "@/lib/use-motion-ok";
 import heroPoster from "@/assets/textile-hero.jpg";
-import { TextileBackground } from "./TextileBackground";
-
-const EASE = [0.16, 1, 0.3, 1] as const;
+import { COMPANY, SECTORS } from "@/content/site";
+import { KnitCloth } from "./KnitCloth";
 
 /**
- * Full-screen cinematic hero.
- * The real ACTIF film can be dropped in at
- * /public/assets/videos/actif-textile-hero.mp4 — no code change required.
- * Until then the poster still + animated fibre canvas carry the motion.
+ * Hero: live knitted cloth behind the ACTIF wordmark.
+ * To use real footage, drop it at /public/assets/videos/actif-textile-hero.mp4 and restart
+ * the dev server (vite.config.ts detects the file); the WebGL cloth stays underneath as fallback.
  */
 export function Hero() {
-  const ref = useRef<HTMLDivElement>(null);
-  const reduced = useReducedMotion();
+  const ref = useRef<HTMLElement>(null);
+  const motionOk = useMotionOk();
   const [videoReady, setVideoReady] = useState(false);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
-  const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "16%"]);
-  const bgScale = useTransform(scrollYProgress, [0, 1], [1.04, 1.14]);
-  const contentY = useTransform(scrollYProgress, [0, 1], ["0%", "34%"]);
-  const contentOpacity = useTransform(scrollYProgress, [0, 0.65], [1, 0]);
+  const clothY = useTransform(scrollYProgress, [0, 1], ["0%", "14%"]);
+  const textY = useTransform(scrollYProgress, [0, 1], ["0%", "-10%"]);
 
   return (
     <section
       id="top"
       ref={ref}
-      className="relative flex h-[100svh] min-h-[620px] w-full items-end overflow-hidden bg-forest-deep"
+      data-tone="dark"
+      className="relative isolate flex min-h-[640px] h-[100svh] w-full items-end overflow-hidden bg-indigo text-on-indigo"
     >
-      <motion.div
-        className="absolute inset-0"
-        style={reduced ? undefined : { y: bgY, scale: bgScale }}
-      >
+      <motion.div className="absolute inset-0 -z-10" style={motionOk ? { y: clothY } : {}}>
+        {/* Still fallback while WebGL starts, or when it is unavailable */}
         <img
           src={heroPoster}
-          alt="Macro detail of ivory knitted bed-linen fabric in soft folds"
+          alt=""
+          aria-hidden
           width={1920}
           height={1200}
-          className="h-full w-full object-cover"
+          fetchPriority="high"
+          className="absolute inset-0 h-full w-full object-cover opacity-60 mix-blend-multiply"
         />
-        <video
-          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 ${
-            videoReady ? "opacity-100" : "opacity-0"
-          }`}
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="metadata"
-          poster={heroPoster}
-          onCanPlay={() => setVideoReady(true)}
-          onError={() => setVideoReady(false)}
-        >
-          <source src="/assets/videos/actif-textile-hero.mp4" type="video/mp4" />
-        </video>
-        <TextileBackground palette="forest" density={22} opacity={0.4} interactive />
-        <div className="absolute inset-0 bg-forest-deep/55" />
-        <div className="absolute inset-0 bg-gradient-to-t from-forest-deep via-forest-deep/25 to-forest-deep/60" />
+        <div className="absolute inset-0 bg-indigo-2/70" />
+        <KnitCloth />
+        {__HERO_VIDEO__ && (
+          <video
+            aria-hidden
+            className={`absolute inset-0 h-full w-full object-cover mix-blend-luminosity transition-opacity duration-[1600ms] ${
+              videoReady ? "opacity-60" : "opacity-0"
+            }`}
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            poster={heroPoster}
+            onCanPlay={() => setVideoReady(true)}
+          >
+            <source src="/assets/videos/actif-textile-hero.mp4" type="video/mp4" />
+          </video>
+        )}
+        <div className="absolute inset-x-0 bottom-0 h-3/5 bg-gradient-to-t from-indigo/85 via-indigo/30 to-transparent" />
       </motion.div>
 
       <motion.div
-        className="relative z-10 mx-auto w-full max-w-[1600px] px-6 pb-16 md:px-10 md:pb-20"
-        style={reduced ? undefined : { y: contentY, opacity: contentOpacity }}
+        className="shell relative pb-8 md:pb-12"
+        style={motionOk ? { y: textY } : {}}
       >
-        <motion.p
-          initial={reduced ? undefined : { opacity: 0, y: 16 }}
-          animate={reduced ? undefined : { opacity: 1, y: 0 }}
-          transition={{ duration: 1.2, delay: 0.3, ease: EASE }}
-          className="label-eyebrow max-w-md text-champagne/90"
-        >
-          Future-ready sustainable knitted home textiles
-        </motion.p>
-
-        <div className="mt-8 overflow-hidden">
-          <motion.h1
-            initial={reduced ? undefined : { y: "108%" }}
-            animate={reduced ? undefined : { y: "0%" }}
-            transition={{ duration: 1.6, delay: 0.4, ease: EASE }}
-            className="display text-on-forest text-[22vw] leading-[0.82] tracking-[0.02em] sm:text-[18vw] lg:text-[13.5vw]"
-          >
-            ACTIF
-          </motion.h1>
-        </div>
-
-        <motion.p
-          initial={reduced ? undefined : { opacity: 0 }}
-          animate={reduced ? undefined : { opacity: 1 }}
-          transition={{ duration: 1.4, delay: 1, ease: EASE }}
-          className="label-eyebrow mt-2 text-on-forest-muted"
-        >
-          Global Ventures Pvt Ltd
-        </motion.p>
-
-        <div className="mt-12 grid gap-10 border-t border-on-forest/15 pt-10 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
-          <motion.div
-            initial={reduced ? undefined : { opacity: 0, y: 22 }}
-            animate={reduced ? undefined : { opacity: 1, y: 0 }}
-            transition={{ duration: 1.3, delay: 1.15, ease: EASE }}
-          >
-            <h2 className="display max-w-xl text-3xl text-on-forest sm:text-4xl lg:text-[2.9rem]">
-              Future-ready textiles. Responsibly made. Globally delivered.
-            </h2>
-            <p className="mt-6 text-sm tracking-[0.12em] text-on-forest-muted uppercase">
-              Integrated Manufacturing · ESG Driven · DPP Ready · Global Compliance
+        <div className="grid items-end gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,22rem)] lg:gap-14 xl:grid-cols-[minmax(0,1fr)_minmax(0,27rem)]">
+          <div>
+            <h1 className="overflow-hidden pb-[0.06em]">
+              <span
+                className="display block text-[clamp(4.5rem,24vw,7.5rem)] sm:text-[clamp(5.25rem,22vw,12rem)] lg:text-[clamp(5.25rem,14vw,18rem)] leading-[0.82] tracking-[-0.02em] font-medium [animation:mask-rise_1.6s_var(--ease-out)_0.2s_both]"
+              >
+                ACTIF
+                <span className="sr-only"> Global Ventures</span>
+              </span>
+            </h1>
+            <p className="label mt-3 text-on-indigo-soft [animation:fade-in_1.4s_ease_1.1s_both]">
+              Global Ventures Pvt Ltd
             </p>
-          </motion.div>
+          </div>
 
-          <motion.div
-            initial={reduced ? undefined : { opacity: 0, y: 22 }}
-            animate={reduced ? undefined : { opacity: 1, y: 0 }}
-            transition={{ duration: 1.3, delay: 1.35, ease: EASE }}
-            className="flex flex-col justify-between gap-8"
-          >
-            <div className="label-eyebrow flex flex-wrap items-center gap-4 text-on-forest/70">
-              <span>Australia</span>
-              <span className="h-1 w-1 rounded-full bg-champagne" />
-              <span>Europe</span>
-              <span className="h-1 w-1 rounded-full bg-champagne" />
-              <span>USA</span>
-            </div>
+          <div className="flex flex-col gap-7 pb-1 [animation:fade-in_1.4s_ease_1.3s_both] ">
+            <p className="display text-[clamp(1.6rem,2.6vw,2.5rem)] leading-[1.12] text-on-indigo">
+              Knitted textiles, developed and made in Tiruppur by a house with roots in{" "}
+              {COMPANY.heritageYear}.
+            </p>
             <div className="flex flex-col gap-3 sm:flex-row">
-              <a href="#about" className="btn-luxe btn-luxe-light flex-1">
-                <span>Explore Actif</span>
+              <a
+                href="#sectors"
+                className="btn-label text-on-indigo [--btn-fill:var(--on-indigo)] hover:text-indigo"
+              >
+                See what we make
               </a>
-              <a href="#contact" className="btn-luxe btn-luxe-light flex-1">
-                <span>Start a Conversation</span>
+              <a
+                href="#contact"
+                className="btn-label border-cochineal-lite/70 text-on-indigo [--btn-fill:var(--cochineal-lite)] hover:text-indigo"
+              >
+                Talk to our team
               </a>
             </div>
-          </motion.div>
+          </div>
         </div>
-      </motion.div>
 
-      <motion.div
-        aria-hidden
-        className="absolute bottom-6 right-6 hidden md:block"
-        initial={reduced ? undefined : { opacity: 0 }}
-        animate={reduced ? undefined : { opacity: 1 }}
-        transition={{ duration: 1.5, delay: 1.8 }}
-      >
-        <div className="flex h-24 w-px justify-center overflow-hidden bg-on-forest/20">
-          <motion.span
-            className="block h-10 w-px bg-champagne"
-            animate={reduced ? undefined : { y: [-40, 96] }}
-            transition={{ duration: 3.6, repeat: Infinity, ease: "easeInOut" }}
-          />
+        <div className="mt-8 flex flex-wrap items-center justify-between gap-x-8 gap-y-3 border-t border-on-indigo/20 pt-4 text-[0.8125rem] text-on-indigo-soft md:mt-10 pr-16 lg:pr-24 [animation:fade-in_1.4s_ease_1.6s_both]">
+          <ul className="flex flex-wrap gap-x-7 gap-y-1">
+            {SECTORS.map((sector) => (
+              <li key={sector.id}>
+                <a href="#sectors" className="link-thread hover:text-on-indigo">
+                  {sector.short}
+                </a>
+              </li>
+            ))}
+          </ul>
+          <p>A unit of {COMPANY.parent}</p>
         </div>
       </motion.div>
     </section>

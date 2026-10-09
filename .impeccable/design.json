@@ -1,0 +1,454 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-09T15:49:35.727146+00:00",
+  "title": "Design System: ACTIF Global Ventures",
+  "extensions": {
+    "colorMeta": {
+      "indigo": {
+        "role": "primary",
+        "displayName": "Indigo Vat",
+        "canonical": "oklch(0.2 0.045 265)",
+        "tonalRamp": [
+          "oklch(0.15 0.045 265)",
+          "oklch(0.28 0.045 265)",
+          "oklch(0.4 0.045 265)",
+          "oklch(0.52 0.045 265)",
+          "oklch(0.64 0.045 265)",
+          "oklch(0.76 0.045 265)",
+          "oklch(0.86 0.045 265)",
+          "oklch(0.95 0.045 265)"
+        ]
+      },
+      "indigo-2": {
+        "role": "primary",
+        "displayName": "Raised Indigo",
+        "canonical": "oklch(0.27 0.06 265)",
+        "tonalRamp": [
+          "oklch(0.15 0.06 265)",
+          "oklch(0.28 0.06 265)",
+          "oklch(0.4 0.06 265)",
+          "oklch(0.52 0.06 265)",
+          "oklch(0.64 0.06 265)",
+          "oklch(0.76 0.06 265)",
+          "oklch(0.86 0.06 265)",
+          "oklch(0.95 0.06 265)"
+        ]
+      },
+      "vat": {
+        "role": "primary",
+        "displayName": "Vat Blue",
+        "canonical": "oklch(0.4 0.09 262)",
+        "tonalRamp": [
+          "oklch(0.15 0.09 262)",
+          "oklch(0.28 0.09 262)",
+          "oklch(0.4 0.09 262)",
+          "oklch(0.52 0.09 262)",
+          "oklch(0.64 0.09 262)",
+          "oklch(0.76 0.09 262)",
+          "oklch(0.86 0.09 262)",
+          "oklch(0.95 0.09 262)"
+        ]
+      },
+      "cochineal": {
+        "role": "secondary",
+        "displayName": "Cochineal",
+        "canonical": "oklch(0.46 0.15 12)",
+        "tonalRamp": [
+          "oklch(0.15 0.15 12)",
+          "oklch(0.28 0.15 12)",
+          "oklch(0.4 0.15 12)",
+          "oklch(0.52 0.15 12)",
+          "oklch(0.64 0.15 12)",
+          "oklch(0.76 0.15 12)",
+          "oklch(0.86 0.15 12)",
+          "oklch(0.95 0.15 12)"
+        ]
+      },
+      "cochineal-lite": {
+        "role": "secondary",
+        "displayName": "Cochineal Lite",
+        "canonical": "oklch(0.78 0.09 10)",
+        "tonalRamp": [
+          "oklch(0.15 0.09 10)",
+          "oklch(0.28 0.09 10)",
+          "oklch(0.4 0.09 10)",
+          "oklch(0.52 0.09 10)",
+          "oklch(0.64 0.09 10)",
+          "oklch(0.76 0.09 10)",
+          "oklch(0.86 0.09 10)",
+          "oklch(0.95 0.09 10)"
+        ]
+      },
+      "celadon": {
+        "role": "tertiary",
+        "displayName": "Celadon",
+        "canonical": "oklch(0.8 0.045 160)",
+        "tonalRamp": [
+          "oklch(0.15 0.045 160)",
+          "oklch(0.28 0.045 160)",
+          "oklch(0.4 0.045 160)",
+          "oklch(0.52 0.045 160)",
+          "oklch(0.64 0.045 160)",
+          "oklch(0.76 0.045 160)",
+          "oklch(0.86 0.045 160)",
+          "oklch(0.95 0.045 160)"
+        ]
+      },
+      "dusty-blue": {
+        "role": "tertiary",
+        "displayName": "Dusty Blue",
+        "canonical": "oklch(0.75 0.05 250)",
+        "tonalRamp": [
+          "oklch(0.15 0.05 250)",
+          "oklch(0.28 0.05 250)",
+          "oklch(0.4 0.05 250)",
+          "oklch(0.52 0.05 250)",
+          "oklch(0.64 0.05 250)",
+          "oklch(0.76 0.05 250)",
+          "oklch(0.86 0.05 250)",
+          "oklch(0.95 0.05 250)"
+        ]
+      },
+      "sand": {
+        "role": "tertiary",
+        "displayName": "Sand",
+        "canonical": "oklch(0.82 0.06 85)",
+        "tonalRamp": [
+          "oklch(0.15 0.06 85)",
+          "oklch(0.28 0.06 85)",
+          "oklch(0.4 0.06 85)",
+          "oklch(0.52 0.06 85)",
+          "oklch(0.64 0.06 85)",
+          "oklch(0.76 0.06 85)",
+          "oklch(0.86 0.06 85)",
+          "oklch(0.95 0.06 85)"
+        ]
+      },
+      "rose": {
+        "role": "tertiary",
+        "displayName": "Rose",
+        "canonical": "oklch(0.79 0.06 20)",
+        "tonalRamp": [
+          "oklch(0.15 0.06 20)",
+          "oklch(0.28 0.06 20)",
+          "oklch(0.4 0.06 20)",
+          "oklch(0.52 0.06 20)",
+          "oklch(0.64 0.06 20)",
+          "oklch(0.76 0.06 20)",
+          "oklch(0.86 0.06 20)",
+          "oklch(0.95 0.06 20)"
+        ]
+      },
+      "greige": {
+        "role": "neutral",
+        "displayName": "Greige",
+        "canonical": "oklch(0.905 0.008 95)",
+        "tonalRamp": [
+          "oklch(0.15 0.008 95)",
+          "oklch(0.28 0.008 95)",
+          "oklch(0.4 0.008 95)",
+          "oklch(0.52 0.008 95)",
+          "oklch(0.64 0.008 95)",
+          "oklch(0.76 0.008 95)",
+          "oklch(0.86 0.008 95)",
+          "oklch(0.95 0.008 95)"
+        ]
+      },
+      "linen": {
+        "role": "neutral",
+        "displayName": "Linen",
+        "canonical": "oklch(0.85 0.012 92)",
+        "tonalRamp": [
+          "oklch(0.15 0.012 92)",
+          "oklch(0.28 0.012 92)",
+          "oklch(0.4 0.012 92)",
+          "oklch(0.52 0.012 92)",
+          "oklch(0.64 0.012 92)",
+          "oklch(0.76 0.012 92)",
+          "oklch(0.86 0.012 92)",
+          "oklch(0.95 0.012 92)"
+        ]
+      },
+      "bleach": {
+        "role": "neutral",
+        "displayName": "Bleach",
+        "canonical": "oklch(0.958 0.006 95)",
+        "tonalRamp": [
+          "oklch(0.15 0.006 95)",
+          "oklch(0.28 0.006 95)",
+          "oklch(0.4 0.006 95)",
+          "oklch(0.52 0.006 95)",
+          "oklch(0.64 0.006 95)",
+          "oklch(0.76 0.006 95)",
+          "oklch(0.86 0.006 95)",
+          "oklch(0.95 0.006 95)"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "oklch(0.2 0.03 265)",
+        "tonalRamp": [
+          "oklch(0.15 0.03 265)",
+          "oklch(0.28 0.03 265)",
+          "oklch(0.4 0.03 265)",
+          "oklch(0.52 0.03 265)",
+          "oklch(0.64 0.03 265)",
+          "oklch(0.76 0.03 265)",
+          "oklch(0.86 0.03 265)",
+          "oklch(0.95 0.03 265)"
+        ]
+      },
+      "ink-soft": {
+        "role": "neutral",
+        "displayName": "Ink Soft",
+        "canonical": "oklch(0.4 0.025 265)",
+        "tonalRamp": [
+          "oklch(0.15 0.025 265)",
+          "oklch(0.28 0.025 265)",
+          "oklch(0.4 0.025 265)",
+          "oklch(0.52 0.025 265)",
+          "oklch(0.64 0.025 265)",
+          "oklch(0.76 0.025 265)",
+          "oklch(0.86 0.025 265)",
+          "oklch(0.95 0.025 265)"
+        ]
+      },
+      "on-indigo": {
+        "role": "neutral",
+        "displayName": "On Indigo",
+        "canonical": "oklch(0.95 0.008 95)",
+        "tonalRamp": [
+          "oklch(0.15 0.008 95)",
+          "oklch(0.28 0.008 95)",
+          "oklch(0.4 0.008 95)",
+          "oklch(0.52 0.008 95)",
+          "oklch(0.64 0.008 95)",
+          "oklch(0.76 0.008 95)",
+          "oklch(0.86 0.008 95)",
+          "oklch(0.95 0.008 95)"
+        ]
+      },
+      "on-indigo-soft": {
+        "role": "neutral",
+        "displayName": "On Indigo Soft",
+        "canonical": "oklch(0.78 0.022 265)",
+        "tonalRamp": [
+          "oklch(0.15 0.022 265)",
+          "oklch(0.28 0.022 265)",
+          "oklch(0.4 0.022 265)",
+          "oklch(0.52 0.022 265)",
+          "oklch(0.64 0.022 265)",
+          "oklch(0.76 0.022 265)",
+          "oklch(0.86 0.022 265)",
+          "oklch(0.95 0.022 265)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Section headings in Bodoni Moda, opsz 18."
+      },
+      "wordmark": {
+        "displayName": "Wordmark",
+        "purpose": "Hero ACTIF only."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Sector names, stage titles, menu links."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Schibsted Grotesk running text."
+      },
+      "prose": {
+        "displayName": "Prose",
+        "purpose": "62ch measure paragraphs."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Uppercase form labels and captions."
+      }
+    },
+    "shadows": [
+      {
+        "name": "orb-drop",
+        "value": "0 10px 28px -8px rgb(0 0 0 / 0.5)",
+        "purpose": "Voice orb only, to separate it from any ground."
+      },
+      {
+        "name": "orb-tooltip",
+        "value": "0 6px 20px -6px rgb(0 0 0 / 0.45)",
+        "purpose": "Voice orb tooltip."
+      },
+      {
+        "name": "nav-hairline",
+        "value": "0 1px 0 var(--border)",
+        "purpose": "Scrolled nav bottom hairline."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "The single easing for reveals, hovers and menu."
+      },
+      {
+        "name": "button-wipe",
+        "value": "700ms",
+        "purpose": "Sewn-label fill wipe."
+      },
+      {
+        "name": "link-thread",
+        "value": "600ms",
+        "purpose": "Underline growth."
+      },
+      {
+        "name": "mask-rise",
+        "value": "1100ms",
+        "purpose": "Heading line reveal."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      },
+      {
+        "name": "xl",
+        "value": "1280px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Sewn-label Button",
+      "kind": "button",
+      "refersTo": "button-label",
+      "description": "Outlined uppercase button whose fill wipes in from the left.",
+      "html": "<a class=\"ds-btn\" href=\"#\">Talk to our team</a>",
+      "css": ".ds-btn{position:relative;display:inline-flex;align-items:center;justify-content:center;min-height:3.25rem;padding:0.9rem 1.75rem;font:500 0.8125rem 'Schibsted Grotesk',sans-serif;letter-spacing:0.1em;text-transform:uppercase;border:1px solid currentColor;text-decoration:none;isolation:isolate;overflow:hidden;color:oklch(0.2 0.03 265);transition:color 600ms cubic-bezier(0.16,1,0.3,1)}.ds-btn::before{content:'';position:absolute;inset:0;z-index:-1;background:oklch(0.2 0.03 265);transform:scaleX(0);transform-origin:left;transition:transform 700ms cubic-bezier(0.16,1,0.3,1)}.ds-btn:hover,.ds-btn:focus-visible{color:oklch(0.958 0.006 95)}.ds-btn:hover::before,.ds-btn:focus-visible::before{transform:scaleX(1)}.ds-btn:focus-visible{outline:2px solid oklch(0.46 0.15 12);outline-offset:3px}"
+    },
+    {
+      "name": "Sewn-label Button on Indigo",
+      "kind": "button",
+      "refersTo": "button-label-on-indigo",
+      "description": "Same button over dark grounds.",
+      "html": "<div class=\"ds-dark\"><a class=\"ds-btn-d\" href=\"#\">See what we make</a></div>",
+      "css": ".ds-dark{background:oklch(0.2 0.045 265);padding:24px}.ds-btn-d{position:relative;display:inline-flex;align-items:center;justify-content:center;min-height:3.25rem;padding:0.9rem 1.75rem;font:500 0.8125rem 'Schibsted Grotesk',sans-serif;letter-spacing:0.1em;text-transform:uppercase;border:1px solid currentColor;text-decoration:none;isolation:isolate;overflow:hidden;color:oklch(0.95 0.008 95);transition:color 600ms cubic-bezier(0.16,1,0.3,1)}.ds-btn-d::before{content:'';position:absolute;inset:0;z-index:-1;background:oklch(0.95 0.008 95);transform:scaleX(0);transform-origin:left;transition:transform 700ms cubic-bezier(0.16,1,0.3,1)}.ds-btn-d:hover,.ds-btn-d:focus-visible{color:oklch(0.2 0.045 265)}.ds-btn-d:hover::before,.ds-btn-d:focus-visible::before{transform:scaleX(1)}.ds-btn-d:focus-visible{outline:2px solid oklch(0.78 0.09 10);outline-offset:3px}"
+    },
+    {
+      "name": "Underline Field",
+      "kind": "input",
+      "refersTo": "field",
+      "description": "Bottom-border-only form field with uppercase label.",
+      "html": "<div class=\"ds-field\"><label for=\"ds-e\">Email</label><input id=\"ds-e\" type=\"email\"></div>",
+      "css": ".ds-field{background:oklch(0.958 0.006 95);padding:24px}.ds-field label{display:block;font:500 0.75rem 'Schibsted Grotesk',sans-serif;letter-spacing:0.14em;text-transform:uppercase;color:oklch(0.4 0.025 265)}.ds-field input{width:100%;border:0;border-bottom:1px solid oklch(0.2 0.03 265 / 40%);background:transparent;padding:0.625rem 0;font:400 1rem 'Schibsted Grotesk',sans-serif;color:oklch(0.2 0.03 265);caret-color:oklch(0.46 0.15 12);border-radius:0}.ds-field input:focus{outline:none;border-bottom-color:oklch(0.46 0.15 12)}"
+    },
+    {
+      "name": "Navigation",
+      "kind": "nav",
+      "refersTo": "button-label",
+      "description": "Wordmark, uppercase thread-underline links.",
+      "html": "<nav class=\"ds-nav\"><span class=\"ds-mark\">ACTIF</span><a href=\"#\">Heritage</a><a href=\"#\">Sectors</a><a href=\"#\">Process</a></nav>",
+      "css": ".ds-nav{display:flex;align-items:center;gap:36px;padding:16px 24px;background:oklch(0.905 0.008 95 / 88%);box-shadow:0 1px 0 oklch(0.2 0.03 265 / 16%)}.ds-mark{font:400 1.75rem 'Bodoni Moda',serif;letter-spacing:0.12em;color:oklch(0.2 0.03 265);margin-right:auto}.ds-nav a{font:500 0.8125rem 'Schibsted Grotesk',sans-serif;letter-spacing:0.08em;text-transform:uppercase;color:oklch(0.4 0.025 265);text-decoration:none;background:linear-gradient(currentColor,currentColor) 0 100%/0% 1px no-repeat;padding-bottom:2px;transition:background-size 600ms cubic-bezier(0.16,1,0.3,1),color 500ms}.ds-nav a:hover,.ds-nav a:focus-visible{background-size:100% 1px;color:oklch(0.2 0.03 265)}"
+    },
+    {
+      "name": "Sector Swatch Card",
+      "kind": "card",
+      "refersTo": "sector-swatch-card",
+      "description": "Bleach card with a pinked-bottom swatch field and display title.",
+      "html": "<article class=\"ds-card\"><div class=\"ds-sw\"></div><h3>Home textiles</h3><a href=\"#\">Enquire about home</a></article>",
+      "css": ".ds-card{width:260px;background:oklch(0.958 0.006 95);color:oklch(0.2 0.03 265)}.ds-sw{height:150px;background-color:oklch(0.8 0.045 160);background-image:repeating-linear-gradient(90deg,oklch(0.2 0.03 265 / 30%) 0 4px,transparent 4px 12px);-webkit-mask:linear-gradient(#000,#000) top/100% calc(100% - 9px) no-repeat,conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) bottom/20px 10px repeat-x;mask:linear-gradient(#000,#000) top/100% calc(100% - 9px) no-repeat,conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) bottom/20px 10px repeat-x}.ds-card h3{margin:20px 24px 8px;font:400 1.6rem/1.08 'Bodoni Moda',serif}.ds-card a{display:inline-block;margin:0 24px 28px;font:500 0.875rem 'Schibsted Grotesk',sans-serif;color:oklch(0.46 0.15 12);text-decoration:none}"
+    },
+    {
+      "name": "Pinked Seam",
+      "kind": "custom",
+      "refersTo": "",
+      "description": "Selvage divider: teeth of the upper section hang into the lower.",
+      "html": "<div class=\"ds-seam\"></div>",
+      "css": ".ds-seam{height:10px;background-color:oklch(0.85 0.012 92);background-image:conic-gradient(from -45deg at bottom,transparent,oklch(0.905 0.008 95) 1deg 89deg,transparent 90deg);background-size:20px 10px;background-repeat:repeat-x}"
+    },
+    {
+      "name": "Ledger Row",
+      "kind": "custom",
+      "refersTo": "",
+      "description": "Display-size statement under a 1px rule.",
+      "html": "<div class=\"ds-row\"><p>Statement set in display</p></div>",
+      "css": ".ds-row{border-top:1px solid oklch(0.2 0.03 265 / 25%);padding:24px 0;background:oklch(0.905 0.008 95)}.ds-row p{margin:0;font:400 1.9rem/1.1 'Bodoni Moda',serif;color:oklch(0.2 0.03 265)}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Shade Card",
+    "overview": "The site is a mill's swatch book, not a marketing page. Each section is a sample of ground laid against the next: undyed greige, linen and bleach for the light grounds, indigo vat for the dark ones. Sections meet at pinked (zig-zag) seams, the cut a mill makes on a swatch.\n\nColour is dyer's colour. One cochineal crimson marks what matters. Four muted dye-chip tints exist only as swatch fields. Bodoni Moda gives the display voice a fashion-house cut; Schibsted Grotesk carries everything else. Edges are square.",
+    "keyCharacteristics": [
+      "Cool greige ground, never cream; indigo darks, never black.",
+      "Cochineal is rare and always a mark, never a fill field.",
+      "Square corners; the pinked edge is the only decorative edge.",
+      "Procedural SVG knit swatches stand in for imagery of cloth.",
+      "Hero is a real-time WebGL knitted cloth in indigo; an optional MP4 layers over it when the file exists.",
+      "Reveals are masks and soft focus-ins, gated on hydration and reduced-motion."
+    ],
+    "rules": [
+      {
+        "name": "The One Dye Rule",
+        "body": "Cochineal appears on small marks only: a link, a ring, a numeral, a hairline. It never floods a section or fills a button at rest.",
+        "section": "colors"
+      },
+      {
+        "name": "The Swatch Field Rule",
+        "body": "The four tints live only inside swatches. They are samples of cloth, not a UI accent palette.",
+        "section": "colors"
+      },
+      {
+        "name": "The Ground Pairing Rule",
+        "body": "Each section has one ground; dark sections set data-tone=\"dark\" so focus rings and nav switch to the lite cochineal and on-indigo text.",
+        "section": "colors"
+      },
+      {
+        "name": "The Didone Is For Display Rule",
+        "body": "Bodoni Moda is for headings, large statements, numerals and the wordmark. Never body copy, never small UI.",
+        "section": "typography"
+      },
+      {
+        "name": "The Plain Ledger Rule",
+        "body": "Facts (capacity, standards, contacts) are set in the grotesque or in display lines separated by thread rules; no decorative lead-ins above headings.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat Sample Rule",
+        "body": "Surfaces carry no shadow at rest. A new surface differentiates itself by ground and pinked edge.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Orb Exception Rule",
+        "body": "The voice orb is the sole circular, shadowed element because it floats over content and must separate from every ground.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do set every colour from the OKLCH tokens (greige, indigo, ink, cochineal, ...); never hard-code values in components.",
+      "Do change ground between sections and join them with a selvage seam carrying the correct --from and --to.",
+      "Do keep corners square (0 to 2px) and use the pinked bottom edge for swatch-like surfaces.",
+      "Do use cochineal for small marks only and cochineal-lite on dark grounds; set data-tone=\"dark\" on dark sections.",
+      "Do use Bodoni Moda at opsz 18 with -0.015em tracking for display; Schibsted Grotesk for everything else.",
+      "Do use the sewn-label button for every call to action, with the fill wipe on hover and focus.",
+      "Do use the Swatch tints only inside swatch fields.",
+      "Do gate reveals on hydration and respect prefers-reduced-motion."
+    ],
+    "donts": [
+      "Don't return to ivory/cream, sage or gold grounds, or a Cormorant-style serif.",
+      "Don't use rounded cards, pill buttons or drop-shadow cards; the orb is the only circle.",
+      "Don't use cochineal as a section or button fill at rest.",
+      "Don't use gradients as decoration; the only gradients are the hero's legibility scrim and the subtle body shading inside swatches.",
+      "Don't use Bodoni Moda for body or small UI text.",
+      "Don't add lot labels, eyebrows or kicker lines above headings; the build has none.",
+      "Don't invent numbers, clients or certificates; swatches are not photographs of products."
+    ]
+  }
+}

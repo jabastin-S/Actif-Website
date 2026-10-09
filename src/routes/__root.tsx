@@ -74,15 +74,29 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "ACTIF GLOBAL VENTURES" },
-      { name: "description", content: "Future-ready sustainable knitted home textiles." },
-      { name: "author", content: "Actif" },
-      { property: "og:title", content: "ACTIF GLOBAL VENTURES" },
-      { property: "og:description", content: "Future-ready sustainable knitted home textiles." },
+      { title: "ACTIF Global Ventures | Knitted textile development and manufacturing, Tiruppur" },
+      {
+        name: "description",
+        content:
+          "ACTIF Global Ventures, a unit of Vani Fabrics Private Limited with textile heritage since 1970, develops and manufactures knitted textiles in Tiruppur, India for home, upholstery, industrial and medical applications.",
+      },
+      { name: "author", content: "ACTIF Global Ventures" },
+      { name: "theme-color", content: "#e3e1db" },
+      { property: "og:title", content: "ACTIF Global Ventures" },
+      {
+        property: "og:description",
+        content: "Knitted textiles, developed and made in Tiruppur by a house with roots in 1970.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
+      { rel: "preconnect", href: "https://fonts.googleapis.com" },
+      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..600;1,6..96,400&family=Schibsted+Grotesk:wght@400;500;600&display=swap",
+      },
       {
         rel: "stylesheet",
         href: appCss,

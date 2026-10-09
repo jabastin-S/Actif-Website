@@ -5,23 +5,22 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * ACTIF GLOBAL VENTURES — design system.
- * Palette: warm ivory / bone, muted sage & eucalyptus, dusty blue, warm sand,
- * champagne, muted terracotta, restrained antique gold, deep forest green.
- * All colors in oklch. Never hardcode colors in components.
+ * ACTIF GLOBAL VENTURES: "shade card" design system.
+ * A mill's swatch book: undyed greige ground, indigo-vat darks, one cochineal
+ * dye accent, four muted dye-chip tints. Colours are oklch; never hardcode in components.
  */
 
 @theme inline {
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --radius-2xl: calc(var(--radius) + 8px);
-  --radius-3xl: calc(var(--radius) + 12px);
-  --radius-4xl: calc(var(--radius) + 16px);
+  --radius-sm: 1px;
+  --radius-md: 2px;
+  --radius-lg: 2px;
+  --radius-xl: 3px;
+  --radius-2xl: 4px;
+  --radius-3xl: 4px;
+  --radius-4xl: 6px;
 
-  --font-display: "Cormorant Garamond", "Times New Roman", serif;
-  --font-sans: "Jost", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Bodoni Moda", "Didot", "Bodoni 72", "Times New Roman", serif;
+  --font-sans: "Schibsted Grotesk", "Helvetica Neue", ui-sans-serif, system-ui, sans-serif;
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -44,96 +43,93 @@
   --color-ring: var(--ring);
   --color-ring-offset-background: var(--background);
 
-  /* Brand surface + material tokens */
-  --color-ivory: var(--ivory);
-  --color-bone: var(--bone);
-  --color-sand: var(--sand);
-  --color-champagne: var(--champagne);
-  --color-sage: var(--sage);
-  --color-eucalyptus: var(--eucalyptus);
+  /* Shade-card tokens */
+  --color-greige: var(--greige);
+  --color-bleach: var(--bleach);
+  --color-linen: var(--linen);
+  --color-indigo: var(--indigo);
+  --color-indigo-2: var(--indigo-2);
+  --color-vat: var(--vat);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-cochineal: var(--cochineal);
+  --color-cochineal-lite: var(--cochineal-lite);
+  --color-celadon: var(--celadon);
   --color-dusty-blue: var(--dusty-blue);
-  --color-teal-muted: var(--teal-muted);
-  --color-rose-dust: var(--rose-dust);
-  --color-terracotta: var(--terracotta);
-  --color-gold: var(--gold);
-  --color-forest: var(--forest);
-  --color-forest-deep: var(--forest-deep);
-  --color-charcoal: var(--charcoal);
-  --color-charcoal-soft: var(--charcoal-soft);
-  --color-on-forest: var(--on-forest);
-  --color-on-forest-muted: var(--on-forest-muted);
+  --color-sand: var(--sand);
+  --color-rose: var(--rose);
+  --color-on-indigo: var(--on-indigo);
+  --color-on-indigo-soft: var(--on-indigo-soft);
 
-  --color-chart-1: var(--sage);
+  --color-chart-1: var(--celadon);
   --color-chart-2: var(--dusty-blue);
-  --color-chart-3: var(--terracotta);
-  --color-chart-4: var(--champagne);
-  --color-chart-5: var(--teal-muted);
+  --color-chart-3: var(--rose);
+  --color-chart-4: var(--sand);
+  --color-chart-5: var(--vat);
 }
 
 :root {
-  --radius: 0.25rem;
+  --radius: 2px;
 
-  --ivory: oklch(0.972 0.011 85);
-  --bone: oklch(0.955 0.014 82);
-  --sand: oklch(0.885 0.028 78);
-  --champagne: oklch(0.912 0.033 88);
-  --sage: oklch(0.762 0.043 140);
-  --eucalyptus: oklch(0.83 0.035 152);
-  --dusty-blue: oklch(0.735 0.041 235);
-  --teal-muted: oklch(0.69 0.048 190);
-  --rose-dust: oklch(0.828 0.038 27);
-  --terracotta: oklch(0.685 0.072 42);
-  --gold: oklch(0.735 0.079 84);
-  --forest: oklch(0.268 0.038 158);
-  --forest-deep: oklch(0.196 0.03 158);
-  --charcoal: oklch(0.238 0.017 155);
-  --charcoal-soft: oklch(0.452 0.017 155);
-  --on-forest: oklch(0.955 0.012 90);
-  --on-forest-muted: oklch(0.79 0.019 130);
+  --greige: oklch(0.905 0.008 95);
+  --bleach: oklch(0.958 0.006 95);
+  --linen: oklch(0.85 0.012 92);
+  --indigo: oklch(0.2 0.045 265);
+  --indigo-2: oklch(0.27 0.06 265);
+  --vat: oklch(0.4 0.09 262);
+  --ink: oklch(0.2 0.03 265);
+  --ink-soft: oklch(0.4 0.025 265);
+  --cochineal: oklch(0.46 0.15 12);
+  --cochineal-lite: oklch(0.78 0.09 10);
+  --celadon: oklch(0.8 0.045 160);
+  --dusty-blue: oklch(0.75 0.05 250);
+  --sand: oklch(0.82 0.06 85);
+  --rose: oklch(0.79 0.06 20);
+  --on-indigo: oklch(0.95 0.008 95);
+  --on-indigo-soft: oklch(0.78 0.022 265);
 
-  --background: var(--ivory);
-  --foreground: var(--charcoal);
-  --card: oklch(0.985 0.008 85);
-  --card-foreground: var(--charcoal);
-  --popover: oklch(0.985 0.008 85);
-  --popover-foreground: var(--charcoal);
-  --primary: var(--forest);
-  --primary-foreground: var(--on-forest);
-  --secondary: var(--bone);
-  --secondary-foreground: var(--charcoal);
-  --muted: var(--bone);
-  --muted-foreground: var(--charcoal-soft);
-  --accent: var(--sand);
-  --accent-foreground: var(--charcoal);
-  --destructive: oklch(0.55 0.14 28);
-  --destructive-foreground: var(--ivory);
-  --border: oklch(0.888 0.014 84);
-  --input: oklch(0.888 0.014 84);
-  --ring: var(--sage);
+  --background: var(--greige);
+  --foreground: var(--ink);
+  --card: var(--bleach);
+  --card-foreground: var(--ink);
+  --popover: var(--bleach);
+  --popover-foreground: var(--ink);
+  --primary: var(--indigo);
+  --primary-foreground: var(--on-indigo);
+  --secondary: var(--linen);
+  --secondary-foreground: var(--ink);
+  --muted: var(--linen);
+  --muted-foreground: var(--ink-soft);
+  --accent: var(--linen);
+  --accent-foreground: var(--ink);
+  --destructive: oklch(0.5 0.17 25);
+  --destructive-foreground: var(--bleach);
+  --border: oklch(0.2 0.03 265 / 16%);
+  --input: oklch(0.2 0.03 265 / 28%);
+  --ring: var(--cochineal);
 
-  --gradient-ivory: linear-gradient(180deg, var(--ivory) 0%, var(--bone) 55%, var(--sand) 100%);
-  --gradient-forest: linear-gradient(160deg, var(--forest) 0%, var(--forest-deep) 100%);
-  --shadow-soft: 0 24px 60px -32px color-mix(in oklab, var(--charcoal) 26%, transparent);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --gutter: clamp(1.25rem, 4vw, 4rem);
 }
 
 .dark {
-  --background: var(--forest-deep);
-  --foreground: var(--on-forest);
-  --card: var(--forest);
-  --card-foreground: var(--on-forest);
-  --popover: var(--forest);
-  --popover-foreground: var(--on-forest);
-  --primary: var(--champagne);
-  --primary-foreground: var(--forest-deep);
-  --secondary: var(--forest);
-  --secondary-foreground: var(--on-forest);
-  --muted: var(--forest);
-  --muted-foreground: var(--on-forest-muted);
-  --accent: var(--forest);
-  --accent-foreground: var(--on-forest);
-  --border: oklch(1 0 0 / 12%);
-  --input: oklch(1 0 0 / 16%);
-  --ring: var(--sage);
+  --background: var(--indigo);
+  --foreground: var(--on-indigo);
+  --card: var(--indigo-2);
+  --card-foreground: var(--on-indigo);
+  --popover: var(--indigo-2);
+  --popover-foreground: var(--on-indigo);
+  --primary: var(--greige);
+  --primary-foreground: var(--indigo);
+  --secondary: var(--indigo-2);
+  --secondary-foreground: var(--on-indigo);
+  --muted: var(--indigo-2);
+  --muted-foreground: var(--on-indigo-soft);
+  --accent: var(--indigo-2);
+  --accent-foreground: var(--on-indigo);
+  --border: oklch(1 0 0 / 14%);
+  --input: oklch(1 0 0 / 22%);
+  --ring: var(--cochineal-lite);
 }
 
 @layer base {
@@ -143,226 +139,316 @@
 
   html {
     scroll-behavior: smooth;
+    scroll-padding-top: 4.5rem;
     -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    scrollbar-color: var(--vat) var(--greige);
+    scrollbar-width: thin;
   }
 
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
-    font-weight: 300;
-    overflow-x: hidden;
+    font-weight: 400;
+    line-height: 1.6;
+    overflow-x: clip;
   }
 
   ::selection {
-    background-color: color-mix(in oklab, var(--sage) 45%, transparent);
-    color: var(--charcoal);
+    background-color: var(--cochineal);
+    color: var(--bleach);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--cochineal);
+    outline-offset: 3px;
+    border-radius: 1px;
+  }
+
+  .on-dark :focus-visible,
+  [data-tone="dark"] :focus-visible {
+    outline-color: var(--cochineal-lite);
+  }
+
+  input,
+  textarea,
+  select {
+    caret-color: var(--cochineal);
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--greige);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--vat);
+    border: 2px solid var(--greige);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
   }
 }
 
-/* ---------- Typography utilities ---------- */
+/* ---------- Typography ---------- */
 
 @utility display {
   font-family: var(--font-display);
-  font-weight: 300;
+  font-weight: 400;
+  /* Fixed low optical size keeps the Didone hairlines strong enough at display scale. */
+  font-optical-sizing: none;
+  font-variation-settings: "opsz" 18;
   letter-spacing: -0.015em;
-  line-height: 0.98;
+  line-height: 1.02;
+  text-wrap: balance;
 }
 
-@utility label-eyebrow {
+@utility label {
   font-family: var(--font-sans);
-  font-size: 0.6875rem;
-  font-weight: 400;
-  letter-spacing: 0.32em;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
 }
 
-@utility body-copy {
-  font-weight: 300;
-  line-height: 1.75;
-  color: var(--muted-foreground);
+@utility prose-measure {
+  max-width: 62ch;
+  line-height: 1.7;
+  text-wrap: pretty;
 }
 
-/* ---------- Material / motif utilities ---------- */
-
-@utility knit-grain {
-  background-image:
-    repeating-linear-gradient(
-      90deg,
-      color-mix(in oklab, var(--charcoal) 5%, transparent) 0 1px,
-      transparent 1px 4px
-    ),
-    repeating-linear-gradient(
-      0deg,
-      color-mix(in oklab, var(--charcoal) 4%, transparent) 0 1px,
-      transparent 1px 5px
-    );
-  background-size: 4px 5px;
+@utility tabular {
+  font-variant-numeric: tabular-nums lining-nums;
 }
 
-@utility linen-veil {
-  position: relative;
-  &::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    opacity: 0.35;
-    background-image: repeating-linear-gradient(
-      45deg,
-      color-mix(in oklab, var(--charcoal) 3%, transparent) 0 1px,
-      transparent 1px 6px
-    );
-  }
+/* ---------- Layout ---------- */
+
+@utility shell {
+  width: 100%;
+  max-width: 1520px;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
 }
 
-@utility hairline {
+/* ---------- Textile marks ---------- */
+
+/* Pinked (zig-zag) edge: the cut a mill makes on a swatch. Applied as a bottom edge. */
+@utility pinked-bottom {
+  --pink: 10px;
+  mask-image:
+    linear-gradient(#000, #000),
+    conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg);
+  mask-size:
+    100% calc(100% - var(--pink) + 1px),
+    calc(var(--pink) * 2) var(--pink);
+  mask-position:
+    top,
+    bottom;
+  mask-repeat: no-repeat, repeat-x;
+}
+
+/* Pinked section seam: teeth of the section above hanging into the one below. */
+@utility selvage {
+  --pink: 10px;
+  height: var(--pink);
+  background-color: var(--to);
+  background-image: conic-gradient(from -45deg at bottom, transparent, var(--from) 1deg 89deg, transparent 90deg);
+  background-size: calc(var(--pink) * 2) var(--pink);
+  background-repeat: repeat-x;
+}
+
+@utility thread {
   height: 1px;
-  background: linear-gradient(
+  background-image: repeating-linear-gradient(
     90deg,
-    transparent,
-    color-mix(in oklab, var(--charcoal) 22%, transparent),
-    transparent
+    currentColor 0 6px,
+    transparent 6px 10px
   );
+  opacity: 0.45;
 }
 
-@utility hairline-gold {
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--gold), transparent);
-}
+/* ---------- Buttons: sewn-label style ---------- */
 
-/* ---------- Understated luxury buttons ---------- */
-
-@utility btn-luxe {
+@utility btn-label {
   position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.75rem;
-  overflow: hidden;
-  padding: 1.0625rem 2.25rem;
-  font-size: 0.6875rem;
-  letter-spacing: 0.26em;
+  min-height: 3.25rem;
+  padding: 0.9rem 1.75rem;
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  border: 1px solid color-mix(in oklab, var(--charcoal) 30%, transparent);
-  color: var(--charcoal);
+  cursor: pointer;
+  isolation: isolate;
+  overflow: hidden;
+  border: 1px solid currentColor;
   transition:
-    color 700ms cubic-bezier(0.16, 1, 0.3, 1),
-    border-color 700ms cubic-bezier(0.16, 1, 0.3, 1);
+    color 600ms var(--ease-out),
+    border-color 600ms var(--ease-out),
+    background-color 600ms var(--ease-out);
   &::before {
     content: "";
     position: absolute;
     inset: 0;
-    transform: translateY(101%);
-    background: var(--forest);
-    transition: transform 800ms cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: -1;
+    background: var(--btn-fill, var(--ink));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 700ms var(--ease-out);
   }
-  & > * {
-    position: relative;
-    z-index: 1;
+  &:hover::before,
+  &:focus-visible::before {
+    transform: scaleX(1);
   }
-  &:hover {
-    color: var(--on-forest);
-    border-color: var(--forest);
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
   }
-  &:hover::before {
+}
+
+@utility link-thread {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 1px;
+  padding-bottom: 2px;
+  transition: background-size 600ms var(--ease-out);
+  &:hover,
+  &:focus-visible {
+    background-size: 100% 1px;
+  }
+}
+
+/* ---------- Hero wordmark reveal & motion keyframes ---------- */
+
+@keyframes mask-rise {
+  from {
+    transform: translateY(105%);
+  }
+  to {
     transform: translateY(0);
   }
 }
 
-@utility btn-luxe-light {
-  border-color: color-mix(in oklab, var(--ivory) 55%, transparent);
-  color: var(--on-forest);
-  &::before {
-    background: var(--ivory);
+@keyframes fade-in {
+  from {
+    opacity: 0;
   }
-  &:hover {
-    color: var(--charcoal);
-    border-color: var(--ivory);
+  to {
+    opacity: 1;
   }
 }
 
-@utility btn-luxe-solid {
-  border-color: var(--forest);
-  background: var(--forest);
-  color: var(--on-forest);
-  &::before {
-    background: var(--champagne);
-  }
-  &:hover {
-    color: var(--forest-deep);
-    border-color: var(--champagne);
-  }
-}
-
-@utility link-underline {
-  position: relative;
-  &::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: -0.35rem;
-    height: 1px;
-    width: 100%;
-    transform: scaleX(0);
-    transform-origin: left;
-    background: currentColor;
-    transition: transform 600ms cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  &:hover::after {
-    transform: scaleX(1);
-  }
-}
-
-/* ---------- Slow ambient motion ---------- */
-
-@keyframes drift-x {
-  0% {
-    transform: translate3d(0, 0, 0);
-  }
-  100% {
-    transform: translate3d(-50%, 0, 0);
-  }
-}
-
-@keyframes breathe {
+@keyframes orb-breathe {
   0%,
   100% {
     transform: scale(1);
-    opacity: 0.55;
   }
   50% {
-    transform: scale(1.06);
-    opacity: 0.8;
+    transform: scale(1.045);
   }
 }
 
-@keyframes thread-draw {
-  from {
-    stroke-dashoffset: 1200;
+@keyframes orb-ring {
+  0% {
+    transform: scale(1);
+    opacity: 0.55;
   }
+  100% {
+    transform: scale(1.7);
+    opacity: 0;
+  }
+}
+
+@keyframes orb-spin {
   to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes orb-wave {
+  0%,
+  100% {
+    transform: scaleY(0.35);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+/* Process-stage loops (StageMotion.tsx) */
+@keyframes stage-drift {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(-7px);
+  }
+}
+
+@keyframes stage-stitch {
+  0% {
+    stroke-dashoffset: 1;
+  }
+  40%,
+  80% {
     stroke-dashoffset: 0;
   }
+  100% {
+    stroke-dashoffset: -1;
+  }
 }
 
-@utility animate-drift {
-  animation: drift-x 90s linear infinite;
+@keyframes stage-wash {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(-100%);
+  }
 }
 
-@utility animate-breathe {
-  animation: breathe 18s ease-in-out infinite;
+@keyframes stage-sweep {
+  from {
+    transform: translateX(-130%) skewX(-18deg);
+  }
+  to {
+    transform: translateX(260%) skewX(-18deg);
+  }
+}
+
+@keyframes stage-dash {
+  to {
+    stroke-dashoffset: -14;
+  }
+}
+
+@keyframes stage-needle {
+  0% {
+    transform: translateX(-6px);
+  }
+  100% {
+    transform: translateX(112px);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
   *,
   *::before,
   *::after {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
   }
 }

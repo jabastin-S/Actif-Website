@@ -1,53 +1,40 @@
-import { motion, useInView, useReducedMotion } from "motion/react";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { animate, motion, useInView, useReducedMotion } from "motion/react";
+import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
-const EASE = [0.16, 1, 0.3, 1] as const;
+export const EASE = [0.16, 1, 0.3, 1] as const;
 
-export function Reveal({
-  children,
-  delay = 0,
-  y = 28,
-  className,
-}: {
-  children: ReactNode;
-  delay?: number | undefined;
-  y?: number | undefined;
-  className?: string | undefined;
-}) {
+/**
+ * True only after hydration. Reveals hide their content only once armed, so the
+ * server-rendered page (and any no-JS or reduced-motion visitor) always sees content.
+ */
+function useArmed() {
   const reduced = useReducedMotion();
-  return (
-    <motion.div
-      className={className}
-      initial={reduced ? {} : { opacity: 0, y }}
-      whileInView={reduced ? {} : { opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-12% 0px" }}
-      transition={{ duration: 1.15, delay, ease: EASE }}
-    >
-      {children}
-    </motion.div>
-  );
+  const [armed, setArmed] = useState(false);
+  useEffect(() => setArmed(true), []);
+  return armed && !reduced;
 }
 
-/** Mask reveal: content slides up from behind a clipping edge. */
-export function MaskReveal({
+/** One line of a heading, lifted into view from behind a mask. */
+export function MaskLine({
   children,
   delay = 0,
   className,
 }: {
   children: ReactNode;
-  delay?: number | undefined;
-  className?: string | undefined;
+  delay?: number;
+  className?: string;
 }) {
-  const reduced = useReducedMotion();
+  const ref = useRef<HTMLSpanElement>(null);
+  const armed = useArmed();
+  const inView = useInView(ref, { once: true, margin: "0px 0px -10% 0px" });
   return (
-    <span className={cn("block overflow-hidden", className)}>
+    <span ref={ref} className={cn("block overflow-hidden pb-[0.12em] -mb-[0.12em]", className)}>
       <motion.span
         className="block"
-        initial={reduced ? {} : { y: "110%" }}
-        whileInView={reduced ? {} : { y: "0%" }}
-        viewport={{ once: true, margin: "-10% 0px" }}
-        transition={{ duration: 1.3, delay, ease: EASE }}
+        initial={false}
+        animate={{ y: !armed || inView ? "0%" : "108%" }}
+        transition={{ duration: 1.1, delay, ease: EASE }}
       >
         {children}
       </motion.span>
@@ -55,182 +42,152 @@ export function MaskReveal({
   );
 }
 
-/** Word-by-word stagger for major statements only. */
-export function WordReveal({
-  text,
-  className,
-  delay = 0,
-}: {
-  text: string;
-  className?: string | undefined;
-  delay?: number | undefined;
-}) {
-  const reduced = useReducedMotion();
-  const words = text.split(" ");
-  return (
-    <span className={className}>
-      {words.map((word, i) => (
-        <span key={`${word}-${i}`} className="inline-block overflow-hidden align-bottom">
-          <motion.span
-            className="inline-block"
-            initial={reduced ? {} : { y: "105%", opacity: 0 }}
-            whileInView={reduced ? {} : { y: "0%", opacity: 1 }}
-            viewport={{ once: true, margin: "-8% 0px" }}
-            transition={{ duration: 1.1, delay: delay + i * 0.055, ease: EASE }}
-          >
-            {word}
-            {i < words.length - 1 ? "\u00A0" : ""}
-          </motion.span>
-        </span>
-      ))}
-    </span>
-  );
-}
-
-export function SectionLabel({
-  index,
-  title,
-  tone = "dark",
-  className,
-}: {
-  index: string;
-  title: string;
-  tone?: "dark" | "light" | undefined;
-  className?: string | undefined;
-}) {
-  return (
-    <Reveal className={className}>
-      <div
-        className={cn(
-          "label-eyebrow flex items-center gap-4",
-          tone === "light" ? "text-on-forest-muted" : "text-charcoal-soft",
-        )}
-      >
-        <span className={cn(tone === "light" ? "text-champagne" : "text-gold")}>{index}</span>
-        <span
-          className={cn(
-            "h-px w-10",
-            tone === "light" ? "bg-on-forest-muted/50" : "bg-charcoal-soft/40",
-          )}
-        />
-        <span>{title}</span>
-      </div>
-    </Reveal>
-  );
-}
-
-export function AnimatedCounter({
-  value,
-  suffix = "",
-  duration = 2200,
-  className,
-}: {
-  value: number;
-  suffix?: string | undefined;
-  duration?: number | undefined;
-  className?: string | undefined;
-}) {
-  const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-15% 0px" });
-  const reduced = useReducedMotion();
-  const [display, setDisplay] = useState(0);
-
-  useEffect(() => {
-    if (!inView) return;
-    if (reduced) {
-      setDisplay(value);
-      return;
-    }
-    let raf = 0;
-    const start = performance.now();
-    const tick = (now: number) => {
-      const t = Math.min((now - start) / duration, 1);
-      const eased = 1 - Math.pow(1 - t, 4);
-      setDisplay(Math.round(eased * value));
-      if (t < 1) raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [inView, value, duration, reduced]);
-
-  return (
-    <span ref={ref} className={className}>
-      {display}
-      {suffix}
-    </span>
-  );
-}
-
-/** Oversized ACTIF wordmark watermark — always behind content, never dominant. */
-export function Watermark({
-  tone = "dark",
-  className,
-}: {
-  tone?: "dark" | "light" | undefined;
-  className?: string | undefined;
-}) {
-  return (
-    <div
-      aria-hidden
-      className={cn(
-        "pointer-events-none absolute inset-x-0 select-none overflow-hidden",
-        className,
-      )}
-    >
-      <span
-        className={cn(
-          "display block whitespace-nowrap text-[26vw] leading-none tracking-[0.06em]",
-          tone === "light" ? "text-on-forest/[0.045]" : "text-charcoal/[0.04]",
-        )}
-      >
-        ACTIF
-      </span>
-    </div>
-  );
-}
-
-export function Section({
-  id,
+/** Soft focus-in: opacity and a little blur, no slide. */
+export function Fade({
   children,
+  delay = 0,
   className,
+  as: Tag = "div",
 }: {
-  id?: string | undefined;
   children: ReactNode;
-  className?: string | undefined;
+  delay?: number;
+  className?: string;
+  as?: "div" | "p" | "li" | "section" | "ul" | "dl";
 }) {
+  const ref = useRef<HTMLElement>(null);
+  const armed = useArmed();
+  const inView = useInView(ref, { once: true, margin: "0px 0px -8% 0px" });
+  const MotionTag = motion[Tag] as typeof motion.div;
+  const show = !armed || inView;
   return (
-    <section id={id} className={cn("relative w-full overflow-hidden", className)}>
+    <MotionTag
+      ref={ref as React.RefObject<HTMLDivElement>}
+      className={className}
+      initial={false}
+      animate={{ opacity: show ? 1 : 0, filter: show ? "blur(0px)" : "blur(6px)" }}
+      transition={{ duration: 1.2, delay, ease: EASE }}
+    >
       {children}
-    </section>
+    </MotionTag>
   );
 }
 
-export function SectionHeader({
-  label,
-  headline,
-  className,
-  tone = "dark",
-}: {
-  label: string;
-  headline: string;
-  className?: string | undefined;
-  tone?: "dark" | "light" | undefined;
-}) {
-  const labelParts = label.split(" — ");
-  const index = labelParts[0] || "";
-  const title = labelParts[1] || "";
-
+/** A thread-thin rule that draws itself in. */
+export function Rule({ className, delay = 0 }: { className?: string; delay?: number }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const armed = useArmed();
+  const inView = useInView(ref, { once: true, margin: "0px 0px -5% 0px" });
   return (
-    <div className={cn("flex flex-col gap-6", className)}>
-      <SectionLabel index={index} title={title} tone={tone} />
-      <h2
-        className={cn(
-          "display max-w-4xl text-4xl sm:text-5xl lg:text-6xl",
-          tone === "dark" ? "text-charcoal" : "text-on-forest",
-        )}
-      >
-        <WordReveal text={headline} />
-      </h2>
-    </div>
+    <motion.div
+      ref={ref}
+      aria-hidden
+      className={cn("h-px origin-left bg-current", className)}
+      initial={false}
+      animate={{ scaleX: !armed || inView ? 1 : 0 }}
+      transition={{ duration: 1.4, delay, ease: EASE }}
+    />
+  );
+}
+
+/** Counts up once when scrolled into view. Final value is the server-rendered default. */
+export function Counter({ value, className }: { value: number; className?: string }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const armed = useArmed();
+  const inView = useInView(ref, { once: true, margin: "0px 0px -10% 0px" });
+  const [shown, setShown] = useState(value);
+  useEffect(() => {
+    if (!armed || !inView) return;
+    const controls = animate(0, value, {
+      duration: 2.2,
+      ease: EASE,
+      onUpdate: (v) => setShown(Math.round(v)),
+    });
+    return () => controls.stop();
+  }, [armed, inView, value]);
+  return (
+    <span ref={ref} className={cn("tabular", className)}>
+      {armed && !inView ? 0 : shown}
+    </span>
+  );
+}
+
+export type Structure = "jersey" | "rib" | "waffle" | "mesh";
+
+/**
+ * Procedural knit-structure swatch, drawn as an SVG pattern. Decorative: it stands for
+ * a sample of cloth, it does not depict any specific ACTIF fabric.
+ */
+export function Swatch({
+  structure,
+  tint,
+  className,
+  scale = 1,
+}: {
+  structure: Structure;
+  tint: string; // any CSS colour, e.g. var(--celadon)
+  className?: string;
+  scale?: number;
+}) {
+  const uid = useId().replace(/:/g, "");
+  const shade = "color-mix(in oklab, var(--ink) 34%, transparent)";
+  const light = "color-mix(in oklab, white 42%, transparent)";
+  const dims: Record<Structure, [number, number]> = {
+    jersey: [10, 12],
+    rib: [12, 6],
+    waffle: [16, 16],
+    mesh: [12, 12],
+  };
+  const [w, h] = dims[structure];
+  return (
+    <svg
+      aria-hidden
+      className={cn("block h-full w-full", className)}
+      preserveAspectRatio="xMidYMid slice"
+    >
+      <defs>
+        <pattern
+          id={`p${uid}`}
+          width={w}
+          height={h}
+          patternUnits="userSpaceOnUse"
+          patternTransform={`scale(${scale})`}
+        >
+          {structure === "jersey" && (
+            <>
+              <path d="M0.8 -1 L5 11.5 L9.2 -1" fill="none" stroke={shade} strokeWidth="3.4" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M0.8 -1 L5 11.5 L9.2 -1" fill="none" stroke={light} strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" transform="translate(-0.4 -0.4)" />
+            </>
+          )}
+          {structure === "rib" && (
+            <>
+              <rect x="0" y="0" width="12" height="6" fill="none" />
+              <rect x="1" y="0" width="5" height="6" fill={light} />
+              <rect x="7" y="0" width="4" height="6" fill={shade} />
+            </>
+          )}
+          {structure === "waffle" && (
+            <>
+              <rect x="1.5" y="1.5" width="13" height="13" fill="none" stroke={shade} strokeWidth="2" />
+              <rect x="3.5" y="3.5" width="9" height="9" fill={light} />
+            </>
+          )}
+          {structure === "mesh" && (
+            <>
+              <circle cx="6" cy="6" r="3.2" fill={shade} />
+              <circle cx="6" cy="5.4" r="3.2" fill="none" stroke={light} strokeWidth="0.8" />
+            </>
+          )}
+        </pattern>
+        <linearGradient id={`g${uid}`} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="white" stopOpacity="0.22" />
+          <stop offset="0.35" stopColor="black" stopOpacity="0.1" />
+          <stop offset="0.6" stopColor="white" stopOpacity="0.1" />
+          <stop offset="1" stopColor="black" stopOpacity="0.28" />
+        </linearGradient>
+      </defs>
+      <rect width="100%" height="100%" fill={tint} />
+      <rect width="100%" height="100%" fill={`url(#p${uid})`} />
+      <rect width="100%" height="100%" fill={`url(#g${uid})`} />
+    </svg>
   );
 }

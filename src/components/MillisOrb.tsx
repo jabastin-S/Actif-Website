@@ -1,15 +1,33 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { Mic, Loader2, Square, AlertCircle, Bot, X } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 import Millis, { AgentState } from "@millisai/web-sdk";
+import { cn } from "@/lib/utils";
 
+type SessionState = "idle" | "connecting" | "active" | "error";
+type Phase = "idle" | "connecting" | "listening" | "thinking" | "speaking" | "error";
+
+const LABEL: Record<Phase, string> = {
+  idle: "Talk to ACTIF",
+  connecting: "Connecting",
+  listening: "Listening",
+  thinking: "One moment",
+  speaking: "Speaking",
+  error: "Could not connect",
+};
+
+/**
+ * Floating voice orb for the existing Millis agent. The session starts and ends in place:
+ * no modal, no panel, no route change. Connection logic is unchanged from the original
+ * integration; only the presentation and accessibility were reworked.
+ */
 export function MillisOrb() {
-  const [sessionState, setSessionState] = useState<"idle" | "connecting" | "active" | "error">("idle");
+  const [sessionState, setSessionState] = useState<SessionState>("idle");
   const [agentState, setAgentState] = useState<AgentState>(AgentState.IDLE);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const clientRef = useRef<any>(null);
+  const clientRef = useRef<ReturnType<typeof Millis.createClient> | null>(null);
 
-  const publicKey = import.meta.env['VITE_MILLIS_PUBLIC_KEY'] || "dummy_public_key";
-  const agentId = import.meta.env['VITE_MILLIS_AGENT_ID'] || "dummy_agent_id";
+  const publicKey = import.meta.env["VITE_MILLIS_PUBLIC_KEY"] || "dummy_public_key";
+  const agentId = import.meta.env["VITE_MILLIS_AGENT_ID"] || "dummy_agent_id";
 
   const cleanup = useCallback(async () => {
     if (clientRef.current) {
@@ -50,7 +68,7 @@ export function MillisOrb() {
             setAgentState(state);
           });
 
-          clientRef.current.on("onerror", (err: any) => {
+          clientRef.current.on("onerror", (err: unknown) => {
             console.error("Millis error:", err);
             setSessionState("error");
             setErrorMessage("Connection failed");
@@ -72,126 +90,127 @@ export function MillisOrb() {
       } catch (error) {
         console.error("Failed to start Millis session:", error);
         setSessionState("error");
-        setErrorMessage("Microphone/Connection failed");
+        setErrorMessage("Microphone or connection failed");
         setTimeout(() => {
           cleanup();
         }, 5000);
       }
     } else {
-      // Disconnect
+      // Clicking again ends the session
       await cleanup();
     }
   };
 
-  // Determine appearance based on state
-  let icon = <Bot className="h-6 w-6 stroke-[1.5] text-[#e8ebd9] transition-all duration-500 group-hover:scale-110 group-hover:text-white" />;
-  let orbClass = "bg-[#0d1f16] border-[#e8ebd9]/20 shadow-[0_0_15px_rgba(13,31,22,0.4)] hover:border-[#e8ebd9]/40 hover:shadow-[0_0_25px_rgba(232,235,217,0.15)]"; 
-  let statusText = "Talk to ACTIF";
-  let showTooltip = true;
+  const phase: Phase =
+    sessionState === "idle"
+      ? "idle"
+      : sessionState === "connecting"
+        ? "connecting"
+        : sessionState === "error"
+          ? "error"
+          : agentState === AgentState.PREPARE_ANSWER
+            ? "thinking"
+            : agentState === AgentState.ANSWER
+              ? "speaking"
+              : "listening";
 
-  // Active rings
-  let rings = null;
-  let animateOrb = "animate-[breathe_4s_ease-in-out_infinite]";
-
-  if (sessionState === "connecting") {
-    icon = <Loader2 className="h-6 w-6 text-[#e8ebd9] animate-spin stroke-[1.5]" />;
-    statusText = "Connecting...";
-    orbClass = "bg-[#112a1d] border-[#e8ebd9]/40 shadow-[0_0_25px_rgba(232,235,217,0.2)]";
-    animateOrb = ""; // disable breathing
-    rings = (
-      <div className="absolute inset-0 rounded-full border border-[#e8ebd9]/30 animate-[spin_3s_linear_infinite]" />
-    );
-  } else if (sessionState === "active") {
-    icon = <X className="h-6 w-6 stroke-[1.5] text-[#e8ebd9]/80 group-hover:text-white transition-colors" />; // Cancel/Stop icon
-    showTooltip = false; // Usually don't need tooltip when active
-    
-    if (agentState === AgentState.PREPARE_ANSWER) {
-      // Processing
-      orbClass = "bg-[#153424] border-[#e8ebd9]/50 shadow-[0_0_30px_rgba(232,235,217,0.3)]";
-      animateOrb = "animate-[pulse_1.5s_ease-in-out_infinite]";
-      rings = (
-        <div className="absolute -inset-2.5 rounded-full border border-[#e8ebd9]/20 animate-[spin_2s_linear_infinite]" />
-      );
-    } else if (agentState === AgentState.ANSWER) {
-      // Speaking
-      orbClass = "bg-[#18402a] border-[#e8ebd9]/60 shadow-[0_0_35px_rgba(232,235,217,0.4)]";
-      animateOrb = "";
-      rings = (
-        <>
-          <div className="absolute inset-0 rounded-full border border-[#e8ebd9]/40 animate-[ping_2.5s_cubic-bezier(0,0,0.2,1)_infinite]" />
-          <div className="absolute inset-0 rounded-full border border-[#e8ebd9]/20 animate-[ping_3s_cubic-bezier(0,0,0.2,1)_infinite_0.5s]" />
-        </>
-      );
-    } else {
-      // Listening
-      orbClass = "bg-[#1a4a30] border-[#e8ebd9]/40 shadow-[0_0_30px_rgba(232,235,217,0.3)]";
-      animateOrb = "animate-[breathe_1.5s_ease-in-out_infinite]"; // faster breathing
-      rings = (
-        <>
-          <div className="absolute -inset-1.5 rounded-full bg-[#e8ebd9]/10 animate-[pulse_1s_ease-in-out_infinite]" />
-          <div className="absolute -inset-3 rounded-full border border-[#e8ebd9]/20 animate-[pulse_1.5s_ease-in-out_infinite]" />
-        </>
-      );
-    }
-  } else if (sessionState === "error") {
-    icon = <AlertCircle className="h-6 w-6 stroke-[1.5] text-red-300" />;
-    orbClass = "bg-red-950 border-red-500/30 shadow-[0_0_20px_rgba(220,38,38,0.3)]";
-    statusText = errorMessage || "Unable to connect.";
-    animateOrb = "";
-  }
+  const live = phase === "listening" || phase === "thinking" || phase === "speaking";
+  const status = phase === "error" && errorMessage ? errorMessage : LABEL[phase];
+  const showLabel = phase !== "idle";
+  const ariaLabel = live
+    ? "End the conversation with ACTIF"
+    : phase === "connecting"
+      ? "Connecting. Select to cancel"
+      : "Talk to ACTIF by voice";
 
   return (
-    <>
-      <style>{`
-        @keyframes breathe {
-          0%, 100% { transform: scale(1); }
-          50% { transform: scale(1.04); }
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .animate-\\[breathe_4s_ease-in-out_infinite\\],
-          .animate-\\[breathe_1\\.5s_ease-in-out_infinite\\],
-          .animate-\\[spin_3s_linear_infinite\\],
-          .animate-\\[spin_2s_linear_infinite\\],
-          .animate-\\[ping_2\\.5s_cubic-bezier\\(0\\,0\\,0\\.2\\,1\\)_infinite\\],
-          .animate-\\[ping_3s_cubic-bezier\\(0\\,0\\,0\\.2\\,1\\)_infinite_0\\.5s\\],
-          .animate-\\[pulse_1s_ease-in-out_infinite\\],
-          .animate-\\[pulse_1\\.5s_ease-in-out_infinite\\] {
-            animation: none !important;
-            transform: none !important;
-          }
-        }
-      `}</style>
-      <div className="group fixed bottom-22.5 right-6 z-50 md:bottom-27 md:right-10 flex items-center justify-end">
-        {/* Tooltip */}
-        <div 
-          className={`absolute right-19 whitespace-nowrap transition-all duration-300 ease-in-out pointer-events-none 
-            ${showTooltip ? 'opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0' : 'opacity-0'}
-            ${sessionState === 'connecting' || sessionState === 'error' ? 'opacity-100 translate-x-0' : ''}
-          `}
-        >
-          <div className="rounded-full bg-[#0d1f16]/90 backdrop-blur-md px-4 py-2 text-sm font-medium text-[#e8ebd9] border border-[#e8ebd9]/10 shadow-lg">
-            {statusText}
-          </div>
-        </div>
+    <div
+      data-tone="dark"
+      className="pointer-events-none fixed right-4 bottom-[max(1rem,env(safe-area-inset-bottom))] z-50 flex flex-row-reverse items-center gap-3 md:right-8 md:bottom-8"
+    >
+      <button
+        type="button"
+        onClick={toggleSession}
+        aria-label={ariaLabel}
+        aria-pressed={live}
+        className={cn(
+          "peer pointer-events-auto relative flex size-14 shrink-0 items-center justify-center rounded-full ring-1 transition-[background-color,box-shadow,transform] duration-500 ease-[var(--ease-out)] hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cochineal-lite md:size-16",
+          "shadow-[0_10px_28px_-8px_rgb(0_0_0/0.5)]",
+          phase === "error"
+            ? "bg-cochineal text-bleach ring-cochineal-lite/60"
+            : "bg-indigo text-on-indigo ring-on-indigo/30",
+          live && "ring-cochineal-lite/70",
+          phase === "idle" && "[animation:orb-breathe_5s_ease-in-out_infinite]",
+        )}
+      >
+        {/* state rings */}
+        {phase === "speaking" && (
+          <>
+            <span aria-hidden className="absolute inset-0 rounded-full ring-1 ring-cochineal-lite/60 [animation:orb-ring_2.4s_var(--ease-out)_infinite]" />
+            <span aria-hidden className="absolute inset-0 rounded-full ring-1 ring-cochineal-lite/40 [animation:orb-ring_2.4s_var(--ease-out)_0.8s_infinite]" />
+          </>
+        )}
+        {phase === "listening" && (
+          <span aria-hidden className="absolute inset-0 rounded-full ring-1 ring-on-indigo/40 [animation:orb-ring_3s_ease-out_infinite]" />
+        )}
+        {(phase === "connecting" || phase === "thinking") && (
+          <svg
+            aria-hidden
+            viewBox="0 0 64 64"
+            className="absolute inset-[-5px] size-[calc(100%+10px)] [animation:orb-spin_1.6s_linear_infinite]"
+          >
+            <circle cx="32" cy="32" r="30" fill="none" stroke="var(--cochineal-lite)" strokeWidth="1.5" strokeDasharray="22 166" strokeLinecap="round" />
+          </svg>
+        )}
 
-        {/* Orb */}
-        <button
-          onClick={toggleSession}
-          aria-label={sessionState === "active" ? "End ACTIF AI conversation" : "Talk to ACTIF AI"}
-          className={`relative flex h-15 w-15 md:h-17 md:w-17 items-center justify-center rounded-full border transition-all duration-500 ease-out focus:outline-none focus:ring-2 focus:ring-[#e8ebd9]/50 focus:ring-offset-2 focus:ring-offset-[#0d1f16] group-hover:scale-105 ${orbClass} ${animateOrb}`}
-        >
-          {/* Subtle ambient halo */}
-          <div className="absolute inset-0 rounded-full bg-[#e8ebd9]/0 transition-colors duration-500 group-hover:bg-[#e8ebd9]/5" />
-          
-          {/* Dynamic state rings */}
-          {rings}
-          
-          {/* Icon Container */}
-          <div className="relative z-10 flex items-center justify-center">
-            {icon}
-          </div>
-        </button>
-      </div>
-    </>
+        {phase === "error" ? (
+          <AlertCircle aria-hidden className="size-6 stroke-[1.5]" />
+        ) : (
+          <span aria-hidden className="flex h-6 items-center gap-[3px]">
+            {[0.55, 1, 0.7, 0.9, 0.5].map((height, index) => (
+              <span
+                key={index}
+                className="block w-[3px] origin-center rounded-full bg-current"
+                style={{
+                  height: `${height * 100}%`,
+                  animation:
+                    phase === "speaking"
+                      ? `orb-wave ${0.7 + index * 0.11}s ease-in-out ${index * 0.07}s infinite`
+                      : phase === "listening"
+                        ? `orb-wave ${1.8 + index * 0.2}s ease-in-out ${index * 0.15}s infinite`
+                        : undefined,
+                  opacity: phase === "connecting" || phase === "thinking" ? 0.5 : 1,
+                }}
+              />
+            ))}
+          </span>
+        )}
+
+        {/* the crimson marker thread: identity dot */}
+        <span
+          aria-hidden
+          className={cn(
+            "absolute top-1 right-1 size-2 rounded-full ring-2 ring-indigo",
+            phase === "error" ? "bg-bleach" : "bg-cochineal-lite",
+          )}
+        />
+      </button>
+
+      <span
+        aria-hidden
+        className={cn(
+          "pointer-events-none whitespace-nowrap bg-indigo px-4 py-2 text-[0.8125rem] font-medium text-on-indigo shadow-[0_6px_20px_-6px_rgb(0_0_0/0.45)] ring-1 ring-on-indigo/20 transition-[opacity,transform] duration-500 ease-[var(--ease-out)]",
+          showLabel
+            ? "translate-x-0 opacity-100"
+            : "translate-x-2 opacity-0 peer-hover:translate-x-0 peer-hover:opacity-100 peer-focus-visible:translate-x-0 peer-focus-visible:opacity-100",
+        )}
+      >
+        {status}
+      </span>
+
+      <span role="status" aria-live="polite" className="sr-only">
+        {phase === "idle" ? "" : status}
+      </span>
+    </div>
   );
 }

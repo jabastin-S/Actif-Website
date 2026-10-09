@@ -1,111 +1,52 @@
-import { motion, useReducedMotion } from "motion/react";
-
-const EASE = [0.16, 1, 0.3, 1] as const;
+import { COMPANY, NAV } from "@/content/site";
 
 export function Footer() {
-  const reduced = useReducedMotion();
-
   return (
-    <footer className="relative bg-forest-deep pt-32 pb-12 overflow-hidden text-on-forest">
-      <div className="absolute inset-0 opacity-10 pointer-events-none mix-blend-overlay">
-        {/* Subtle animated textile pattern */}
-        <div className="absolute inset-0 animate-drift knit-grain" />
-      </div>
-
-      <div className="mx-auto max-w-[1600px] px-6 md:px-10 relative z-10">
-        <div className="grid gap-16 lg:grid-cols-2 lg:gap-24">
-          <motion.div
-            initial={reduced ? undefined : { opacity: 0, y: 20 }}
-            whileInView={reduced ? undefined : { opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1, ease: EASE }}
-            className="flex flex-col gap-8"
-          >
-            <div>
-              <h2 className="display text-4xl sm:text-5xl tracking-widest">ACTIF</h2>
-              <p className="label-eyebrow text-champagne/80 mt-2">GLOBAL VENTURES PVT LTD</p>
-            </div>
-
-            <p className="display text-2xl text-on-forest/80 max-w-sm mt-8">
-              Future-ready sustainable knitted home textiles.
+    <footer data-tone="dark" className="relative overflow-hidden bg-indigo pt-20 pb-10 text-on-indigo md:pt-28">
+      <div className="shell">
+        <div className="grid gap-14 lg:grid-cols-12 lg:gap-x-10">
+          <div className="lg:col-span-6">
+            <p className="display text-[clamp(4rem,12vw,9rem)] leading-[0.85] tracking-[-0.02em]">
+              ACTIF
             </p>
-          </motion.div>
+            <p className="label mt-4 text-on-indigo-soft">Global Ventures Pvt Ltd</p>
+            <p className="mt-8 max-w-[34ch] text-on-indigo-soft">
+              Knitted textile development and manufacturing, Tiruppur. A unit of {COMPANY.parent},
+              with textile heritage since {COMPANY.heritageYear}.
+            </p>
+          </div>
 
-          <motion.div
-            initial={reduced ? undefined : { opacity: 0, y: 20 }}
-            whileInView={reduced ? undefined : { opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1, delay: 0.2, ease: EASE }}
-            className="grid gap-12 sm:grid-cols-2"
-          >
-            <nav className="flex flex-col gap-4">
-              <a
-                href="#about"
-                className="link-underline w-fit text-on-forest/70 hover:text-on-forest transition-colors"
-              >
-                About
-              </a>
-              <a
-                href="#why-actif"
-                className="link-underline w-fit text-on-forest/70 hover:text-on-forest transition-colors"
-              >
-                Why Actif
-              </a>
-              <a
-                href="#sustainability"
-                className="link-underline w-fit text-on-forest/70 hover:text-on-forest transition-colors"
-              >
-                Sustainability
-              </a>
-              <a
-                href="#manufacturing"
-                className="link-underline w-fit text-on-forest/70 hover:text-on-forest transition-colors"
-              >
-                Manufacturing
-              </a>
-              <a
-                href="#products"
-                className="link-underline w-fit text-on-forest/70 hover:text-on-forest transition-colors"
-              >
-                Products
-              </a>
-              <a
-                href="#certifications"
-                className="link-underline w-fit text-on-forest/70 hover:text-on-forest transition-colors"
-              >
-                Certifications
-              </a>
-              <a
-                href="#contact"
-                className="link-underline w-fit text-on-forest/70 hover:text-on-forest transition-colors"
-              >
-                Contact
-              </a>
-            </nav>
+          <nav aria-label="Footer" className="lg:col-span-3 lg:col-start-8">
+            <ul className="flex flex-col gap-3">
+              {NAV.map((link) => (
+                <li key={link.href}>
+                  <a href={link.href} className="link-thread text-on-indigo-soft hover:text-on-indigo">
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
 
-            <div className="flex flex-col gap-4 text-on-forest/70 text-sm font-light">
-              <p>Tirupur, Tamil Nadu, India</p>
-              <a href="mailto:info@actif.ltd" className="hover:text-on-forest transition-colors">
-                info@actif.ltd
-              </a>
-              <a href="tel:+919894602235" className="hover:text-on-forest transition-colors">
-                +91 98946 02235
-              </a>
-            </div>
-          </motion.div>
+          <div className="flex flex-col gap-3 text-on-indigo-soft lg:col-span-3">
+            <p>{COMPANY.location}</p>
+            <a href={`mailto:${COMPANY.email}`} className="link-thread w-fit hover:text-on-indigo">
+              {COMPANY.email}
+            </a>
+            <a href={COMPANY.phoneHref} className="link-thread w-fit hover:text-on-indigo">
+              {COMPANY.phone}
+            </a>
+          </div>
         </div>
 
-        <motion.div
-          initial={reduced ? undefined : { opacity: 0 }}
-          whileInView={reduced ? undefined : { opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 1, delay: 0.4, ease: EASE }}
-          className="mt-32 border-t border-on-forest/10 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 label-eyebrow text-on-forest/40"
-        >
+        <div className="mt-20 flex flex-col items-start justify-between gap-4 border-t border-on-indigo/15 pt-6 text-sm text-on-indigo-soft sm:flex-row sm:items-center">
           <p>
-            &copy; {new Date().getFullYear()} ACTIF GLOBAL VENTURES PVT LTD. All rights reserved.
+            &copy; {new Date().getFullYear()} {COMPANY.legalName}. All rights reserved.
           </p>
-        </motion.div>
+          <a href="#top" className="link-thread hover:text-on-indigo">
+            Back to top
+          </a>
+        </div>
       </div>
     </footer>
   );

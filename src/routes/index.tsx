@@ -1,21 +1,25 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Navbar } from "@/components/actif/Navbar";
 import { Hero } from "@/components/actif/Hero";
-import { AboutSection } from "@/components/actif/AboutSection";
-import { WhyActif } from "@/components/actif/WhyActif";
-import { ESGSection } from "@/components/actif/ESGSection";
-import { ManufacturingJourney } from "@/components/actif/ManufacturingJourney";
-import { SupplyChain } from "@/components/actif/SupplyChain";
-import { HygieneWellness } from "@/components/actif/HygieneWellness";
-import { ValueAddedFinishes } from "@/components/actif/ValueAddedFinishes";
+import { Heritage } from "@/components/actif/Heritage";
+import { Sectors } from "@/components/actif/Sectors";
+import { HomeRange } from "@/components/actif/HomeRange";
+import { Process } from "@/components/actif/Process";
 import { Capacity } from "@/components/actif/Capacity";
-import { ProductPortfolio } from "@/components/actif/ProductPortfolio";
-import { Certifications } from "@/components/actif/Certifications";
-import { SDGSection } from "@/components/actif/SDGSection";
-import { FinalCTA } from "@/components/actif/FinalCTA";
+import { Responsibility } from "@/components/actif/Responsibility";
 import { Contact } from "@/components/actif/Contact";
 import { Footer } from "@/components/actif/Footer";
-import { ChatbotIcon } from "@/components/actif/ChatbotIcon";
+
+/** Pinked seam where one swatch of ground meets the next. */
+function Seam({ from, to }: { from: string; to: string }) {
+  return (
+    <div
+      aria-hidden
+      className="selvage"
+      style={{ "--from": `var(--${from})`, "--to": `var(--${to})` } as React.CSSProperties}
+    />
+  );
+}
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -23,25 +27,32 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   return (
-    <div className="relative min-h-screen bg-ivory font-sans text-charcoal selection:bg-sage/40">
+    <div className="relative min-h-screen bg-greige font-sans text-ink">
+      <a
+        href="#heritage"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[60] focus:bg-bleach focus:px-4 focus:py-3 focus:text-ink"
+      >
+        Skip to content
+      </a>
       <Navbar />
       <main>
         <Hero />
-        <AboutSection />
-        <WhyActif />
-        <ESGSection />
-        <ManufacturingJourney />
-        <SupplyChain />
-        <HygieneWellness />
-        <ValueAddedFinishes />
+        <Seam from="indigo" to="greige" />
+        <Heritage />
+        <Seam from="greige" to="linen" />
+        <Sectors />
+        <Seam from="linen" to="bleach" />
+        <HomeRange />
+        <Seam from="bleach" to="indigo" />
+        <Process />
+        <Seam from="indigo" to="greige" />
         <Capacity />
-        <ProductPortfolio />
-        <Certifications />
-        <SDGSection />
-        <FinalCTA />
+        <Seam from="greige" to="indigo-2" />
+        <Responsibility />
+        <Seam from="indigo-2" to="greige" />
         <Contact />
       </main>
-      <ChatbotIcon />
+      <Seam from="greige" to="indigo" />
       <Footer />
     </div>
   );

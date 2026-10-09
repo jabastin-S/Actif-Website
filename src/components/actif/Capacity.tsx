@@ -1,96 +1,47 @@
-import { motion, useReducedMotion } from "motion/react";
-import { SectionHeader, AnimatedCounter } from "./primitives";
-
-const EASE = [0.16, 1, 0.3, 1] as const;
+import { CAPACITY } from "@/content/site";
+import { tintVar } from "@/lib/tint";
+import { Counter, Fade, MaskLine, Rule, Swatch } from "./primitives";
 
 export function Capacity() {
-  const reduced = useReducedMotion();
-
   return (
-    <section className="relative bg-sand py-32 md:py-48">
-      <div className="absolute inset-0 bg-gradient-ivory opacity-60 pointer-events-none" />
-
-      <div className="mx-auto max-w-[1600px] px-6 md:px-10 relative z-10">
-        <SectionHeader
-          label="08 — MANUFACTURING CAPACITY"
-          headline="Scale that flexes to your programme."
-          className="mb-24"
-        />
-
-        <div className="grid gap-16 md:grid-cols-3 md:gap-10">
-          <motion.div
-            initial={reduced ? {} : { opacity: 0, y: 30 }}
-            whileInView={reduced ? {} : { opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-10% 0px" }}
-            transition={{ duration: 1.2, ease: EASE }}
-            className="flex flex-col items-start border-l border-charcoal/20 pl-8"
-          >
-            <div className="display text-6xl text-charcoal sm:text-7xl lg:text-8xl">
-              <AnimatedCounter value={150} />
-            </div>
-            <p className="label-eyebrow mt-4 text-charcoal-soft">Greige fabric / month (MT)</p>
-          </motion.div>
-
-          <motion.div
-            initial={reduced ? {} : { opacity: 0, y: 30 }}
-            whileInView={reduced ? {} : { opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-10% 0px" }}
-            transition={{ duration: 1.2, ease: EASE }}
-            className="flex flex-col items-start border-l border-charcoal/20 pl-8"
-          >
-            <div className="display text-6xl text-charcoal sm:text-7xl lg:text-8xl">
-              <AnimatedCounter value={50} />
-            </div>
-            <p className="label-eyebrow mt-4 text-charcoal-soft">Finished fabric / month (MT)</p>
-          </motion.div>
-
-          <motion.div
-            initial={reduced ? {} : { opacity: 0, y: 30 }}
-            whileInView={reduced ? {} : { opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-10% 0px" }}
-            transition={{ duration: 1.2, ease: EASE }}
-            className="flex flex-col items-start border-l border-charcoal/20 pl-8"
-          >
-            <div className="display text-6xl text-charcoal sm:text-7xl lg:text-8xl">
-              <AnimatedCounter value={5} />
-            </div>
-            <p className="label-eyebrow mt-4 text-charcoal-soft">Containers / month</p>
-          </motion.div>
+    <section id="capacity" className="relative bg-greige py-24 md:py-36">
+      <div className="shell grid gap-14 lg:grid-cols-12 lg:gap-x-10">
+        <div className="lg:col-span-5">
+          <h2 className="display text-[clamp(2.4rem,5vw,4.5rem)] text-ink">
+            <MaskLine>Capacity,</MaskLine>
+            <MaskLine delay={0.08}>stated plainly.</MaskLine>
+          </h2>
+          <Fade delay={0.1}>
+            <p className="prose-measure mt-8 text-ink-soft">
+              The monthly output of our integrated knit-to-pack line. It flexes up and down with
+              your programme, and sample-to-bulk turnaround is quick.
+            </p>
+          </Fade>
         </div>
 
-        <div className="mt-32 grid gap-10 md:grid-cols-2">
-          <motion.div
-            initial={reduced ? {} : { opacity: 0 }}
-            whileInView={reduced ? {} : { opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1, delay: 0.2, ease: EASE }}
-          >
-            <h4 className="text-xl text-charcoal">Flexible Scaling</h4>
-            <p className="body-copy mt-2">Capacity that grows with your orders.</p>
-          </motion.div>
-
-          <motion.div
-            initial={reduced ? {} : { opacity: 0 }}
-            whileInView={reduced ? {} : { opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1, delay: 0.4, ease: EASE }}
-          >
-            <h4 className="text-xl text-charcoal">Fast Production Response</h4>
-            <p className="body-copy mt-2">Rapid turnaround from sample to bulk.</p>
-          </motion.div>
-        </div>
-
-        <motion.div
-          initial={reduced ? {} : { opacity: 0, y: 10 }}
-          whileInView={reduced ? {} : { opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 1, delay: 0.6, ease: EASE }}
-          className="mt-32"
-        >
-          <p className="display text-3xl text-sage sm:text-4xl md:text-5xl">
-            Integrated knit-to-pack capacity — scaled to your programme, delivered on time.
+        <div className="lg:col-span-7 lg:col-start-6">
+          <ul>
+            {CAPACITY.map((row) => (
+              <Fade as="li" key={row.text} className="relative">
+                <Rule className="text-ink/25" />
+                <div className="flex items-center gap-5 py-6 md:gap-8 md:py-8">
+                  <div className="pinked-bottom size-14 shrink-0 overflow-hidden [--pink:6px] md:size-16">
+                    <Swatch structure={row.structure} tint={tintVar(row.tone)} />
+                  </div>
+                  <p className="display text-[clamp(1.6rem,2.9vw,2.6rem)] leading-[1.1] text-ink">
+                    <Counter value={row.value} /> {row.text}
+                  </p>
+                </div>
+              </Fade>
+            ))}
+            <li aria-hidden>
+              <Rule className="text-ink/25" />
+            </li>
+          </ul>
+          <p className="mt-6 text-sm text-ink-soft">
+            Indicative monthly figures, confirmed for each programme.
           </p>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

@@ -1,72 +1,71 @@
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
-
-const LINKS = [
-  { label: "About", href: "#about" },
-  { label: "Why Actif", href: "#why-actif" },
-  { label: "Sustainability", href: "#sustainability" },
-  { label: "Manufacturing", href: "#manufacturing" },
-  { label: "Products", href: "#products" },
-  { label: "Capabilities", href: "#capabilities" },
-  { label: "Certifications", href: "#certifications" },
-  { label: "Contact", href: "#contact" },
-];
-
-const EASE = [0.16, 1, 0.3, 1] as const;
+import { NAV } from "@/content/site";
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  const reduced = useReducedMotion();
+  const toggleRef = useRef<HTMLButtonElement>(null);
+  const firstLinkRef = useRef<HTMLAnchorElement>(null);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 80);
+    const onScroll = () => setScrolled(window.scrollY > 60);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : "";
+    if (!open) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    firstLinkRef.current?.focus();
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setOpen(false);
+        toggleRef.current?.focus();
+      }
+    };
+    window.addEventListener("keydown", onKey);
     return () => {
-      document.body.style.overflow = "";
+      document.body.style.overflow = previous;
+      window.removeEventListener("keydown", onKey);
     };
   }, [open]);
 
-  const overlayMode = !scrolled && !open;
+  const light = !scrolled && !open; // light text over the dark hero
 
   return (
     <>
       <header
+        data-tone={light || open ? "dark" : undefined}
         className={cn(
-          "fixed inset-x-0 top-0 z-50 transition-[background-color,backdrop-filter,border-color,padding] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]",
-          scrolled
-            ? "border-b border-border/70 bg-ivory/80 py-4 backdrop-blur-xl"
-            : "border-b border-transparent py-7",
+          "fixed inset-x-0 top-0 z-50 transition-[background-color,backdrop-filter,box-shadow,padding] duration-700 ease-[var(--ease-out)]",
+          scrolled && !open
+            ? "bg-greige/88 py-3 shadow-[0_1px_0_var(--border)] backdrop-blur-md"
+            : "py-5 md:py-6",
         )}
       >
-        <div className="mx-auto flex max-w-[1600px] items-center justify-between px-6 md:px-10">
+        <div className="shell flex items-center justify-between gap-6">
           <a
             href="#top"
+            aria-label="ACTIF Global Ventures, back to top"
             className={cn(
-              "display text-2xl tracking-[0.34em] transition-colors duration-700 md:text-[1.7rem]",
-              overlayMode ? "text-on-forest" : "text-charcoal",
+              "display text-[1.75rem] leading-none tracking-[0.12em] transition-colors duration-700",
+              light || open ? "text-on-indigo" : "text-ink",
             )}
           >
             ACTIF
           </a>
 
-          <nav className="hidden items-center gap-8 xl:flex">
-            {LINKS.map((link) => (
+          <nav aria-label="Primary" className="hidden items-center gap-9 xl:flex">
+            {NAV.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  "link-underline label-eyebrow tracking-[0.18em] transition-colors duration-500",
-                  overlayMode
-                    ? "text-on-forest/80 hover:text-on-forest"
-                    : "text-charcoal-soft hover:text-charcoal",
+                  "link-thread text-[0.8125rem] font-medium tracking-[0.08em] uppercase transition-colors duration-500",
+                  light ? "text-on-indigo/85 hover:text-on-indigo" : "text-ink-soft hover:text-ink",
                 )}
               >
                 {link.label}
@@ -74,78 +73,88 @@ export function Navbar() {
             ))}
           </nav>
 
-          <div className="flex items-center gap-5">
+          <div className="flex items-center gap-3">
             <a
               href="#contact"
               className={cn(
-                "btn-luxe hidden !px-6 !py-3 lg:inline-flex",
-                overlayMode && "btn-luxe-light",
+                "btn-label hidden min-h-11 px-5 py-2 text-xs md:inline-flex",
+                light
+                  ? "text-on-indigo [--btn-fill:var(--on-indigo)] hover:text-indigo"
+                  : "text-ink [--btn-fill:var(--ink)] hover:text-bleach",
               )}
             >
-              <span>Partner With Us</span>
+              Partner with us
             </a>
-
             <button
+              ref={toggleRef}
               type="button"
-              aria-label={open ? "Close menu" : "Open menu"}
               aria-expanded={open}
-              onClick={() => setOpen((v) => !v)}
-              className="group flex h-10 w-10 flex-col items-end justify-center gap-[7px] xl:hidden"
+              aria-controls="site-menu"
+              onClick={() => setOpen((value) => !value)}
+              className={cn(
+                "relative flex size-11 items-center justify-center xl:hidden",
+                light || open ? "text-on-indigo" : "text-ink",
+              )}
             >
-              <span
-                className={cn(
-                  "h-px w-8 transition-all duration-500",
-                  open ? "translate-y-[4px] rotate-45 bg-on-forest" : "",
-                  !open && (overlayMode ? "bg-on-forest" : "bg-charcoal"),
-                )}
-              />
-              <span
-                className={cn(
-                  "h-px transition-all duration-500",
-                  open
-                    ? "w-8 -translate-y-[4px] -rotate-45 bg-on-forest"
-                    : cn("w-5 group-hover:w-8", overlayMode ? "bg-on-forest" : "bg-charcoal"),
-                )}
-              />
+              <span className="sr-only">{open ? "Close menu" : "Open menu"}</span>
+              <span aria-hidden className="relative block h-3 w-7">
+                <span
+                  className={cn(
+                    "absolute left-0 block h-px w-full bg-current transition-transform duration-500 ease-[var(--ease-out)]",
+                    open ? "top-1.5 rotate-45" : "top-0",
+                  )}
+                />
+                <span
+                  className={cn(
+                    "absolute left-0 block h-px w-full bg-current transition-transform duration-500 ease-[var(--ease-out)]",
+                    open ? "top-1.5 -rotate-45" : "top-3",
+                  )}
+                />
+              </span>
             </button>
           </div>
         </div>
       </header>
 
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            className="fixed inset-0 z-40 flex flex-col bg-forest-deep px-6 pb-12 pt-28 md:px-10"
-            initial={reduced ? { opacity: 0 } : { clipPath: "inset(0 0 100% 0)" }}
-            animate={reduced ? { opacity: 1 } : { clipPath: "inset(0 0 0% 0)" }}
-            exit={reduced ? { opacity: 0 } : { clipPath: "inset(0 0 100% 0)" }}
-            transition={{ duration: 0.95, ease: EASE }}
-          >
-            <nav className="flex flex-1 flex-col justify-center gap-1">
-              {LINKS.map((link, i) => (
-                <motion.a
-                  key={link.href}
+      <div
+        id="site-menu"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Site menu"
+        aria-hidden={!open}
+        inert={!open}
+        data-tone="dark"
+        className={cn(
+          "fixed inset-0 z-40 flex flex-col justify-between bg-indigo px-[var(--gutter)] pt-28 pb-10 text-on-indigo transition-[clip-path] duration-[900ms] ease-[var(--ease-out)] xl:hidden",
+          open ? "[clip-path:inset(0_0_0_0)]" : "[clip-path:inset(0_0_100%_0)]",
+        )}
+      >
+        <nav aria-label="Mobile">
+          <ul className="flex flex-col">
+            {NAV.map((link, index) => (
+              <li key={link.href} className="border-b border-on-indigo/15">
+                <a
+                  ref={index === 0 ? firstLinkRef : undefined}
                   href={link.href}
                   onClick={() => setOpen(false)}
-                  initial={reduced ? undefined : { opacity: 0, y: 24 }}
-                  animate={reduced ? undefined : { opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.16 + i * 0.05, ease: EASE }}
-                  className="display border-b border-on-forest/10 py-4 text-4xl text-on-forest sm:text-5xl"
+                  className="display flex items-baseline justify-between py-4 text-[2.4rem] leading-none"
                 >
                   {link.label}
-                </motion.a>
-              ))}
-            </nav>
-            <a
-              href="#contact"
-              onClick={() => setOpen(false)}
-              className="btn-luxe btn-luxe-light mt-8 w-full"
-            >
-              <span>Partner With Us</span>
-            </a>
-          </motion.div>
-        )}
-      </AnimatePresence>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+        <div className="flex flex-col gap-4 text-sm text-on-indigo-soft">
+          <a href="mailto:info@actif.ltd" className="link-thread w-fit text-on-indigo">
+            info@actif.ltd
+          </a>
+          <a href="tel:+919894602235" className="link-thread w-fit text-on-indigo">
+            +91 98946 02235
+          </a>
+          <p>Tiruppur, Tamil Nadu, India</p>
+        </div>
+      </div>
     </>
   );
 }
