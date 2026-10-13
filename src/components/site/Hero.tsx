@@ -1,5 +1,8 @@
+import { motion, useScroll, useTransform } from "motion/react";
 import { COMPANY } from "@/content/site";
-import { ClipReveal, MaskLine, Parallax } from "./motion";
+import { useMedia } from "@/lib/motion-hooks";
+import { useMotionOk } from "@/lib/use-motion-ok";
+import { MaskLine, Parallax } from "./motion";
 import { ImageNote } from "./ImageNote";
 import { Picture } from "./Picture";
 
@@ -9,6 +12,13 @@ import { Picture } from "./Picture";
  * every animation off; motion only adds the entrance.
  */
 export function Hero() {
+  // On the way out the room plate lifts a little faster than the headline: two depths, no pinning.
+  const motionOk = useMotionOk();
+  const wide = useMedia("(min-width: 768px)");
+  const { scrollY } = useScroll();
+  const plateY = useTransform(scrollY, [0, 900], [0, -70]);
+  const titleY = useTransform(scrollY, [0, 900], [0, -28]);
+  const depth = motionOk && wide;
   return (
     <section
       id="top"
@@ -16,7 +26,8 @@ export function Hero() {
       className="bg-ivory pt-[calc(var(--header-h)+1.5rem)] pb-[var(--space-continue)] md:pt-[calc(var(--header-h)+2.5rem)]"
     >
       <div className="shell hero-grid">
-        <h1
+        <motion.h1
+          style={depth ? { y: titleY } : {}}
           id="hero-title"
           className="display area-title text-[clamp(2.6rem,11.2vw,4.5rem)] text-ink md:text-[clamp(3.8rem,7.6vw,5.1rem)] xl:text-[clamp(4.6rem,6.7vw,6rem)]"
         >
@@ -28,24 +39,27 @@ export function Hero() {
           <MaskLine immediate delay={0.18}>
             industry and <em>care.</em>
           </MaskLine>
-        </h1>
+        </motion.h1>
 
-        <ClipReveal className="area-macro md:min-h-[26rem]" delay={0.2}>
-          <div className="grain relative aspect-[4/3] overflow-hidden bg-linen md:aspect-auto md:h-full md:min-h-[26rem]">
+        <div className="area-macro md:min-h-[26rem]">
+          <div
+            data-course="run"
+            className="course-mask grain relative aspect-[4/3] overflow-hidden bg-linen [animation:course-in_1.4s_var(--ease-soft)_0.12s_both] md:aspect-auto md:h-full md:min-h-[26rem]"
+          >
             <Parallax className="absolute inset-0" amount={3}>
               <Picture
                 name="macroSoft"
                 priority
                 sizes="(min-width:1280px) 30vw, (min-width:768px) 40vw, 92vw"
                 alt="Close view of oatmeal knitted jersey folding in a diagonal ridge"
-                className="h-full w-full object-cover object-[50%_40%]"
+                className="h-full w-full object-cover object-[50%_40%] [animation:plate-settle_1.9s_var(--ease-out)_0.12s_both]"
               />
             </Parallax>
             <ImageNote tone="ink" />
           </div>
-        </ClipReveal>
+        </div>
 
-        <div className="area-text self-end [animation:fade-in_1.2s_ease_0.8s_both]">
+        <div className="area-text self-end [animation:rise-in_0.9s_var(--ease-out)_0.7s_both]">
           <p className="max-w-[34ch] text-[1.0625rem] leading-relaxed text-ink-soft">
             Developed and made in Tiruppur, India. A unit of {COMPANY.parent}, with textile heritage
             since {COMPANY.heritageYear}.
@@ -60,20 +74,20 @@ export function Hero() {
           </div>
         </div>
 
-        <ClipReveal
-          className="area-bed relative z-10 xl:-mr-14 xl:self-end"
-          delay={0.45}
+        <motion.div
+          style={depth ? { y: plateY } : {}}
+          className="area-bed relative z-10 [animation:plate-in_1.1s_var(--ease-out)_0.42s_both] xl:-mr-14 xl:self-end"
         >
           <div className="grain relative aspect-[16/10] overflow-hidden shadow-[0_0_0_10px_var(--ivory)] md:aspect-[16/9] xl:aspect-[16/10]">
             <Picture
               name="homeInterior"
               sizes="(min-width:1280px) 44vw, (min-width:768px) 54vw, 92vw"
               alt="A calm bedroom corner with neutral linen bedding"
-              className="h-full w-full object-cover object-[40%_60%]"
+              className="h-full w-full object-cover object-[40%_60%] [animation:plate-settle_1.7s_var(--ease-out)_0.42s_both]"
             />
             <ImageNote />
           </div>
-        </ClipReveal>
+        </motion.div>
       </div>
     </section>
   );

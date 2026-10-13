@@ -75,17 +75,41 @@ Every generated photograph carries a vertical "Illustrative image" credit on its
 
 ## Motion
 
-Library: `motion` plus CSS keyframes; one easing (expo-out, `cubic-bezier(0.16, 1, 0.3, 1)`), 1.2 to 1.3s.
+Library: `motion` 13 (already installed) plus CSS keyframes. No GSAP, no smooth-scroll library, no
+scroll hijacking, no pinned sections. Shared code: `src/components/site/motion.tsx` (components) and
+`src/lib/motion-hooks.ts` (`EASE`, `EASE_STEADY`, `useReached`, `useMedia`).
 
-- Hero entrance: headline lines rise from a mask in sequence, the macro opens from its lower edge, the room
-  plate follows, the text fades in last.
-- Masked headline reveals: hero, heritage, Home & Bedding, transition. Clip reveals: hero plates, heritage
-  macro, application photographs. Hover: application images scale to 1.035 over 1.6s.
-- Gentle parallax on selected photographs (3 to 7% travel).
-- Reveals trigger once an element reaches the viewport or has already been passed (`useReached`), so an
-  anchor jump never leaves content hidden. Content is visible by default; motion only applies after
-  hydration and never under `prefers-reduced-motion`. No scroll hijacking, no counters, no cursor effects.
-- The Millis orb keeps its own idle breathing animation (existing component).
+Thesis. Focal moment: the **course reveal**. Knit close-ups form from the bottom up with a band of fine
+stitch rows running ahead of the solid edge, as courses come off a knitting machine (`CourseReveal`,
+`.course-mask` driven by the registered `--course` property). Used only on textile close-ups: hero macro,
+heritage macro, the Materials studies, the industrial macro. Room photographs use the plain clip reveal.
+
+- **Hero entrance** (CSS, plays from first paint, ends visible without JS): headline lines rise from
+  their masks (0, 0.09, 0.18s), the macro forms by courses (0.12s, 1.4s steady curve) while settling from
+  1.07 scale, the room plate opens (0.42s), text and actions rise last (0.7s). On scroll-out the plate
+  lifts faster than the headline (two depths), tablet and up.
+- **Scroll storytelling:** Home & Bedding's photograph opens from an inset plate to full bleed as it rises
+  (`ScrollExpand`, tablet and up). Parallax on selected photographs, 3-7% travel, halved on phones.
+- **Reveals:** masked heading lines (heritage, Home & Bedding, upholstery, manufacturing, capacity rows,
+  transition, contact); clip reveals with an image settle (applications, the second card of each pair a
+  beat later; medical); process stages arrive as a list (stagger capped at 0.21s).
+- **Materials gallery:** arrow keys, Home/End, mouse drag, previous/next snapping to studies, a
+  `01 / 07` position counter, scroll progress bound to a motion value, and on fine pointers a close-up that
+  zooms 1.75x toward the cursor (`.loupe`).
+- **Interface:** reading-progress hairline on the header; nav underline grows on hover and stays for the
+  active section; Applications dropdown fades and drops 6px (300ms in, 150ms out, inert when closed);
+  mobile menu links rise in sequence after the panel opens; buttons press to 0.985; card hover grows the
+  "See details" underline with the image scale.
+
+Timing: expo-out `cubic-bezier(0.16, 1, 0.3, 1)` for arrivals; `--ease-soft` / `EASE_STEADY` only for the
+travelling course edge. Feedback 150-300ms, overlays 150-300ms, reveals 0.9-1.4s.
+
+Robustness and performance: content is visible in the server render; scroll reveals hide only after
+hydration and trigger when an element is reached or already passed (one shared, frame-batched scroll
+check). Scroll-linked values are motion values bound to transforms or clip-path, so scrolling does not
+re-render React. Metric-matched fallback fonts keep the web-font swap from shifting layout (CLS 0.001
+measured with fonts delayed 1.5s). `prefers-reduced-motion`: no spatial motion, no delays, everything
+visible at once; progress and state feedback remain. The Millis orb keeps its own idle animation.
 
 ## Components
 

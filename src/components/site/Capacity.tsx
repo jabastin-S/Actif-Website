@@ -1,4 +1,5 @@
 import { CAPACITY } from "@/content/site";
+import { MaskLine } from "./motion";
 
 /**
  * Three ruled sentences on a deep olive field; the sentence is the layout. On wide screens the
@@ -16,10 +17,12 @@ export function Capacity() {
       </h2>
       <div className="shell grid lg:grid-cols-12 lg:gap-x-10">
         <ul className="border-b border-rule-dark lg:col-span-8">
-          {CAPACITY.map((row) => (
+          {CAPACITY.map((row, index) => (
             <li key={row.text} className="border-t border-rule-dark py-6 md:py-8">
               <p className="display max-w-[24ch] text-[clamp(2.3rem,5.4vw,5.2rem)]">
-                <span className="tabular">{row.value}</span> {row.text}
+                <MaskLine delay={index * 0.1}>
+                  <span className="tabular">{row.value}</span> {row.text}
+                </MaskLine>
               </p>
             </li>
           ))}

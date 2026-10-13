@@ -1,5 +1,5 @@
 import { COMPANY, STRENGTHS } from "@/content/site";
-import { ClipReveal, MaskLine } from "./motion";
+import { CourseReveal, MaskLine, Parallax } from "./motion";
 import { ImageNote } from "./ImageNote";
 import { Picture } from "./Picture";
 
@@ -51,16 +51,18 @@ export function Statement() {
             </ul>
           </div>
 
-          <ClipReveal className="md:col-span-5 lg:col-span-4 lg:col-start-9">
+          <CourseReveal className="md:col-span-5 lg:col-span-4 lg:col-start-9">
             <div className="grain relative aspect-[4/3] overflow-hidden bg-linen md:aspect-auto md:h-full md:min-h-[24rem]">
-              <Picture
-                name="macroSharp"
-                sizes="(min-width:1024px) 30vw, (min-width:768px) 40vw, 92vw"
-                className="absolute inset-0 h-full w-full object-cover"
-              />
+              <Parallax className="absolute inset-0" amount={4}>
+                <Picture
+                  name="macroSharp"
+                  sizes="(min-width:1024px) 30vw, (min-width:768px) 40vw, 92vw"
+                  className="h-full w-full object-cover"
+                />
+              </Parallax>
               <ImageNote tone="ink" />
             </div>
-          </ClipReveal>
+          </CourseReveal>
         </div>
       </div>
     </section>

@@ -1,7 +1,7 @@
 import { FINISHES, RANGE } from "@/content/site";
 import { enquiry } from "@/lib/enquiry";
 import { ImageNote } from "./ImageNote";
-import { ClipReveal, MaskLine } from "./motion";
+import { ClipReveal, MaskLine, ScrollExpand } from "./motion";
 import { Picture } from "./Picture";
 
 /**
@@ -11,12 +11,16 @@ import { Picture } from "./Picture";
 export function HomeBedding() {
   return (
     <section id="home" aria-labelledby="home-title" className="bg-ivory">
-      <div className="grain relative h-[62svh] min-h-[24rem] max-h-[34rem] overflow-hidden bg-stone md:h-[86svh] md:max-h-[52rem]">
-        <Picture
-          name="bedWide"
-          sizes="100vw"
-          className="absolute inset-0 h-full w-full object-cover object-[34%_70%] md:object-[50%_60%]"
-        />
+      <ScrollExpand
+        className="grain relative h-[62svh] min-h-[24rem] max-h-[34rem] overflow-hidden bg-stone md:h-[86svh] md:max-h-[52rem]"
+        media={
+          <Picture
+            name="bedWide"
+            sizes="100vw"
+            className="h-full w-full object-cover object-[34%_70%] md:object-[50%_60%]"
+          />
+        }
+      >
         <div className="shell relative z-10 pt-[clamp(2.5rem,6vw,5.5rem)]">
           <h2
             id="home-title"
@@ -29,7 +33,7 @@ export function HomeBedding() {
           </h2>
         </div>
         <ImageNote text="Illustrative image of knitted bed linen" />
-      </div>
+      </ScrollExpand>
 
       <div className="shell grid gap-10 pt-[var(--space-continue)] lg:grid-cols-12 lg:gap-x-10">
         <div className="lg:col-span-5">

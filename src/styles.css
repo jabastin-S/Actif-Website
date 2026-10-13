@@ -10,6 +10,26 @@
  * technical and clinical chapters. Colours are oklch tokens; do not hard-code them in components.
  */
 
+/* Metric-matched fallbacks, measured against the web fonts (scratch canvas measurement of the
+   real headline and body copy), so the swap to the web font does not reflow the page. */
+@font-face {
+  font-family: "Instrument Serif Fallback";
+  src: local("Times New Roman"), local("TimesNewRomanPSMT"), local("Times");
+  size-adjust: 82.62%;
+  ascent-override: 119.83%;
+  descent-override: 37.52%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: "Hanken Grotesk Fallback";
+  src: local("Arial"), local("ArialMT"), local("Helvetica");
+  size-adjust: 100.21%;
+  ascent-override: 99.79%;
+  descent-override: 29.94%;
+  line-gap-override: 0%;
+}
+
 @theme inline {
   --radius-sm: 0px;
   --radius-md: 0px;
@@ -19,8 +39,8 @@
   --radius-3xl: 2px;
   --radius-4xl: 3px;
 
-  --font-display: "Instrument Serif", "Iowan Old Style", Georgia, serif;
-  --font-sans: "Hanken Grotesk", "Helvetica Neue", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Instrument Serif", "Instrument Serif Fallback", Georgia, serif;
+  --font-sans: "Hanken Grotesk", "Hanken Grotesk Fallback", ui-sans-serif, system-ui, sans-serif;
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -272,7 +292,11 @@
   cursor: pointer;
   transition:
     background-color 600ms var(--ease-out),
-    color 600ms var(--ease-out);
+    color 600ms var(--ease-out),
+    transform 160ms var(--ease-out);
+  &:active {
+    transform: scale(0.985);
+  }
   &::after {
     content: "";
     width: 1.8rem;
@@ -317,10 +341,43 @@
   background-repeat: no-repeat;
   background-position: 0 calc(100% - 0.8rem);
   background-size: 100% 1px;
-  transition: background-size 600ms var(--ease-out);
+  transition:
+    background-size 600ms var(--ease-out),
+    opacity 160ms ease;
   &:hover,
   &:focus-visible {
     background-size: 40% 1px;
+  }
+  &:active {
+    opacity: 0.7;
+  }
+}
+
+.group:hover .link-line,
+.group:focus-visible .link-line {
+  background-size: 100% 1px;
+}
+
+/* Navigation underline: grows from the left on hover, stays for the active section. */
+@utility nav-line {
+  position: relative;
+  &::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: 0.55rem;
+    left: 0;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: right center;
+    transition: transform 450ms var(--ease-out);
+  }
+  &:hover::after,
+  &:focus-visible::after,
+  &[data-active="true"]::after {
+    transform: scaleX(1);
+    transform-origin: left center;
   }
 }
 
@@ -339,44 +396,101 @@
 
 /* ---------- Motion ---------- */
 
-@keyframes hero-settle {
-  from {
-    transform: scale(1.14);
-    clip-path: inset(6% 4% 6% 4%);
+/* Course reveal (see CourseReveal in motion.tsx): a solid edge rises from the bottom with a band
+   of fine stitch rows ahead of it. Result = solid ∪ (rows ∩ band). Only applied while running. */
+@property --course {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 1;
+}
+
+.course-mask[data-course="run"] {
+  --edge: calc(var(--course) * 150% - 50%);
+  -webkit-mask-image:
+    linear-gradient(to top, #000 var(--edge), transparent var(--edge)),
+    repeating-linear-gradient(to top, #000 0 4px, transparent 4px 9px),
+    linear-gradient(to top, #000 calc(var(--edge) + 26%), transparent calc(var(--edge) + 44%));
+  mask-image:
+    linear-gradient(to top, #000 var(--edge), transparent var(--edge)),
+    repeating-linear-gradient(to top, #000 0 4px, transparent 4px 9px),
+    linear-gradient(to top, #000 calc(var(--edge) + 26%), transparent calc(var(--edge) + 44%));
+  -webkit-mask-composite: source-over, source-in;
+  mask-composite: add, intersect;
+}
+
+/* Pictures inside a reveal settle from a slight enlargement as the frame opens. `transform` is
+   used so it composes with Tailwind's `scale` hover utilities. */
+[data-reveal] img {
+  transition:
+    transform 1.6s var(--ease-out),
+    scale 1.6s var(--ease-out);
+}
+[data-reveal="hidden"] img {
+  transform: scale(1.07);
+}
+
+/* Material close-up (Materials gallery): on a fine pointer the study zooms toward the cursor. */
+@media (hover: hover) and (pointer: fine) {
+  .loupe img {
+    transform-origin: var(--zx, 50%) var(--zy, 50%);
+    transition: transform 0.7s var(--ease-out);
   }
-  to {
-    transform: scale(1.02);
-    clip-path: inset(0 0 0 0);
+  .loupe:hover img {
+    transform: scale(1.75);
+  }
+  [data-dragging="true"] .loupe:hover img {
+    transform: none;
   }
 }
 
+
+
+/* Hero entrance: CSS keyframes so it plays from the first paint (before hydration) and ends
+   visible even if scripts never run. Durations 0.9-1.3s, one easing (--ease-out). */
 @keyframes line-in {
   from {
-    transform: translateY(108%);
+    transform: translateY(125%);
   }
   to {
     transform: translateY(0);
   }
 }
 
-@keyframes fade-in {
+@keyframes rise-in {
   from {
     opacity: 0;
+    transform: translateY(14px);
   }
   to {
     opacity: 1;
+    transform: translateY(0);
   }
 }
 
-@keyframes cue {
-  0%,
-  100% {
-    transform: scaleY(0.3);
-    transform-origin: top;
+@keyframes plate-in {
+  from {
+    clip-path: inset(0 0 100% 0);
   }
-  50% {
-    transform: scaleY(1);
-    transform-origin: top;
+  to {
+    clip-path: inset(-12px -12px -12px -12px);
+  }
+}
+
+@keyframes plate-settle {
+  from {
+    transform: scale(1.07);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes course-in {
+  from {
+    --course: 0;
+  }
+  to {
+    --course: 1;
   }
 }
 
@@ -422,8 +536,10 @@
   *::before,
   *::after {
     animation-duration: 0.001ms !important;
+    animation-delay: 0s !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
+    transition-delay: 0s !important;
     scroll-behavior: auto !important;
   }
 }

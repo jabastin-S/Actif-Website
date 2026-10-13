@@ -1,3 +1,4 @@
+import { motion, useScroll } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
@@ -64,6 +65,8 @@ export function Header() {
   const firstMenuLink = useRef<HTMLAnchorElement>(null);
   const appsWrap = useRef<HTMLDivElement>(null);
   const active = useActiveSection();
+  // Reading progress: a motion value bound straight to the transform, no re-render per scroll.
+  const { scrollYProgress } = useScroll();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -118,6 +121,11 @@ export function Header() {
           scrolled ? "shadow-[0_1px_0_var(--rule)]" : "shadow-[0_1px_0_transparent]",
         )}
       >
+        <motion.span
+          aria-hidden
+          style={{ scaleX: scrollYProgress }}
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-px origin-left bg-olive"
+        />
         <div className="shell flex h-full items-center justify-between gap-6">
           <a
             href="#top"
@@ -134,8 +142,9 @@ export function Header() {
                 aria-expanded={appsOpen}
                 aria-controls="apps-menu"
                 onClick={() => setAppsOpen((value) => !value)}
+                data-active={inApps}
                 className={cn(
-                  "flex h-11 items-center gap-2 text-sm font-medium transition-colors duration-500",
+                  "nav-line flex h-11 items-center gap-2 text-sm font-medium transition-colors duration-500",
                   linkTone,
                   inApps && "text-ink",
                 )}
@@ -151,15 +160,20 @@ export function Header() {
               </button>
               <ul
                 id="apps-menu"
-                hidden={!appsOpen}
-                className="absolute top-full left-0 mt-2 w-72 bg-ivory p-2 text-ink shadow-[0_24px_48px_-28px_rgb(0_0_0/0.45)]"
+                inert={!appsOpen}
+                className={cn(
+                  "absolute top-full left-0 mt-2 w-72 origin-top bg-ivory p-2 text-ink shadow-[0_24px_48px_-28px_rgb(0_0_0/0.45)] transition-[opacity,transform,visibility] ease-[var(--ease-out)]",
+                  appsOpen
+                    ? "visible translate-y-0 opacity-100 duration-300"
+                    : "invisible -translate-y-1.5 opacity-0 duration-150",
+                )}
               >
                 {APPLICATIONS.map((app) => (
                   <li key={app.id}>
                     <a
                       href={`#${app.id}`}
                       onClick={() => setAppsOpen(false)}
-                      className="flex min-h-11 items-center justify-between px-3 text-sm transition-colors hover:bg-linen"
+                      className="flex min-h-11 items-center justify-between px-3 text-sm transition-colors duration-300 hover:bg-linen"
                     >
                       {app.name}
                       {active === app.id && <span aria-hidden className="size-1.5 bg-olive" />}
@@ -172,8 +186,10 @@ export function Header() {
               <a
                 key={link.id}
                 href={`#${link.id}`}
+                data-active={active === link.id}
+                aria-current={active === link.id ? "true" : undefined}
                 className={cn(
-                  "flex h-11 items-center text-sm font-medium transition-colors duration-500",
+                  "nav-line flex h-11 items-center text-sm font-medium transition-colors duration-500",
                   linkTone,
                   active === link.id && "text-ink",
                 )}
@@ -233,7 +249,14 @@ export function Header() {
           <ul>
             {[...APPLICATIONS.map((a) => ({ id: a.id, label: a.name })), ...LINKS].map(
               (item, index) => (
-                <li key={item.id} className="border-b border-rule-dark">
+                <li
+                  key={item.id}
+                  style={{ transitionDelay: menuOpen ? `${180 + index * 35}ms` : "0ms" }}
+                  className={cn(
+                    "border-b border-rule-dark transition-[opacity,transform] duration-700 ease-[var(--ease-out)]",
+                    menuOpen ? "translate-y-0 opacity-100" : "translate-y-5 opacity-0",
+                  )}
+                >
                   <a
                     ref={index === 0 ? firstMenuLink : undefined}
                     href={`#${item.id}`}

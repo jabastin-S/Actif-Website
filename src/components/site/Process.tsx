@@ -1,6 +1,6 @@
 import { PROCESS } from "@/content/site";
 import { ImageNote } from "./ImageNote";
-import { MaskLine, Parallax } from "./motion";
+import { MaskLine, Parallax, Rise } from "./motion";
 import { Picture } from "./Picture";
 
 /**
@@ -37,8 +37,10 @@ export function Process() {
       <div className="shell pt-[var(--space-continue)] pb-[var(--space-section)]">
         <ol className="grid gap-x-10 gap-y-7 sm:grid-cols-2 sm:gap-y-12 lg:grid-cols-4">
           {PROCESS.map((stage, index) => (
-            <li
+            <Rise
+              as="li"
               key={stage.title}
+              delay={(index % 4) * 0.07}
               className="grid grid-cols-[3rem_1fr] gap-x-3 border-t border-rule pt-5 sm:block sm:pt-6"
             >
               <span className="display row-span-2 block text-[2.1rem] leading-none text-olive tabular sm:text-[2.6rem]">
@@ -48,13 +50,13 @@ export function Process() {
                 {stage.title}
               </p>
               <p className="mt-2 max-w-[30ch] text-[0.9375rem] text-ink-soft sm:mt-3">{stage.body}</p>
-            </li>
+            </Rise>
           ))}
-          <li className="border-t border-rule pt-5 sm:col-span-2 sm:pt-6 lg:col-span-1">
+          <Rise as="li" delay={0.21} className="border-t border-rule pt-5 sm:col-span-2 sm:pt-6 lg:col-span-1">
             <p className="display text-[1.75rem] leading-[1.08] text-ink sm:text-[1.9rem]">
               Every stage is ESG-controlled: traceable and responsible, end to end.
             </p>
-          </li>
+          </Rise>
         </ol>
       </div>
     </section>

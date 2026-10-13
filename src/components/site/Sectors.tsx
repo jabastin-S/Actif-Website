@@ -1,7 +1,7 @@
 import { APPLICATION_COPY, FIRST_CONVERSATION, type SectorId } from "@/content/site";
 import { enquiry } from "@/lib/enquiry";
 import { ImageNote } from "./ImageNote";
-import { Parallax } from "./motion";
+import { ClipReveal, CourseReveal, MaskLine, Parallax } from "./motion";
 import { Picture } from "./Picture";
 
 type Id = Exclude<SectorId, "home">;
@@ -53,7 +53,7 @@ export function Upholstery() {
           id="upholstery-title"
           className="display shell mt-8 text-[clamp(3.4rem,8vw,6rem)] text-ink lg:absolute lg:top-[4%] lg:left-[-16vw] lg:z-10 lg:mt-0 lg:w-auto lg:px-0"
         >
-          Upholstery
+          <MaskLine>Upholstery</MaskLine>
         </h2>
       </div>
       <div className="shell grid gap-x-8 gap-y-8 pt-8 md:grid-cols-12 md:grid-rows-[auto_1fr] lg:gap-x-12 lg:pt-12">
@@ -89,13 +89,13 @@ export function Industrial() {
             <p className="copy mt-8 text-on-dark-soft">{APPLICATION_COPY.industrial.line}</p>
           </div>
           <div className="relative md:col-span-5 lg:col-span-4 lg:col-start-9">
-            <div className="aspect-[4/3] overflow-hidden md:aspect-square">
+            <CourseReveal className="aspect-[4/3] overflow-hidden md:aspect-square">
               <Picture
                 name="knitDark"
                 sizes="(min-width:1024px) 28vw, (min-width:768px) 40vw, 92vw"
                 className="h-full w-full object-cover"
               />
-            </div>
+            </CourseReveal>
             <ImageNote className="left-3 md:left-3" />
           </div>
         </div>
@@ -118,9 +118,9 @@ export function Medical() {
     >
       <div className="shell flex flex-col items-center text-center">
         <div className="relative w-[min(20rem,64%)]">
-          <div className="aspect-[3/4] overflow-hidden">
+          <ClipReveal className="aspect-[3/4] overflow-hidden">
             <Picture name="medicalKnit" sizes="(min-width:640px) 20rem, 64vw" className="h-full w-full object-cover" />
-          </div>
+          </ClipReveal>
           <ImageNote className="left-3 text-ink-soft [text-shadow:none]" />
         </div>
         <h2

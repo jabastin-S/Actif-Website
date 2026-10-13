@@ -23,17 +23,17 @@ const ITEMS: Item[] = [
   { id: "medical", name: "Medical & Healthcare Textiles", image: "medicalFolded", place: "md:col-span-7", shape: "aspect-[4/3]", sizes: "(min-width:768px) 56vw, 92vw" },
 ];
 
-function Card({ item }: { item: Item }) {
+function Card({ item, delay }: { item: Item; delay: number }) {
   return (
     <article className={cn("group", item.place)}>
       <a href={`#${item.id}`} className="block" aria-label={`${item.name}: see details`}>
-        <ClipReveal>
+        <ClipReveal delay={delay}>
           <div className={cn("grain relative overflow-hidden bg-stone", item.shape)}>
             <Picture
               name={item.image}
               sizes={item.sizes}
               className={cn(
-                "h-full w-full object-cover transition-transform duration-[1600ms] ease-[var(--ease-out)] group-hover:scale-[1.035]",
+                "h-full w-full object-cover group-hover:scale-[1.035] group-focus-visible:scale-[1.035]",
                 item.focus,
               )}
             />
@@ -78,8 +78,9 @@ export function Applications() {
         </div>
 
         <div className="mt-10 grid gap-x-8 gap-y-12 md:grid-cols-12 md:items-end lg:mt-14 lg:gap-x-10 lg:gap-y-16">
-          {ITEMS.map((item) => (
-            <Card key={item.id} item={item} />
+          {ITEMS.map((item, index) => (
+            // the second card of each pair follows the first by a beat
+            <Card key={item.id} item={item} delay={index % 2 === 1 ? 0.12 : 0} />
           ))}
         </div>
       </div>
