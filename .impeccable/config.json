@@ -1,0 +1,14 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "overused-font",
+        "value": "instrument serif",
+        "createdAt": "2026-10-13T12:13:01.012Z",
+        "reason": "Deliberate display face recorded in DESIGN.md (condensed proportions carry the poster-size lines); the user's latest brief asks to preserve the existing typography"
+      }
+    ]
+  }
+}
