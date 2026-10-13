@@ -81,7 +81,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "ACTIF Global Ventures, a unit of Vani Fabrics Private Limited with textile heritage since 1970, develops and manufactures knitted textiles in Tiruppur, India for home, upholstery, industrial and medical applications.",
       },
       { name: "author", content: "ACTIF Global Ventures" },
-      { name: "theme-color", content: "#e3e1db" },
+      { name: "theme-color", content: "#f3f4f6" },
+      { name: "robots", content: "index, follow" },
+      { property: "og:site_name", content: "ACTIF Global Ventures" },
+      { property: "og:url", content: "https://actif.ltd/" },
+      { property: "og:locale", content: "en_IN" },
       { property: "og:title", content: "ACTIF Global Ventures" },
       {
         property: "og:description",
@@ -90,12 +94,36 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: "ACTIF Global Ventures",
+          legalName: "ACTIF Global Ventures Pvt Ltd",
+          url: "https://actif.ltd",
+          email: "info@actif.ltd",
+          telephone: "+919894602235",
+          address: {
+            "@type": "PostalAddress",
+            addressLocality: "Tiruppur",
+            addressRegion: "Tamil Nadu",
+            addressCountry: "IN",
+          },
+          parentOrganization: { "@type": "Organization", name: "Vani Fabrics Private Limited" },
+          description:
+            "Knitted textile development and manufacturing for home and bedding, upholstery, industrial and technical, and medical and healthcare applications.",
+        }),
+      },
+    ],
     links: [
+      { rel: "canonical", href: "https://actif.ltd/" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..600;1,6..96,400&family=Schibsted+Grotesk:wght@400;500;600&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Geologica:wght@300..600&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap",
       },
       {
         rel: "stylesheet",

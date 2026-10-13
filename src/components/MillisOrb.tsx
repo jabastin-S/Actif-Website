@@ -1,6 +1,20 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { AlertCircle } from "lucide-react";
-import Millis, { AgentState } from "@millisai/web-sdk";
+
+/**
+ * The voice SDK ships a ~2 MB WebAssembly resampler, so it is loaded on demand (first hover,
+ * focus or press of the orb) instead of with the page. Agent states are the SDK's own string values.
+ */
+type MillisModule = typeof import("@millisai/web-sdk");
+type AgentState = "idle" | "prepare_answer" | "answer" | "pause";
+const AgentState = {
+  IDLE: "idle",
+  PREPARE_ANSWER: "prepare_answer",
+  ANSWER: "answer",
+  PAUSE: "pause",
+} as const satisfies Record<string, AgentState>;
+let sdkPromise: Promise<MillisModule> | null = null;
+const loadSdk = () => (sdkPromise ??= import("@millisai/web-sdk"));
 import { cn } from "@/lib/utils";
 
 type SessionState = "idle" | "connecting" | "active" | "error";
@@ -24,7 +38,7 @@ export function MillisOrb() {
   const [sessionState, setSessionState] = useState<SessionState>("idle");
   const [agentState, setAgentState] = useState<AgentState>(AgentState.IDLE);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const clientRef = useRef<ReturnType<typeof Millis.createClient> | null>(null);
+  const clientRef = useRef<ReturnType<MillisModule["default"]["createClient"]> | null>(null);
 
   const publicKey = import.meta.env["VITE_MILLIS_PUBLIC_KEY"] || "dummy_public_key";
   const agentId = import.meta.env["VITE_MILLIS_AGENT_ID"] || "dummy_agent_id";
@@ -56,6 +70,7 @@ export function MillisOrb() {
 
       try {
         if (!clientRef.current) {
+          const { default: Millis } = await loadSdk();
           clientRef.current = Millis.createClient({
             publicKey: publicKey,
           });
@@ -125,33 +140,34 @@ export function MillisOrb() {
 
   return (
     <div
-      data-tone="dark"
       className="pointer-events-none fixed right-4 bottom-[max(1rem,env(safe-area-inset-bottom))] z-50 flex flex-row-reverse items-center gap-3 md:right-8 md:bottom-8"
     >
       <button
         type="button"
         onClick={toggleSession}
+        onPointerEnter={() => void loadSdk()}
+        onFocus={() => void loadSdk()}
         aria-label={ariaLabel}
         aria-pressed={live}
         className={cn(
-          "peer pointer-events-auto relative flex size-14 shrink-0 items-center justify-center rounded-full ring-1 transition-[background-color,box-shadow,transform] duration-500 ease-out hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cochineal-lite md:size-16",
+          "peer pointer-events-auto relative flex size-14 shrink-0 items-center justify-center rounded-full ring-1 transition-[background-color,box-shadow,transform] duration-500 ease-out hover:scale-105 focus-visible:outline-none focus-visible:shadow-[0_0_0_3px_var(--paper),0_0_0_5px_var(--ink)] md:size-16",
           "shadow-[0_10px_28px_-8px_rgb(0_0_0/0.5)]",
           phase === "error"
-            ? "bg-cochineal text-bleach ring-cochineal-lite/60"
-            : "bg-indigo text-on-indigo ring-on-indigo/30",
-          live && "ring-cochineal-lite/70",
+            ? "bg-destructive text-paper ring-paper/50"
+            : "bg-ink text-paper ring-paper/30",
+          live && "ring-chap",
           phase === "idle" && "animate-[orb-breathe_5s_ease-in-out_infinite]",
         )}
       >
         {/* state rings */}
         {phase === "speaking" && (
           <>
-            <span aria-hidden className="absolute inset-0 rounded-full ring-1 ring-cochineal-lite/60 animate-[orb-ring_2.4s_var(--ease-out)_infinite]" />
-            <span aria-hidden className="absolute inset-0 rounded-full ring-1 ring-cochineal-lite/40 animate-[orb-ring_2.4s_var(--ease-out)_0.8s_infinite]" />
+            <span aria-hidden className="absolute inset-0 rounded-full ring-1 ring-chap animate-[orb-ring_2.4s_var(--ease-out)_infinite]" />
+            <span aria-hidden className="absolute inset-0 rounded-full ring-1 ring-chap/70 animate-[orb-ring_2.4s_var(--ease-out)_0.8s_infinite]" />
           </>
         )}
         {phase === "listening" && (
-          <span aria-hidden className="absolute inset-0 rounded-full ring-1 ring-on-indigo/40 animate-[orb-ring_3s_ease-out_infinite]" />
+          <span aria-hidden className="absolute inset-0 rounded-full ring-1 ring-paper/50 animate-[orb-ring_3s_ease-out_infinite]" />
         )}
         {(phase === "connecting" || phase === "thinking") && (
           <svg
@@ -159,7 +175,7 @@ export function MillisOrb() {
             viewBox="0 0 64 64"
             className="absolute -inset-1.25 size-[calc(100%+10px)] animate-[orb-spin_1.6s_linear_infinite]"
           >
-            <circle cx="32" cy="32" r="30" fill="none" stroke="var(--cochineal-lite)" strokeWidth="1.5" strokeDasharray="22 166" strokeLinecap="round" />
+            <circle cx="32" cy="32" r="30" fill="none" stroke="var(--chap)" strokeWidth="1.5" strokeDasharray="22 166" strokeLinecap="round" />
           </svg>
         )}
 
@@ -190,8 +206,8 @@ export function MillisOrb() {
         <span
           aria-hidden
           className={cn(
-            "absolute top-1 right-1 size-2 rounded-full ring-2 ring-indigo",
-            phase === "error" ? "bg-bleach" : "bg-cochineal-lite",
+            "absolute top-1 right-1 size-2 rounded-full ring-2 ring-ink",
+            phase === "error" ? "bg-paper" : "bg-chap",
           )}
         />
       </button>
@@ -199,7 +215,7 @@ export function MillisOrb() {
       <span
         aria-hidden
         className={cn(
-          "pointer-events-none whitespace-nowrap bg-indigo px-4 py-2 text-[0.8125rem] font-medium text-on-indigo shadow-[0_6px_20px_-6px_rgb(0_0_0/0.45)] ring-1 ring-on-indigo/20 transition-[opacity,transform] duration-500 ease-out",
+          "pointer-events-none whitespace-nowrap bg-ink px-4 py-2 text-[0.8125rem] font-medium text-paper shadow-[0_6px_20px_-6px_rgb(0_0_0/0.45)] ring-1 ring-paper/20 transition-[opacity,transform] duration-500 ease-out",
           showLabel
             ? "translate-x-0 opacity-100"
             : "translate-x-2 opacity-0 peer-hover:translate-x-0 peer-hover:opacity-100 peer-focus-visible:translate-x-0 peer-focus-visible:opacity-100",

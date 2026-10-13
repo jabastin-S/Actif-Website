@@ -1,25 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Navbar } from "@/components/actif/Navbar";
-import { Hero } from "@/components/actif/Hero";
-import { Heritage } from "@/components/actif/Heritage";
-import { Sectors } from "@/components/actif/Sectors";
-import { HomeRange } from "@/components/actif/HomeRange";
-import { Process } from "@/components/actif/Process";
-import { Capacity } from "@/components/actif/Capacity";
-import { Responsibility } from "@/components/actif/Responsibility";
-import { Contact } from "@/components/actif/Contact";
-import { Footer } from "@/components/actif/Footer";
-
-/** Pinked seam where one swatch of ground meets the next. */
-function Seam({ from, to }: { from: string; to: string }) {
-  return (
-    <div
-      aria-hidden
-      className="selvage"
-      style={{ "--from": `var(--${from})`, "--to": `var(--${to})` } as React.CSSProperties}
-    />
-  );
-}
+import { StageProvider } from "@/components/stage/StageContext";
+import { KnitStage } from "@/components/stage/KnitStage";
+import { Header } from "@/components/site/Header";
+import { Intro } from "@/components/site/Intro";
+import { Heritage } from "@/components/site/Heritage";
+import { HomeBedding, Industrial, Medical, Upholstery } from "@/components/site/Applications";
+import { Capabilities } from "@/components/site/Capabilities";
+import { Responsibility } from "@/components/site/Responsibility";
+import { Contact } from "@/components/site/Contact";
+import { Footer } from "@/components/site/Footer";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -27,33 +16,34 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   return (
-    <div className="relative min-h-screen bg-greige font-sans text-ink">
+    <StageProvider>
       <a
-        href="#heritage"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[60] focus:bg-bleach focus:px-4 focus:py-3 focus:text-ink"
+        href="#main"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[60] focus:bg-paper focus:px-4 focus:py-3 focus:text-ink"
       >
         Skip to content
       </a>
-      <Navbar />
-      <main>
-        <Hero />
-        <Seam from="indigo" to="greige" />
-        <Heritage />
-        <Seam from="greige" to="linen" />
-        <Sectors />
-        <Seam from="linen" to="bleach" />
-        <HomeRange />
-        <Seam from="bleach" to="indigo" />
-        <Process />
-        <Seam from="indigo" to="greige" />
-        <Capacity />
-        <Seam from="greige" to="indigo-2" />
-        <Responsibility />
-        <Seam from="indigo-2" to="greige" />
+      <Header />
+      <main id="main" className="pt-[var(--header-h)]">
+        {/* One persistent specimen stage beside (desktop) or above (mobile) the chapters */}
+        <div className="grid grid-cols-1 lg:grid-cols-2">
+          <div className="col-start-1 row-start-1 pt-[var(--stage-h)] lg:pt-0">
+            <Intro />
+            <Heritage />
+            <HomeBedding />
+            <Upholstery />
+            <Industrial />
+            <Medical />
+            <Capabilities />
+            <Responsibility />
+          </div>
+          <div className="sticky top-[var(--header-h)] z-10 col-start-1 row-start-1 h-[var(--stage-h)] self-start lg:col-start-2 lg:h-[calc(100svh-var(--header-h))]">
+            <KnitStage />
+          </div>
+        </div>
         <Contact />
       </main>
-      <Seam from="greige" to="indigo" />
       <Footer />
-    </div>
+    </StageProvider>
   );
 }

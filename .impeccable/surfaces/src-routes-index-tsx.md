@@ -5,22 +5,22 @@ primary_target: "src/routes/index.tsx"
 related_targets: []
 ---
 
-# Surface brief: ACTIF landing (/)
+# Surface brief: ACTIF landing (/), Design-3 "Specimen Stage"
 
-Mode: Persuade. Audience: international B2B textile buyers vetting a knitted-textile manufacturing partner. Job: trust the mill, then start an enquiry (form, email, phone, or the Millis voice orb).
+Mode: Persuade. Audience: international B2B buyers vetting a knitted-textile development and manufacturing partner (home & bedding, upholstery, industrial & technical, medical & healthcare). Action: start an enquiry (form to mailto, email, phone, Millis voice orb).
 
-Proof/content: facts from PRODUCT.md only. Home-textiles detail, capacity, standards and SDGs come from the repo; upholstery, industrial and medical carry sector description only. No invented numbers, clients or certificates.
+Must differ from BOTH earlier designs: (1) ivory/sage/Cormorant centred "luxury editorial" (main), (2) greige/indigo/Bodoni "shade card" with pinked swatch panels and a huge wordmark hero (redesign/actif-luxury).
 
 ## Direction contract
 
-THESIS: The site is a mill's shade card, a bound book of knitted swatches, not a marketing page. The stitch loop is the unit of the grid and every section is a physical sample with a lot label. It refuses the ivory + serif + sage/gold ESG-template arrangement the old site used.
+THESIS: The page is a lab bench: one specimen of knitted cloth stays on a persistent stage while the text turns chapter by chapter, and the specimen morphs (structure, scale, yarn colour) to match the chapter. Refuses: stacked full-width marketing sections, card grids, pinked swatches, giant display wordmark, ivory or greige grounds.
 
-OWN-WORLD: Undyed greige ground (cool, not cream), deep indigo-vat darks, one cochineal-crimson dye accent used only for marks that matter, four muted dye-chip tints (celadon, dusty blue, sand, rose) used as swatch fields. Bodoni Moda display (didone, fashion-house cut) with Schibsted Grotesk text. Procedural knit-structure swatches (jersey, rib, waffle, mesh) drawn as SVG patterns; pinked (zigzag) edges and thread lines as dividers. Square edges, no cards, no gradients-as-decoration.
+OWN-WORLD: bright cool paper (#f4f4f1-ish), graphite ink, one living chapter colour (--chap / --chap-ink) shared by stage and interface (natural, butter, jade, steel, aqua, teal). Geologica light display + Source Serif 4 reading text. Square, ruled lists instead of cards; solid ink buttons with a chapter-coloured square; solid header bar.
 
-STORY: The visitor sees a hanging indigo cloth moving in real time, reads that ACTIF is a Tiruppur knit mill with 1970 roots, browses the four sectors like swatches, follows the seven-stage process sideways, checks capacity and standards in plain ledgers, and writes in.
+STORY: A buyer sees a calm macro of real knit structure beside a plain statement of what ACTIF is, scrolls through the four applications as four materials, then through heritage, process, capacity and responsibility as plain ruled lists, and writes in.
 
-FIRST VIEWPORT: Full-bleed WebGL knitted cloth (real V-stitch loops, slow folds, indigo) with the ACTIF wordmark set huge bottom-left on a baseline rule, statement and two buttons beside it at lower right, a transparent nav above, and the voice orb fixed bottom-right. No kicker above the headline.
+FIRST VIEWPORT: Desktop: left column headline (three lines), serif lead, primary and quiet buttons, four application links with colour squares; right half the sticky stage (plain knit chevrons, soft folds) with an "Illustrative knit structure" caption and a chapter index. Mobile: header, 22svh stage strip, headline, buttons.
 
-FORM: Shade-card / swatch-book (seed: hand-chosen by brief; no concept-seed roll run).
+FORM: scrollytelling split with persistent stage (hand-chosen from brief; no concept-seed roll run).
 
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance

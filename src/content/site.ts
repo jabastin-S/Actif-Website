@@ -21,62 +21,13 @@ export const COMPANY = {
   webHref: "https://actif.ltd",
 } as const;
 
-export const NAV = [
-  { label: "Heritage", href: "#heritage" },
-  { label: "Sectors", href: "#sectors" },
-  { label: "Home textiles", href: "#range" },
-  { label: "Manufacturing", href: "#manufacturing" },
-  { label: "Responsibility", href: "#responsibility" },
-  { label: "Contact", href: "#contact" },
-] as const;
-
 export type SectorId = "home" | "upholstery" | "industrial" | "medical";
 
-export const SECTORS: {
-  id: SectorId;
-  name: string;
-  short: string;
-  body: string;
-  note: string;
-  tint: "celadon" | "dusty-blue" | "sand" | "rose";
-  structure: "jersey" | "rib" | "waffle" | "mesh";
-}[] = [
-  {
-    id: "home",
-    name: "Home textiles and bedding",
-    short: "Home textiles",
-    body: "Our most developed line: knitted bed linen, from sheets and duvet covers to baby and hospitality collections, made for brands in Australia, Europe and the USA.",
-    note: "Full range overleaf",
-    tint: "celadon",
-    structure: "jersey",
-  },
-  {
-    id: "upholstery",
-    name: "Upholstery and interiors",
-    short: "Upholstery",
-    body: "Knitted fabrics for seating and soft furnishings, developed with interior and upholstery businesses.",
-    note: "Specifications on request",
-    tint: "dusty-blue",
-    structure: "rib",
-  },
-  {
-    id: "industrial",
-    name: "Industrial and technical textiles",
-    short: "Industrial",
-    body: "Knitted fabrics engineered for functional and technical applications, developed to the customer's performance brief.",
-    note: "Specifications on request",
-    tint: "sand",
-    structure: "waffle",
-  },
-  {
-    id: "medical",
-    name: "Medical and healthcare textiles",
-    short: "Medical",
-    body: "Knitted textiles for healthcare settings, where hygiene and consumer safety come first.",
-    note: "Specifications on request",
-    tint: "rose",
-    structure: "mesh",
-  },
+export const SECTORS: { id: SectorId; name: string }[] = [
+  { id: "home", name: "Home & Bedding" },
+  { id: "upholstery", name: "Upholstery" },
+  { id: "industrial", name: "Industrial & Technical Textiles" },
+  { id: "medical", name: "Medical & Healthcare Textiles" },
 ];
 
 export const STRENGTHS = [
@@ -97,8 +48,8 @@ export const STRENGTHS = [
     body: "Working to international standards, with Digital Product Passport and traceability readiness.", // CONFIRM scope
   },
   {
-    title: "Solar and wind-powered production",
-    body: "Renewable energy supports manufacturing at the mill.", // CONFIRM share of supply
+    title: "Renewable energy",
+    body: "Solar and wind energy support production at the mill. Ask us for current figures.", // CONFIRM share of supply
   },
   {
     title: "Made to the programme",
@@ -107,16 +58,16 @@ export const STRENGTHS = [
 ] as const;
 
 export const RANGE = [
-  { name: "Bed sheets", fibres: "Cotton, bamboo, Tencel, blends", tone: "celadon" },
-  { name: "Fitted sheets", fibres: "Cotton, blends", tone: "dusty-blue" },
-  { name: "Pillow cases", fibres: "Cotton, bamboo, silk blends", tone: "rose" },
-  { name: "Duvet covers", fibres: "Cotton, linen, bamboo", tone: "sand" },
-  { name: "Baby collection", fibres: "Organic cotton, bamboo", tone: "dusty-blue" },
-  { name: "Hospitality collection", fibres: "Cotton-poly blends, high durability", tone: "celadon" },
+  { name: "Bed sheets", fibres: "Cotton, bamboo, Tencel, blends" },
+  { name: "Fitted sheets", fibres: "Cotton, blends" },
+  { name: "Pillow cases", fibres: "Cotton, bamboo, silk blends" },
+  { name: "Duvet covers", fibres: "Cotton, linen, bamboo" },
+  { name: "Baby collection", fibres: "Organic cotton, bamboo" },
+  { name: "Hospitality collection", fibres: "Cotton-poly blends, high durability" },
 ] as const;
 
 export const FINISHES = [
-  { title: "Chemical-free antimicrobial", body: "Protection without harsh chemistry." },
+  { title: "Antimicrobial protection", body: "Applied to specification; ask us for current performance data." },
   { title: "Odour control", body: "Fresher fabric between washes." },
   { title: "Skin friendly", body: "Gentle enough for the whole family." },
   { title: "Soil release", body: "Stains lift out with ease." },
@@ -136,9 +87,9 @@ export const PROCESS = [
 ] as const;
 
 export const CAPACITY = [
-  { value: 150, text: "metric tonnes of greige fabric a month", tone: "sand", structure: "jersey" },
-  { value: 50, text: "metric tonnes of finished fabric a month", tone: "dusty-blue", structure: "rib" },
-  { value: 5, text: "containers shipped a month", tone: "celadon", structure: "waffle" },
+  { value: 150, text: "metric tonnes of greige fabric a month" },
+  { value: 50, text: "metric tonnes of finished fabric a month" },
+  { value: 5, text: "containers shipped a month" },
 ] as const; // CONFIRM figures and the scope they apply to
 
 export const PILLARS = [
