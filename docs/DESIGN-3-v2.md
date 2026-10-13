@@ -103,3 +103,17 @@ mesh, circular knitting machine detail, medical knit stack, rib and double-knit 
 cones still life, charcoal drape, folded sheet still life.
 
 Evidence: `docs/design3-v3/` (contact sheets and hero captures at 390, 820, 1440, 1920).
+
+## Whitespace pass
+
+Measured with a Playwright script (section heights, padding and empty vertical bands) at 1440, 1280,
+768, 390 and 360 before and after. Page height: 17,912 to 15,878px (1440), 16,827 to 14,885 (1280),
+17,897 to 15,411 (768), 20,926 to 17,910 (390), 20,936 to 17,977 (360). No horizontal overflow at any width.
+
+Causes fixed: one oversized section token that stacked on same-ground neighbours (hero into heritage was
+210px of empty ivory); full section padding reused for internal steps (Home & Bedding, Manufacturing);
+rows left half-empty (upholstery text, capacity note, manufacturing intro, responsibility intro,
+industrial image at 62% width on phones); a fixed `min-h-[26rem]` on the hero macro that pushed the
+primary action below the fold on phones; uncapped `svh` bands; one-column process list with stacked
+numerals on phones (2,724px, now 1,671px). Intentional negative space kept: hero composition, the
+Home & Bedding wall, photographic bands, the centred medical chapter.

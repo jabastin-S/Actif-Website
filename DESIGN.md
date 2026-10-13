@@ -52,8 +52,14 @@ photograph + ivory, olive, linen, charcoal photograph, charcoal.
 9. **Capacity, Responsibility, Transition, Contact, Footer.**
 
 Rules: images and controls are square-edged; depth comes from overlap (hero plates, upholstery heading) and
-two soft shadows (dropdown, print border); section padding is one unit, `section-y`
-(clamp 4.5rem to 8.5rem); content max width 1520px.
+two soft shadows (dropdown, print border); content max width 1520px.
+
+Spacing: two tokens. `--space-section` (clamp 3.5rem to 6.5rem, via `section-y`) pads a chapter that
+sets its own ground. `--space-continue` (clamp 2.5rem to 4rem) is used where a chapter continues on the
+same ground (hero into heritage) and between blocks inside a chapter (image band to text, range to
+finishes), so two full paddings never stack. Rows are filled rather than left half-empty: secondary text
+sits beside its heading (manufacturing intro in the band, responsibility, capacity note, upholstery
+prompts). Photographic bands are capped (`max-h`) so tall screens do not stretch them.
 
 ## Imagery
 

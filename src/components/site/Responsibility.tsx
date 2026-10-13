@@ -11,29 +11,31 @@ export function Responsibility() {
       className="bg-linen section-y"
     >
       <div className="shell">
-        <h2
-          id="responsibility-title"
-          className="display max-w-[16ch] text-[clamp(2.8rem,7vw,6rem)] text-ink"
-        >
-          Responsibility is part of the process.
-        </h2>
-        <p className="copy mt-8 text-ink">
-          ESG is built into each stage of manufacturing rather than added afterwards, with Digital
-          Product Passport and traceability readiness for the markets we ship to.
-        </p>
+        <div className="grid gap-6 lg:grid-cols-12 lg:items-end lg:gap-x-10">
+          <h2
+            id="responsibility-title"
+            className="display max-w-[16ch] text-[clamp(2.8rem,7vw,6rem)] text-ink lg:col-span-7"
+          >
+            Responsibility is part of the process.
+          </h2>
+          <p className="copy text-ink lg:col-span-5 lg:col-start-8 lg:pb-2">
+            ESG is built into each stage of manufacturing rather than added afterwards, with Digital
+            Product Passport and traceability readiness for the markets we ship to.
+          </p>
+        </div>
 
-        <div className="mt-16 grid gap-x-10 gap-y-12 md:grid-cols-3">
+        <div className="mt-12 grid gap-x-10 gap-y-8 md:grid-cols-3 lg:mt-14">
           {PILLARS.map((pillar) => (
             <div key={pillar.name} className="border-t border-rule pt-6">
               <h3 className="display text-[2.2rem] leading-none text-ink">{pillar.name}</h3>
-              <p className="mt-5 max-w-[34ch] text-[0.9375rem] text-ink-soft">
+              <p className="mt-4 max-w-[34ch] text-[0.9375rem] text-ink-soft">
                 {pillar.items.map(lower).join("; ")}.
               </p>
             </div>
           ))}
         </div>
 
-        <div className="mt-24 grid gap-14 lg:grid-cols-12 lg:gap-x-10">
+        <div className="mt-14 grid gap-12 lg:mt-20 lg:grid-cols-12 lg:gap-x-10">
           <div className="lg:col-span-5">
             <h3 className="display text-[clamp(1.9rem,3vw,2.8rem)] text-ink">
               Standards and frameworks we work to.

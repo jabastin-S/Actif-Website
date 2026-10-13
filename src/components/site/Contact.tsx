@@ -103,8 +103,8 @@ export function Contact() {
           <MaskLine delay={0.08}>conversation.</MaskLine>
         </h2>
 
-        <address className="mt-16 grid gap-8 border-t border-rule-dark pt-8 not-italic sm:grid-cols-2 lg:grid-cols-4">
-          <div>
+        <address className="mt-10 grid grid-cols-2 gap-x-6 gap-y-6 border-t border-rule-dark pt-7 not-italic lg:mt-12 lg:grid-cols-4">
+          <div className="col-span-2 sm:col-span-1">
             <p className="text-sm text-on-dark-soft">Company</p>
             <p className="mt-1 text-[0.9375rem]">{COMPANY.legalName}</p>
             <p className="text-[0.9375rem] text-on-dark-soft">{COMPANY.location}</p>
@@ -134,12 +134,12 @@ export function Contact() {
           </div>
         </address>
 
-        <form noValidate onSubmit={onSubmit} aria-describedby="form-note" className="mt-20 max-w-[64rem]">
-          <p className="mb-10 max-w-[48ch] text-on-dark-soft">
+        <form noValidate onSubmit={onSubmit} aria-describedby="form-note" className="mt-12 max-w-[64rem] lg:mt-16">
+          <p className="mb-8 max-w-[48ch] text-on-dark-soft">
             Tell us the application, the product and the market. Prefer to talk it through? Use the
             voice assistant at the bottom right of this page.
           </p>
-          <div className="grid gap-x-10 gap-y-8 sm:grid-cols-2">
+          <div className="grid gap-x-10 gap-y-6 sm:grid-cols-2 sm:gap-y-7">
             <div>
               <label htmlFor="field-name" className="text-sm font-medium">Name</label>
               <input {...a11y("name")} autoComplete="name" required value={fields.name} onChange={set("name")} className={FIELD} />
@@ -184,7 +184,7 @@ export function Contact() {
             </div>
           </div>
 
-          <div className="mt-12 flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-10">
+          <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-10">
             <button type="submit" className="btn btn-light w-full sm:w-auto sm:min-w-72">
               Prepare my enquiry
             </button>

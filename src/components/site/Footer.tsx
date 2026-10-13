@@ -13,9 +13,9 @@ const LINKS = [
 export function Footer() {
   return (
     <footer className="on-dark overflow-hidden bg-charcoal text-on-dark">
-      <div className="shell border-t border-rule-dark pt-14">
-        <div className="grid gap-12 lg:grid-cols-12">
-          <p className="max-w-[34ch] text-on-dark-soft lg:col-span-4">
+      <div className="shell border-t border-rule-dark pt-12">
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-12 lg:gap-12">
+          <p className="max-w-[34ch] text-on-dark-soft sm:col-span-2 lg:col-span-4">
             Knitted textile development and manufacturing, Tiruppur. A unit of {COMPANY.parent},
             with textile heritage since {COMPANY.heritageYear}.
           </p>
@@ -41,7 +41,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-14 flex flex-col gap-3 text-sm text-on-dark-soft sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-10 flex flex-col gap-3 text-sm text-on-dark-soft sm:flex-row sm:items-center sm:justify-between">
           <p>
             &copy; {new Date().getFullYear()} {COMPANY.legalName}. All rights reserved.
           </p>
@@ -53,7 +53,7 @@ export function Footer() {
 
         <p
           aria-hidden
-          className="display -mb-[0.16em] mt-10 select-none text-center text-[clamp(7rem,26vw,28rem)] leading-[0.8] tracking-[-0.03em] text-on-dark/10"
+          className="display -mb-[0.16em] mt-8 select-none text-center text-[clamp(7rem,26vw,28rem)] leading-[0.8] tracking-[-0.03em] text-on-dark/10"
         >
           ACTIF
         </p>

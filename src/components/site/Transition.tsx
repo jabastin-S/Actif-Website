@@ -5,7 +5,7 @@ import { Picture } from "./Picture";
 export function Transition() {
   return (
     <section aria-labelledby="transition-title" className="on-dark relative isolate bg-charcoal text-on-dark">
-      <Parallax className="h-[78svh] min-h-[28rem]" amount={7}>
+      <Parallax className="h-[60svh] min-h-[24rem] max-h-[48rem] md:h-[74svh]" amount={6}>
         <Picture
           name="charcoalDrape"
           sizes="100vw"
@@ -18,7 +18,7 @@ export function Transition() {
           <MaskLine>Start with</MaskLine>
           <MaskLine delay={0.08}>the material.</MaskLine>
         </h2>
-        <a href="#contact" className="btn btn-light mt-10 w-full sm:w-72">
+        <a href="#contact" className="btn btn-light mt-8 w-full sm:w-72">
           Start an enquiry
         </a>
       </div>

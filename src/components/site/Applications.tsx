@@ -18,8 +18,8 @@ type Item = {
 /** Wide, narrow / narrow, wide: each row is a different proportion, lined up on a common base. */
 const ITEMS: Item[] = [
   { id: "home", name: "Home & Bedding", image: "homeKnit", place: "md:col-span-7", shape: "aspect-[4/3]", sizes: "(min-width:768px) 56vw, 92vw" },
-  { id: "upholstery", name: "Upholstery", image: "upholsteryChair", place: "md:col-span-5", shape: "aspect-[4/5]", sizes: "(min-width:768px) 40vw, 92vw", focus: "object-[42%_center]" },
-  { id: "industrial", name: "Industrial & Technical Textiles", image: "knitMesh", place: "md:col-span-5", shape: "aspect-[4/5]", sizes: "(min-width:768px) 40vw, 92vw" },
+  { id: "upholstery", name: "Upholstery", image: "upholsteryChair", place: "md:col-span-5", shape: "aspect-square md:aspect-[4/5]", sizes: "(min-width:768px) 40vw, 92vw", focus: "object-[42%_center]" },
+  { id: "industrial", name: "Industrial & Technical Textiles", image: "knitMesh", place: "md:col-span-5", shape: "aspect-square md:aspect-[4/5]", sizes: "(min-width:768px) 40vw, 92vw" },
   { id: "medical", name: "Medical & Healthcare Textiles", image: "medicalFolded", place: "md:col-span-7", shape: "aspect-[4/3]", sizes: "(min-width:768px) 56vw, 92vw" },
 ];
 
@@ -39,7 +39,7 @@ function Card({ item }: { item: Item }) {
             />
           </div>
         </ClipReveal>
-        <div className="mt-5 flex flex-wrap items-baseline justify-between gap-x-8 gap-y-1">
+        <div className="mt-4 flex flex-wrap items-baseline justify-between gap-x-8 gap-y-1">
           <h3 className="display text-[clamp(1.9rem,2.8vw,2.8rem)] leading-[1.02] text-ink">
             {item.name}
           </h3>
@@ -77,7 +77,7 @@ export function Applications() {
           </div>
         </div>
 
-        <div className="mt-14 grid gap-x-8 gap-y-16 md:grid-cols-12 md:items-end lg:mt-20 lg:gap-x-10 lg:gap-y-20">
+        <div className="mt-10 grid gap-x-8 gap-y-12 md:grid-cols-12 md:items-end lg:mt-14 lg:gap-x-10 lg:gap-y-16">
           {ITEMS.map((item) => (
             <Card key={item.id} item={item} />
           ))}

@@ -13,12 +13,12 @@ export function Hero() {
     <section
       id="top"
       aria-labelledby="hero-title"
-      className="bg-ivory pt-[calc(var(--header-h)+1.5rem)] pb-14 md:pt-[calc(var(--header-h)+2.5rem)] md:pb-16 xl:pb-20"
+      className="bg-ivory pt-[calc(var(--header-h)+1.5rem)] pb-[var(--space-continue)] md:pt-[calc(var(--header-h)+2.5rem)]"
     >
       <div className="shell hero-grid">
         <h1
           id="hero-title"
-          className="display area-title text-[clamp(2.9rem,8.4vw,4.5rem)] text-ink md:text-[clamp(3.8rem,7.6vw,5.1rem)] xl:text-[clamp(4.6rem,6.7vw,6rem)]"
+          className="display area-title text-[clamp(2.6rem,11.2vw,4.5rem)] text-ink md:text-[clamp(3.8rem,7.6vw,5.1rem)] xl:text-[clamp(4.6rem,6.7vw,6rem)]"
         >
           <span className="sr-only">ACTIF Global Ventures: </span>
           <MaskLine immediate>Knitted textiles</MaskLine>
@@ -30,8 +30,8 @@ export function Hero() {
           </MaskLine>
         </h1>
 
-        <ClipReveal className="area-macro min-h-[26rem]" delay={0.2}>
-          <div className="grain relative h-full min-h-[26rem] overflow-hidden bg-linen aspect-[4/5] md:aspect-auto">
+        <ClipReveal className="area-macro md:min-h-[26rem]" delay={0.2}>
+          <div className="grain relative aspect-[4/3] overflow-hidden bg-linen md:aspect-auto md:h-full md:min-h-[26rem]">
             <Parallax className="absolute inset-0" amount={3}>
               <Picture
                 name="macroSoft"

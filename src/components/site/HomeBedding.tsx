@@ -11,7 +11,7 @@ import { Picture } from "./Picture";
 export function HomeBedding() {
   return (
     <section id="home" aria-labelledby="home-title" className="bg-ivory">
-      <div className="grain relative h-[72svh] min-h-[26rem] overflow-hidden bg-stone md:h-[88svh] md:max-h-[54rem]">
+      <div className="grain relative h-[62svh] min-h-[24rem] max-h-[34rem] overflow-hidden bg-stone md:h-[86svh] md:max-h-[52rem]">
         <Picture
           name="bedWide"
           sizes="100vw"
@@ -31,7 +31,7 @@ export function HomeBedding() {
         <ImageNote text="Illustrative image of knitted bed linen" />
       </div>
 
-      <div className="shell section-y grid gap-14 lg:grid-cols-12 lg:gap-x-10">
+      <div className="shell grid gap-10 pt-[var(--space-continue)] lg:grid-cols-12 lg:gap-x-10">
         <div className="lg:col-span-5">
           <p className="copy text-ink">
             Our most developed line: knitted bed linen for brands selling in Australia, Europe and
@@ -40,7 +40,7 @@ export function HomeBedding() {
           <a
             href="#contact"
             onClick={() => enquiry.set("home")}
-            className="btn mt-9 w-full sm:w-auto sm:min-w-72"
+            className="btn mt-8 w-full sm:w-auto sm:min-w-72"
           >
             Enquire about home &amp; bedding
           </a>
@@ -62,13 +62,13 @@ export function HomeBedding() {
         </div>
       </div>
 
-      <div className="shell pb-[clamp(4.5rem,9vw,8.5rem)]">
+      <div className="shell pt-[var(--space-continue)] pb-[var(--space-section)]">
         <ClipReveal>
           <h3 className="display text-[clamp(1.9rem,3.2vw,3.2rem)] text-ink">
             Finished to specification.
           </h3>
         </ClipReveal>
-        <ul className="mt-10 grid gap-x-10 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">
+        <ul className="mt-8 grid gap-x-10 gap-y-6 sm:grid-cols-2 lg:grid-cols-4">
           {FINISHES.map((finish) => (
             <li key={finish.title} className="border-t border-rule pt-4">
               <p className="text-[1rem] font-medium text-ink">{finish.title}</p>

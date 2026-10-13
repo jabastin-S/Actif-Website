@@ -102,7 +102,7 @@ export function Materials() {
         role="region"
         aria-label="Material studies, scrollable"
         tabIndex={0}
-        className="mt-14 flex snap-x snap-proximity scroll-px-[var(--gutter)] items-end gap-6 overflow-x-auto px-[var(--gutter)] pb-6 [scrollbar-width:none] md:gap-10 [&::-webkit-scrollbar]:hidden"
+        className="mt-10 flex snap-x snap-proximity scroll-px-[var(--gutter)] items-end gap-6 overflow-x-auto px-[var(--gutter)] pb-6 [scrollbar-width:none] md:gap-10 [&::-webkit-scrollbar]:hidden"
       >
         {STUDIES.map((study, index) => (
           <figure
@@ -126,7 +126,7 @@ export function Materials() {
         <div aria-hidden className="w-[var(--gutter)] shrink-0" />
       </div>
 
-      <div className="shell mt-8">
+      <div className="shell mt-6">
         <div aria-hidden className="h-px w-full bg-rule-dark">
           <div
             className="h-px origin-left bg-on-dark transition-transform duration-300"

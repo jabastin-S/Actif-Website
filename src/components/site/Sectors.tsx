@@ -56,12 +56,14 @@ export function Upholstery() {
           Upholstery
         </h2>
       </div>
-      <div className="shell grid gap-10 pt-12 lg:grid-cols-12 lg:gap-x-12 lg:pt-16">
-        <div className="lg:col-span-5 lg:col-start-8">
-          <p className="copy text-ink">{APPLICATION_COPY.upholstery.line}</p>
-          <p className="mt-8 text-[0.9375rem] text-ink-soft">For a first conversation, bring:</p>
+      <div className="shell grid gap-x-8 gap-y-8 pt-8 md:grid-cols-12 md:grid-rows-[auto_1fr] lg:gap-x-12 lg:pt-12">
+        <p className="copy text-ink md:col-span-5">{APPLICATION_COPY.upholstery.line}</p>
+        <div className="md:col-span-6 md:col-start-7 md:row-span-2 lg:col-span-5 lg:col-start-8">
+          <p className="text-[0.9375rem] text-ink-soft">For a first conversation, bring:</p>
           <Prompts id="upholstery" className="mt-2 text-ink" />
-          <Enquire id="upholstery" label="Enquire about upholstery" className="mt-8" />
+        </div>
+        <div className="md:col-span-5 md:row-start-2">
+          <Enquire id="upholstery" label="Enquire about upholstery" />
         </div>
       </div>
     </section>
@@ -77,8 +79,8 @@ export function Industrial() {
       className="on-dark relative overflow-hidden bg-charcoal section-y text-on-dark"
     >
       <div className="shell relative">
-        <div className="grid gap-10 lg:grid-cols-12">
-          <div className="lg:col-span-7">
+        <div className="grid gap-10 md:grid-cols-12 md:gap-x-8">
+          <div className="md:col-span-7">
             <h2 id="industrial-title" className="display text-[clamp(3rem,8vw,6rem)]">
               Industrial &amp;
               <br />
@@ -86,11 +88,11 @@ export function Industrial() {
             </h2>
             <p className="copy mt-8 text-on-dark-soft">{APPLICATION_COPY.industrial.line}</p>
           </div>
-          <div className="relative lg:col-span-4 lg:col-start-9">
-            <div className="aspect-square w-[62%] overflow-hidden lg:ml-auto lg:w-full">
+          <div className="relative md:col-span-5 lg:col-span-4 lg:col-start-9">
+            <div className="aspect-[4/3] overflow-hidden md:aspect-square">
               <Picture
                 name="knitDark"
-                sizes="(min-width:1024px) 28vw, 62vw"
+                sizes="(min-width:1024px) 28vw, (min-width:768px) 40vw, 92vw"
                 className="h-full w-full object-cover"
               />
             </div>
@@ -98,9 +100,9 @@ export function Industrial() {
           </div>
         </div>
 
-        <p className="mt-14 text-[0.9375rem] text-on-dark-soft">For a first conversation, bring:</p>
+        <p className="mt-12 text-[0.9375rem] text-on-dark-soft">For a first conversation, bring:</p>
         <Prompts id="industrial" className="mt-2 grid text-on-dark md:grid-cols-3 md:gap-x-10" />
-        <Enquire id="industrial" label="Enquire about technical textiles" className="btn-light mt-10" />
+        <Enquire id="industrial" label="Enquire about technical textiles" className="btn-light mt-8" />
       </div>
     </section>
   );
@@ -115,21 +117,21 @@ export function Medical() {
       className="bg-mist section-y"
     >
       <div className="shell flex flex-col items-center text-center">
-        <div className="relative w-[min(22rem,72%)]">
+        <div className="relative w-[min(20rem,64%)]">
           <div className="aspect-[3/4] overflow-hidden">
-            <Picture name="medicalKnit" sizes="22rem" className="h-full w-full object-cover" />
+            <Picture name="medicalKnit" sizes="(min-width:640px) 20rem, 64vw" className="h-full w-full object-cover" />
           </div>
           <ImageNote className="left-3 text-ink-soft [text-shadow:none]" />
         </div>
         <h2
           id="medical-title"
-          className="display mt-12 max-w-[14ch] text-[clamp(3rem,7vw,6rem)] text-ink"
+          className="display mt-10 max-w-[14ch] text-[clamp(3rem,7vw,6rem)] text-ink"
         >
           Medical &amp; Healthcare Textiles
         </h2>
         <p className="copy mt-6 text-ink">{APPLICATION_COPY.medical.line}</p>
-        <p className="mt-10 text-[0.9375rem] text-ink-soft">For a first conversation, bring:</p>
-        <Prompts id="medical" className="mt-2 w-full max-w-[34rem] text-ink" />
+        <p className="mt-8 text-[0.9375rem] text-ink-soft">For a first conversation, bring:</p>
+        <Prompts id="medical" className="mt-2 grid w-full max-w-[34rem] text-ink md:max-w-[60rem] md:grid-cols-3 md:gap-x-8" />
         <Enquire id="medical" label="Enquire about healthcare textiles" className="mt-8" />
       </div>
     </section>
