@@ -95,7 +95,7 @@ export function Contact() {
     <section
       id="contact"
       aria-labelledby="contact-title"
-      className="on-dark bg-charcoal py-[clamp(6rem,12vw,12rem)] text-on-dark"
+      className="on-dark bg-charcoal section-y text-on-dark"
     >
       <div className="shell">
         <h2 id="contact-title" className="display text-[clamp(3rem,8.4vw,6rem)]">

@@ -1,5 +1,4 @@
 import { CAPACITY } from "@/content/site";
-import { Counter } from "./motion";
 
 /** Three full-width ruled lines on a deep olive field; the sentence is the layout. */
 export function Capacity() {
@@ -7,7 +6,7 @@ export function Capacity() {
     <section
       id="capabilities"
       aria-labelledby="capacity-title"
-      className="on-dark bg-olive-deep py-[clamp(5rem,10vw,10rem)] text-on-dark"
+      className="on-dark bg-olive-deep section-y text-on-dark"
     >
       <h2 id="capacity-title" className="sr-only">
         Capacity
@@ -16,7 +15,7 @@ export function Capacity() {
         {CAPACITY.map((row) => (
           <li key={row.text} className="border-t border-rule-dark py-7 md:py-10">
             <p className="display max-w-[24ch] text-[clamp(2.3rem,5.4vw,5.6rem)]">
-              <Counter value={row.value} /> {row.text}
+              <span className="tabular">{row.value}</span> {row.text}
             </p>
           </li>
         ))}

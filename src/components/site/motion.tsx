@@ -1,9 +1,33 @@
-import { animate, motion, useInView, useScroll, useTransform } from "motion/react";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { motion, useScroll, useTransform } from "motion/react";
+import { useEffect, useRef, useState, type ReactNode, type RefObject } from "react";
 import { useMotionOk } from "@/lib/use-motion-ok";
 import { cn } from "@/lib/utils";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
+
+/**
+ * True once the element's top has reached the given fraction of the viewport height, including
+ * when it is already above the viewport. An IntersectionObserver alone misses elements that a
+ * jump (anchor link, restored scroll) carries straight past, which would leave them hidden.
+ */
+function useReached(ref: RefObject<Element | null>, fraction = 0.9) {
+  const [reached, setReached] = useState(false);
+  useEffect(() => {
+    const node = ref.current;
+    if (!node || reached) return;
+    const check = () => {
+      if (node.getBoundingClientRect().top < window.innerHeight * fraction) setReached(true);
+    };
+    check();
+    window.addEventListener("scroll", check, { passive: true });
+    window.addEventListener("resize", check);
+    return () => {
+      window.removeEventListener("scroll", check);
+      window.removeEventListener("resize", check);
+    };
+  }, [ref, fraction, reached]);
+  return reached;
+}
 
 /**
  * One line of a heading lifted into view from behind a mask. Content is visible by default
@@ -23,7 +47,7 @@ export function MaskLine({
 }) {
   const ref = useRef<HTMLSpanElement>(null);
   const motionOk = useMotionOk();
-  const inView = useInView(ref, { once: true, margin: "0px 0px -8% 0px" });
+  const inView = useReached(ref, 0.92);
   const show = !motionOk || immediate || inView;
   return (
     <span ref={ref} className={cn("block overflow-hidden pb-[0.16em] -mb-[0.16em]", className)}>
@@ -51,7 +75,7 @@ export function ClipReveal({
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const motionOk = useMotionOk();
-  const inView = useInView(ref, { once: true, margin: "0px 0px -12% 0px" });
+  const inView = useReached(ref, 0.88);
   const show = !motionOk || inView;
   return (
     <motion.div
@@ -78,7 +102,7 @@ export function Rise({
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const motionOk = useMotionOk();
-  const inView = useInView(ref, { once: true, margin: "0px 0px -10% 0px" });
+  const inView = useReached(ref, 0.9);
   const show = !motionOk || inView;
   return (
     <motion.div
@@ -115,32 +139,10 @@ export function Parallax({
     <div ref={ref} className={cn("overflow-hidden", className)}>
       <motion.div
         className="h-full w-full"
-        style={motionOk ? { y, scale: 1 + (amount * 2.4) / 100 } : {}}
+        style={motionOk ? { y, scale: 1 + (amount * 1.6) / 100 } : {}}
       >
         {children}
       </motion.div>
     </div>
-  );
-}
-
-/** Counts up once when scrolled into view; the final value is the server-rendered default. */
-export function Counter({ value, className }: { value: number; className?: string }) {
-  const ref = useRef<HTMLSpanElement>(null);
-  const motionOk = useMotionOk();
-  const inView = useInView(ref, { once: true, margin: "0px 0px -10% 0px" });
-  const [shown, setShown] = useState(value);
-  useEffect(() => {
-    if (!motionOk || !inView) return;
-    const controls = animate(0, value, {
-      duration: 2.4,
-      ease: EASE,
-      onUpdate: (v) => setShown(Math.round(v)),
-    });
-    return () => controls.stop();
-  }, [motionOk, inView, value]);
-  return (
-    <span ref={ref} className={cn("tabular", className)}>
-      {motionOk && !inView ? 0 : shown}
-    </span>
   );
 }

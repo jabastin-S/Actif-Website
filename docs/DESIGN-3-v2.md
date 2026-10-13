@@ -76,3 +76,30 @@ figures).
   form validation and sector pre-selection work; orb sits 47px/32px from the viewport corner.
 - Not verified: Lighthouse/LCP scores, a live Millis voice session, the mail client hand-off,
   screen-reader testing, real touch hardware.
+
+## Upgrade pass ("radical UI quality upgrade")
+
+Audit of the running v2 build, ranked by impact, and what was done:
+
+1. Hero was a generic left-aligned headline over one soft full-bleed photo. Replaced with a plate
+   composition: headline, tall knit macro, overlapping room photograph with an ivory print border.
+2. Imagery read soft: parallax overscanned photographs by up to 17% beyond native size. Overscan cut to
+   about 5%, large plates moved to crisp macro subjects at near-native size, static grain added, three new
+   images from stronger models (gemini-3.1-flash-image, gpt-image-2.5-sunburst).
+3. Rhythm: one section-padding unit (`section-y`), content max width 1520px (desktop page height 18,150px to 17,912px).
+4. Flat type: italic as a second display voice (one word per headline), larger body copy, serif wordmark.
+5. "Illustrative image" overlays looked like debug text: now a vertical print credit on each image edge.
+6. Header over the hero had low-contrast nav: header is now solid ivory, hairline after scroll.
+7. Applications masonry used arbitrary offsets: now a wide/narrow zigzag aligned on a common base, from tablet up.
+8. Home & Bedding's overlapping panel was a stock pattern: the heading now sits in the photograph's plaster wall.
+9. Upholstery repeated Home's full-bleed-plus-text structure: now an inset plate with the heading crossing onto it.
+10. Capacity counter briefly showed wrong figures while counting (15 for 150): removed, figures are static.
+
+Also fixed: reveals no longer stay hidden after an anchor jump carries the page past them (`useReached`).
+
+Image generation stopped at the Figma plan's usage limit after 3 of 13 planned new images, so most
+chapter imagery is still from the first set. Planned but not generated: upholstery armchair, technical
+mesh, circular knitting machine detail, medical knit stack, rib and double-knit macros, sheer knit, yarn
+cones still life, charcoal drape, folded sheet still life.
+
+Evidence: `docs/design3-v3/` (contact sheets and hero captures at 390, 820, 1440, 1920).

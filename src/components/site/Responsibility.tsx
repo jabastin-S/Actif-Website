@@ -8,7 +8,7 @@ export function Responsibility() {
     <section
       id="responsibility"
       aria-labelledby="responsibility-title"
-      className="bg-linen py-[clamp(5rem,10vw,10rem)]"
+      className="bg-linen section-y"
     >
       <div className="shell">
         <h2

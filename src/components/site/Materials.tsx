@@ -56,7 +56,7 @@ export function Materials() {
     <section
       id="materials"
       aria-labelledby="materials-title"
-      className="on-dark bg-charcoal py-[clamp(5rem,10vw,10rem)] text-on-dark"
+      className="on-dark bg-charcoal section-y text-on-dark"
     >
       <div className="shell flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
         <div>

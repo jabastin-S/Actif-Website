@@ -31,23 +31,32 @@ function Enquire({ id, label, className }: { id: Id; label: string; className?: 
   );
 }
 
-/** Upholstery: a wide photograph first, then the words below it, set left. */
+/**
+ * Upholstery: an inset photograph run to the right edge, with the heading laid across its pale
+ * left side, so the word and the cloth share one plane. Text follows in a narrow right column.
+ */
 export function Upholstery() {
   return (
-    <section id="upholstery" aria-labelledby="upholstery-title" className="bg-ivory">
-      <div className="relative">
-        <Parallax className="h-[52svh] min-h-[18rem] md:h-[64svh]" amount={6}>
-          <Picture name="upholsterySofa" sizes="100vw" className="h-full w-full object-cover" />
-        </Parallax>
-        <ImageNote />
-      </div>
-      <div className="shell grid gap-10 py-[clamp(4rem,8vw,8rem)] lg:grid-cols-12 lg:gap-x-12">
+    <section id="upholstery" aria-labelledby="upholstery-title" className="section-y bg-stone">
+      <div className="relative lg:ml-[calc(var(--gutter)+16vw)]">
+        <div className="grain relative aspect-[4/3] overflow-hidden bg-sand md:aspect-[16/8]">
+          <Parallax className="absolute inset-0" amount={4}>
+            <Picture
+              name="upholsterySofa"
+              sizes="(min-width:1024px) 84vw, 100vw"
+              className="h-full w-full object-cover object-[60%_center]"
+            />
+          </Parallax>
+          <ImageNote />
+        </div>
         <h2
           id="upholstery-title"
-          className="display text-[clamp(3rem,8vw,6rem)] text-ink lg:col-span-6"
+          className="display shell mt-8 text-[clamp(3.4rem,8vw,6rem)] text-ink lg:absolute lg:top-[4%] lg:left-[-16vw] lg:z-10 lg:mt-0 lg:w-auto lg:px-0"
         >
           Upholstery
         </h2>
+      </div>
+      <div className="shell grid gap-10 pt-12 lg:grid-cols-12 lg:gap-x-12 lg:pt-16">
         <div className="lg:col-span-5 lg:col-start-8">
           <p className="copy text-ink">{APPLICATION_COPY.upholstery.line}</p>
           <p className="mt-8 text-[0.9375rem] text-ink-soft">For a first conversation, bring:</p>
@@ -65,7 +74,7 @@ export function Industrial() {
     <section
       id="industrial"
       aria-labelledby="industrial-title"
-      className="on-dark relative overflow-hidden bg-charcoal py-[clamp(5rem,10vw,10rem)] text-on-dark"
+      className="on-dark relative overflow-hidden bg-charcoal section-y text-on-dark"
     >
       <div className="shell relative">
         <div className="grid gap-10 lg:grid-cols-12">
@@ -103,7 +112,7 @@ export function Medical() {
     <section
       id="medical"
       aria-labelledby="medical-title"
-      className="bg-mist py-[clamp(5rem,10vw,10rem)]"
+      className="bg-mist section-y"
     >
       <div className="shell flex flex-col items-center text-center">
         <div className="relative w-[min(22rem,72%)]">

@@ -27,7 +27,7 @@ export function Process() {
         />
       </div>
 
-      <div className="shell py-[clamp(5rem,10vw,10rem)]">
+      <div className="shell section-y">
         <p className="copy text-ink lg:ml-[33%]">
           ACTIF develops and makes knitted textiles under one roof, from the choice of yarn to a
           packed container. Seven stages, one team.

@@ -106,29 +106,23 @@ export function Header() {
     };
   }, [appsOpen]);
 
-  const overHero = !scrolled && !menuOpen;
   const inApps = APPLICATIONS.some((app) => app.id === active) || active === "applications";
 
-  const linkTone = overHero
-    ? "text-on-dark/80 hover:text-on-dark"
-    : "text-ink-soft hover:text-ink";
+  const linkTone = "text-ink-soft hover:text-ink";
 
   return (
     <>
       <header
         className={cn(
-          "fixed inset-x-0 top-0 z-50 h-[var(--header-h)] transition-[background-color,box-shadow] duration-700 ease-[var(--ease-out)]",
-          overHero ? "on-dark bg-transparent" : "bg-ivory shadow-[0_1px_0_var(--rule)]",
+          "fixed inset-x-0 top-0 z-50 h-[var(--header-h)] bg-ivory transition-shadow duration-700 ease-[var(--ease-out)]",
+          scrolled ? "shadow-[0_1px_0_var(--rule)]" : "shadow-[0_1px_0_transparent]",
         )}
       >
         <div className="shell flex h-full items-center justify-between gap-6">
           <a
             href="#top"
             aria-label="ACTIF Global Ventures, back to top"
-            className={cn(
-              "text-[1.0625rem] font-semibold tracking-[0.34em] transition-colors duration-700",
-              overHero ? "text-on-dark" : "text-ink",
-            )}
+            className="font-display text-[1.75rem] leading-none tracking-[0.3em] text-ink"
           >
             ACTIF
           </a>
@@ -143,7 +137,7 @@ export function Header() {
                 className={cn(
                   "flex h-11 items-center gap-2 text-sm font-medium transition-colors duration-500",
                   linkTone,
-                  inApps && (overHero ? "text-on-dark" : "text-ink"),
+                  inApps && "text-ink",
                 )}
               >
                 Applications
@@ -181,7 +175,7 @@ export function Header() {
                 className={cn(
                   "flex h-11 items-center text-sm font-medium transition-colors duration-500",
                   linkTone,
-                  active === link.id && (overHero ? "text-on-dark" : "text-ink"),
+                  active === link.id && "text-ink",
                 )}
               >
                 {link.label}
@@ -192,10 +186,7 @@ export function Header() {
           <div className="flex items-center gap-3">
             <a
               href="#contact"
-              className={cn(
-                "btn hidden min-h-11 gap-6 py-2 sm:inline-flex",
-                overHero && "btn-light",
-              )}
+              className="btn hidden min-h-11 gap-6 py-2 sm:inline-flex"
             >
               Enquire
             </a>
@@ -205,10 +196,7 @@ export function Header() {
               aria-expanded={menuOpen}
               aria-controls="site-menu"
               onClick={() => setMenuOpen((value) => !value)}
-              className={cn(
-                "flex h-11 items-center gap-3 px-1 text-sm font-medium transition-colors duration-500 lg:hidden",
-                overHero ? "text-on-dark" : "text-ink",
-              )}
+              className="flex h-11 items-center gap-3 px-1 text-sm font-medium text-ink lg:hidden"
             >
               {menuOpen ? "Close" : "Menu"}
               <span aria-hidden className="relative block h-2.5 w-6">

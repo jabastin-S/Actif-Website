@@ -18,27 +18,25 @@ OUT = ROOT / "public" / "images"
 WIDTHS = [480, 800, 1200, 1600, 2000]
 
 # key: (source file, alt text). Generated images are illustrative and say so in the page.
+# Unused originals stay in assets-source/generated/ and can be re-added here.
 SOURCES = {
-    "heroLinen": (GEN / "hero-linen-folds.jpg", "Soft folds of natural linen in warm ivory and stone, lit from a window"),
     "homeInterior": (GEN / "home-bedding-interior.jpg", "A calm bedroom corner with neutral linen bedding"),
     "upholsteryChair": (GEN / "upholstery-olive-chair.jpg", "A sculptural armchair upholstered in muted olive woven fabric"),
-    "industrialRolls": (GEN / "industrial-technical-rolls.jpg", "Rolls of grey woven technical fabric on a rack"),
     "medicalFolded": (GEN / "medical-folded-textiles.jpg", "Neatly folded white and pale blue-grey textiles"),
-    "matLinen": (GEN / "material-linen-macro.jpg", "Close view of a natural woven fibre structure"),
-    "matTechnical": (GEN / "material-technical-weave.jpg", "Close view of a tight grey technical weave"),
     "matThreads": (GEN / "material-fine-threads.jpg", "Fine threads crossing under tension"),
     "matSheer": (GEN / "material-sheer-translucent.jpg", "A sheer, translucent fabric lit from behind"),
-    "matOlive": (GEN / "material-olive-upholstery.jpg", "Close view of a heavy olive upholstery weave"),
     "matNonwoven": (GEN / "material-nonwoven.jpg", "Close view of a white nonwoven fibre web"),
     "yarnCones": (GEN / "heritage-yarn-cones.jpg", "Racks of undyed yarn cones with fine threads running through a production hall"),
     "charcoalDrape": (GEN / "transition-charcoal-drape.jpg", "A heavy charcoal textile falling in deep folds"),
-    "heroKnit": (GEN / "hero-knit-folds.jpg", "Soft folds of ivory knitted fabric lit from a window"),
     "knitJersey": (GEN / "knit-jersey-macro.jpg", "Close view of a plain jersey knit showing columns of interlocking stitches"),
     "knitRib": (GEN / "knit-rib-olive.jpg", "Close view of an olive ribbed knit"),
     "knitMesh": (GEN / "knit-technical-mesh.jpg", "Close view of a technical knitted mesh with regular openings"),
     "knitDark": (GEN / "knit-technical-dark.jpg", "Close view of a dense dark technical knit"),
     "upholsterySofa": (GEN / "upholstery-sofa-wide.jpg", "A sofa upholstered in olive and taupe textured fabric"),
     "medicalKnit": (GEN / "medical-fine-knit.jpg", "A very fine pale blue-grey knit, softly folded"),
+    "macroSoft": (GEN / "macro-jersey-soft.png", "Close view of oatmeal knitted jersey folding in a diagonal ridge"),
+    "macroSharp": (GEN / "macro-jersey-sharp.png", "Close view of oatmeal knit fabric in two soft ridges, every stitch visible"),
+    "bedWide": (GEN / "bed-wide-plaster.png", "A bed made with warm-white knitted bedding beside a window, against a plaster wall"),
     "homeKnit": (ROOT / "src" / "assets" / "textile-hero.jpg", "Close view of ivory knitted fabric in soft folds"),
 }
 

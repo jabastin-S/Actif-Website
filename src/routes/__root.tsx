@@ -123,10 +123,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "preload",
         as: "image",
         type: "image/webp",
-        href: "/images/heroKnit-1200.webp",
+        href: "/images/macroSoft-800.webp",
         imageSrcSet:
-          "/images/heroKnit-480.webp 480w, /images/heroKnit-800.webp 800w, /images/heroKnit-1200.webp 1200w, /images/heroKnit-1376.webp 1376w",
-        imageSizes: "100vw",
+          "/images/macroSoft-480.webp 480w, /images/macroSoft-800.webp 800w, /images/macroSoft-896.webp 896w",
+        imageSizes: "(min-width:1280px) 30vw, (min-width:768px) 40vw, 92vw",
         fetchPriority: "high",
       },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
