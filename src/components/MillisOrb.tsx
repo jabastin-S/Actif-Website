@@ -134,30 +134,30 @@ export function MillisOrb() {
         aria-label={ariaLabel}
         aria-pressed={live}
         className={cn(
-          "peer pointer-events-auto relative flex size-14 shrink-0 items-center justify-center rounded-full ring-1 transition-[background-color,box-shadow,transform] duration-500 ease-[var(--ease-out)] hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cochineal-lite md:size-16",
+          "peer pointer-events-auto relative flex size-14 shrink-0 items-center justify-center rounded-full ring-1 transition-[background-color,box-shadow,transform] duration-500 ease-out hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cochineal-lite md:size-16",
           "shadow-[0_10px_28px_-8px_rgb(0_0_0/0.5)]",
           phase === "error"
             ? "bg-cochineal text-bleach ring-cochineal-lite/60"
             : "bg-indigo text-on-indigo ring-on-indigo/30",
           live && "ring-cochineal-lite/70",
-          phase === "idle" && "[animation:orb-breathe_5s_ease-in-out_infinite]",
+          phase === "idle" && "animate-[orb-breathe_5s_ease-in-out_infinite]",
         )}
       >
         {/* state rings */}
         {phase === "speaking" && (
           <>
-            <span aria-hidden className="absolute inset-0 rounded-full ring-1 ring-cochineal-lite/60 [animation:orb-ring_2.4s_var(--ease-out)_infinite]" />
-            <span aria-hidden className="absolute inset-0 rounded-full ring-1 ring-cochineal-lite/40 [animation:orb-ring_2.4s_var(--ease-out)_0.8s_infinite]" />
+            <span aria-hidden className="absolute inset-0 rounded-full ring-1 ring-cochineal-lite/60 animate-[orb-ring_2.4s_var(--ease-out)_infinite]" />
+            <span aria-hidden className="absolute inset-0 rounded-full ring-1 ring-cochineal-lite/40 animate-[orb-ring_2.4s_var(--ease-out)_0.8s_infinite]" />
           </>
         )}
         {phase === "listening" && (
-          <span aria-hidden className="absolute inset-0 rounded-full ring-1 ring-on-indigo/40 [animation:orb-ring_3s_ease-out_infinite]" />
+          <span aria-hidden className="absolute inset-0 rounded-full ring-1 ring-on-indigo/40 animate-[orb-ring_3s_ease-out_infinite]" />
         )}
         {(phase === "connecting" || phase === "thinking") && (
           <svg
             aria-hidden
             viewBox="0 0 64 64"
-            className="absolute inset-[-5px] size-[calc(100%+10px)] [animation:orb-spin_1.6s_linear_infinite]"
+            className="absolute -inset-1.25 size-[calc(100%+10px)] animate-[orb-spin_1.6s_linear_infinite]"
           >
             <circle cx="32" cy="32" r="30" fill="none" stroke="var(--cochineal-lite)" strokeWidth="1.5" strokeDasharray="22 166" strokeLinecap="round" />
           </svg>
@@ -166,11 +166,11 @@ export function MillisOrb() {
         {phase === "error" ? (
           <AlertCircle aria-hidden className="size-6 stroke-[1.5]" />
         ) : (
-          <span aria-hidden className="flex h-6 items-center gap-[3px]">
+          <span aria-hidden className="flex h-6 items-center gap-0.75">
             {[0.55, 1, 0.7, 0.9, 0.5].map((height, index) => (
               <span
                 key={index}
-                className="block w-[3px] origin-center rounded-full bg-current"
+                className="block w-0.75 origin-center rounded-full bg-current"
                 style={{
                   height: `${height * 100}%`,
                   animation:
@@ -199,7 +199,7 @@ export function MillisOrb() {
       <span
         aria-hidden
         className={cn(
-          "pointer-events-none whitespace-nowrap bg-indigo px-4 py-2 text-[0.8125rem] font-medium text-on-indigo shadow-[0_6px_20px_-6px_rgb(0_0_0/0.45)] ring-1 ring-on-indigo/20 transition-[opacity,transform] duration-500 ease-[var(--ease-out)]",
+          "pointer-events-none whitespace-nowrap bg-indigo px-4 py-2 text-[0.8125rem] font-medium text-on-indigo shadow-[0_6px_20px_-6px_rgb(0_0_0/0.45)] ring-1 ring-on-indigo/20 transition-[opacity,transform] duration-500 ease-out",
           showLabel
             ? "translate-x-0 opacity-100"
             : "translate-x-2 opacity-0 peer-hover:translate-x-0 peer-hover:opacity-100 peer-focus-visible:translate-x-0 peer-focus-visible:opacity-100",
