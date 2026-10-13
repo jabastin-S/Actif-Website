@@ -1,7 +1,6 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { COMPANY, SECTORS } from "@/content/site";
 import { enquiry, useEnquirySector } from "@/lib/enquiry";
-import { Chapter } from "@/components/stage/StageContext";
 import { MaskLine } from "./motion";
 
 type Fields = {
@@ -27,7 +26,7 @@ const EMPTY: Fields = {
 };
 
 const FIELD =
-  "mt-1 w-full border-0 border-b border-ink/70 bg-transparent px-0 py-3 text-base text-ink transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink aria-[invalid=true]:border-destructive";
+  "mt-1 w-full border-0 border-b border-on-dark/70 bg-transparent px-0 py-3 text-base text-on-dark transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-on-dark aria-[invalid=true]:border-olive-soft";
 
 function mailtoFor(fields: Fields) {
   const sector = SECTORS.find((s) => s.id === fields.sector)?.name ?? "Not specified";
@@ -82,7 +81,7 @@ export function Contact() {
 
   const error = (key: keyof Fields) =>
     errors[key] ? (
-      <p id={`err-${key}`} className="mt-1 text-sm text-destructive">
+      <p id={`err-${key}`} className="mt-1 text-sm text-olive-soft">
         {errors[key]}
       </p>
     ) : null;
@@ -93,124 +92,103 @@ export function Contact() {
   });
 
   return (
-    <Chapter
+    <section
       id="contact"
-      labelledBy="contact-title"
-      className="border-t border-rule bg-paper-2 py-20 lg:py-32"
+      aria-labelledby="contact-title"
+      className="on-dark bg-charcoal py-[clamp(6rem,12vw,12rem)] text-on-dark"
     >
-      <div className="shell grid gap-16 lg:grid-cols-12 lg:gap-x-16">
-        <div className="lg:col-span-5">
-          <h2
-            id="contact-title"
-            className="display text-[clamp(2.4rem,5vw,5rem)] text-ink"
-          >
-            <MaskLine>Start a</MaskLine>
-            <MaskLine delay={0.08}>conversation.</MaskLine>
-          </h2>
-          <p className="copy mt-8 text-ink-soft">
-            Tell us the application, the product and the market. Prefer to talk it through? Use
-            the voice assistant at the bottom right of this page.
-          </p>
-          <address className="mt-12 not-italic">
-            <p className="display text-[1.5rem] leading-[1.15] text-ink">{COMPANY.legalName}</p>
-            <p className="mt-1 text-ink-soft">{COMPANY.location}</p>
-            <ul className="mt-6 space-y-1 text-lg">
-              <li>
-                <a href={`mailto:${COMPANY.email}`} className="link-line inline-block py-2 text-ink">
-                  {COMPANY.email}
-                </a>
-              </li>
-              <li>
-                <a href={COMPANY.phoneHref} className="link-line inline-block py-2 text-ink">
-                  {COMPANY.phone}
-                </a>
-              </li>
-              <li>
-                <a
-                  href={COMPANY.webHref}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="link-line inline-block py-2 text-ink"
-                >
-                  {COMPANY.web}
-                </a>
-              </li>
-            </ul>
-          </address>
-        </div>
+      <div className="shell">
+        <h2 id="contact-title" className="display text-[clamp(3rem,8.4vw,6rem)]">
+          <MaskLine>Start a</MaskLine>
+          <MaskLine delay={0.08}>conversation.</MaskLine>
+        </h2>
 
-        <form
-          noValidate
-          onSubmit={onSubmit}
-          aria-describedby="form-note"
-          className="lg:col-span-7"
-        >
-          <div className="grid gap-x-8 gap-y-7 sm:grid-cols-2">
+        <address className="mt-16 grid gap-8 border-t border-rule-dark pt-8 not-italic sm:grid-cols-2 lg:grid-cols-4">
+          <div>
+            <p className="text-sm text-on-dark-soft">Company</p>
+            <p className="mt-1 text-[0.9375rem]">{COMPANY.legalName}</p>
+            <p className="text-[0.9375rem] text-on-dark-soft">{COMPANY.location}</p>
+          </div>
+          <div>
+            <p className="text-sm text-on-dark-soft">Email</p>
+            <a href={`mailto:${COMPANY.email}`} className="link-line mt-1 inline-block py-1 text-[0.9375rem]">
+              {COMPANY.email}
+            </a>
+          </div>
+          <div>
+            <p className="text-sm text-on-dark-soft">Phone</p>
+            <a href={COMPANY.phoneHref} className="link-line mt-1 inline-block py-1 text-[0.9375rem]">
+              {COMPANY.phone}
+            </a>
+          </div>
+          <div>
+            <p className="text-sm text-on-dark-soft">Web</p>
+            <a
+              href={COMPANY.webHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="link-line mt-1 inline-block py-1 text-[0.9375rem]"
+            >
+              {COMPANY.web}
+            </a>
+          </div>
+        </address>
+
+        <form noValidate onSubmit={onSubmit} aria-describedby="form-note" className="mt-20 max-w-[64rem]">
+          <p className="mb-10 max-w-[48ch] text-on-dark-soft">
+            Tell us the application, the product and the market. Prefer to talk it through? Use the
+            voice assistant at the bottom right of this page.
+          </p>
+          <div className="grid gap-x-10 gap-y-8 sm:grid-cols-2">
             <div>
-              <label htmlFor="field-name" className="text-sm font-medium text-ink">
-                Name
-              </label>
+              <label htmlFor="field-name" className="text-sm font-medium">Name</label>
               <input {...a11y("name")} autoComplete="name" required value={fields.name} onChange={set("name")} className={FIELD} />
               {error("name")}
             </div>
             <div>
-              <label htmlFor="field-company" className="text-sm font-medium text-ink">
-                Company
-              </label>
+              <label htmlFor="field-company" className="text-sm font-medium">Company</label>
               <input {...a11y("company")} autoComplete="organization" value={fields.company} onChange={set("company")} className={FIELD} />
             </div>
             <div>
-              <label htmlFor="field-email" className="text-sm font-medium text-ink">
-                Email
-              </label>
+              <label htmlFor="field-email" className="text-sm font-medium">Email</label>
               <input {...a11y("email")} type="email" autoComplete="email" required value={fields.email} onChange={set("email")} className={FIELD} />
               {error("email")}
             </div>
             <div>
-              <label htmlFor="field-phone" className="text-sm font-medium text-ink">
-                Phone
-              </label>
+              <label htmlFor="field-phone" className="text-sm font-medium">Phone</label>
               <input {...a11y("phone")} type="tel" autoComplete="tel" value={fields.phone} onChange={set("phone")} className={FIELD} />
             </div>
             <div>
-              <label htmlFor="field-country" className="text-sm font-medium text-ink">
-                Country
-              </label>
+              <label htmlFor="field-country" className="text-sm font-medium">Country</label>
               <input {...a11y("country")} autoComplete="country-name" value={fields.country} onChange={set("country")} className={FIELD} />
             </div>
             <div>
-              <label htmlFor="field-sector" className="text-sm font-medium text-ink">
-                Application
-              </label>
+              <label htmlFor="field-sector" className="text-sm font-medium">Application</label>
               <select {...a11y("sector")} value={fields.sector} onChange={set("sector")} className={`${FIELD} appearance-none rounded-none`}>
-                <option value="">Select an application</option>
+                <option value="" className="text-ink">Select an application</option>
                 {SECTORS.map((sector) => (
-                  <option key={sector.id} value={sector.id}>
+                  <option key={sector.id} value={sector.id} className="text-ink">
                     {sector.name}
                   </option>
                 ))}
               </select>
             </div>
             <div className="sm:col-span-2">
-              <label htmlFor="field-product" className="text-sm font-medium text-ink">
-                Product interest
-              </label>
+              <label htmlFor="field-product" className="text-sm font-medium">Product interest</label>
               <input {...a11y("product")} value={fields.product} onChange={set("product")} className={FIELD} />
             </div>
             <div className="sm:col-span-2">
-              <label htmlFor="field-message" className="text-sm font-medium text-ink">
-                Message
-              </label>
+              <label htmlFor="field-message" className="text-sm font-medium">Message</label>
               <textarea {...a11y("message")} required rows={4} value={fields.message} onChange={set("message")} className={`${FIELD} resize-none`} />
               {error("message")}
             </div>
           </div>
 
-          <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <button type="submit" className="btn w-full sm:w-auto sm:min-w-64">
+          <div className="mt-12 flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-10">
+            <button type="submit" className="btn btn-light w-full sm:w-auto sm:min-w-72">
               Prepare my enquiry
             </button>
-            <p id="form-note" role="status" aria-live="polite" className="max-w-[36ch] text-sm text-ink-soft">
+            <p id="form-note" role="status" aria-live="polite" className="max-w-[40ch] text-sm text-on-dark-soft">
               {sent
                 ? `Your email app should open with the enquiry ready to send. If it does not, write to ${COMPANY.email}.`
                 : "This opens an email to our team with your details filled in."}
@@ -218,6 +196,6 @@ export function Contact() {
           </div>
         </form>
       </div>
-    </Chapter>
+    </section>
   );
 }

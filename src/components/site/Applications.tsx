@@ -1,201 +1,93 @@
-import type { ReactNode } from "react";
-import homePhoto from "@/assets/textile-hero.jpg";
-import upholsteryPhoto from "@/assets/textile-dark.jpg";
-import { FINISHES, RANGE, type SectorId } from "@/content/site";
-import { enquiry } from "@/lib/enquiry";
-import { Chapter } from "@/components/stage/StageContext";
+import { APPLICATION_COPY } from "@/content/site";
+import type { ImageKey } from "@/content/images";
+import { cn } from "@/lib/utils";
+import { ClipReveal, MaskLine, Rise } from "./motion";
+import { Picture } from "./Picture";
 
-function Enquire({ sector, label }: { sector: SectorId; label: string }) {
-  return (
-    <a href="#contact" onClick={() => enquiry.set(sector)} className="btn mt-10 w-full sm:w-auto sm:min-w-72">
-      {label}
-    </a>
-  );
-}
-
-function Photo({ src, alt, caption }: { src: string; alt: string; caption: string }) {
-  return (
-    <figure>
-      <img
-        src={src}
-        alt={alt}
-        width={1600}
-        height={1067}
-        loading="lazy"
-        decoding="async"
-        className="aspect-[3/2] w-full object-cover"
-      />
-      <figcaption className="mt-3 text-xs text-ink-soft">{caption}</figcaption>
-    </figure>
-  );
-}
-
-function FirstConversation({ prompts }: { prompts: [string, string][] }) {
-  return (
-    <div className="mt-12">
-      <h3 className="text-sm font-medium text-ink">What to bring to a first conversation</h3>
-      <ul className="mt-4 border-t border-rule">
-        {prompts.map(([title, body]) => (
-          <li
-            key={title}
-            className="grid gap-1 border-b border-rule py-4 sm:grid-cols-[11rem_minmax(0,1fr)] sm:gap-8"
-          >
-            <p className="text-[0.9375rem] font-medium text-ink">{title}</p>
-            <p className="text-[0.9375rem] text-ink-soft">{body}</p>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-function Panel({
-  id,
-  title,
-  lead,
-  children,
-}: {
+type Item = {
   id: "home" | "upholstery" | "industrial" | "medical";
-  title: ReactNode;
-  lead: string;
-  children?: ReactNode;
-}) {
+  name: string;
+  image: ImageKey;
+  aspect: string;
+  width: string;
+  sizes: string;
+};
+
+const LEFT: Item[] = [
+  { id: "home", name: "Home & Bedding", image: "homeInterior", aspect: "aspect-[4/5]", width: "w-full", sizes: "(min-width:1024px) 42vw, 92vw" },
+  { id: "industrial", name: "Industrial & Technical Textiles", image: "knitMesh", aspect: "aspect-square", width: "w-[78%] ml-auto", sizes: "(min-width:1024px) 32vw, 72vw" },
+];
+const RIGHT: Item[] = [
+  { id: "upholstery", name: "Upholstery", image: "upholsteryChair", aspect: "aspect-[3/2]", width: "w-full", sizes: "(min-width:1024px) 46vw, 92vw" },
+  { id: "medical", name: "Medical & Healthcare Textiles", image: "medicalFolded", aspect: "aspect-[3/4]", width: "w-[64%]", sizes: "(min-width:1024px) 30vw, 60vw" },
+];
+
+function Card({ item }: { item: Item }) {
   return (
-    <Chapter
-      id={id}
-      labelledBy={`${id}-title`}
-      className="border-t border-rule px-[var(--gutter)] py-20 lg:min-h-[calc(100svh-var(--header-h))] lg:py-28"
-    >
-      <h2
-        id={`${id}-title`}
-        className="display max-w-[38rem] text-[clamp(2.2rem,4.2vw,4.4rem)] text-ink"
-      >
-        {title}
-      </h2>
-      <p className="copy mt-8 text-ink">{lead}</p>
-      {children}
-    </Chapter>
+    <article className={cn("group", item.width)}>
+      <a href={`#${item.id}`} className="block" aria-label={`${item.name}: see details`}>
+        <ClipReveal>
+          <div className={cn("relative overflow-hidden", item.aspect)}>
+            <Picture
+              name={item.image}
+              sizes={item.sizes}
+              className="h-full w-full object-cover transition-transform duration-[1400ms] ease-[var(--ease-out)] group-hover:scale-[1.045]"
+            />
+          </div>
+        </ClipReveal>
+        <div className="mt-5 max-w-[30rem]">
+          <h3 className="display text-[clamp(1.8rem,2.6vw,2.7rem)] leading-[1.02] text-ink">
+            {item.name}
+          </h3>
+          <p className="mt-2 text-[0.9375rem] text-ink-soft">{APPLICATION_COPY[item.id].line}</p>
+          <span className="link-line mt-3 inline-block text-sm font-medium text-ink">
+            See details
+          </span>
+        </div>
+      </a>
+    </article>
   );
 }
 
-export function HomeBedding() {
+/** Offset two-column masonry: unequal widths, aspect ratios and starting heights. */
+export function Applications() {
   return (
-    <Panel
-      id="home"
-      title={
-        <>
-          <span className="block">Home &amp;</span>
-          <span className="block">Bedding</span>
-        </>
-      }
-      lead="Our most developed line: knitted bed linen for brands selling in Australia, Europe and the USA, made in the fibres each programme calls for."
+    <section
+      id="applications"
+      aria-labelledby="applications-title"
+      className="bg-linen py-[clamp(6rem,12vw,12rem)]"
     >
-      <div className="mt-10">
-        <Photo
-          src={homePhoto}
-          alt="Close view of ivory knitted fabric in soft folds"
-          caption="Knitted cloth, in detail."
-        />
-      </div>
-
-      <h3 className="mt-14 text-sm font-medium text-ink">The range</h3>
-      <ul className="mt-4 border-t border-rule">
-        {RANGE.map((item) => (
-          <li
-            key={item.name}
-            className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-1 border-b border-rule py-4"
+      <div className="shell">
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+          <h2
+            id="applications-title"
+            className="display text-[clamp(2.6rem,7vw,6rem)] text-ink"
           >
-            <p className="display text-[1.5rem] leading-[1.1] text-ink">{item.name}</p>
-            <p className="text-[0.9375rem] text-ink-soft">{item.fibres}</p>
-          </li>
-        ))}
-      </ul>
+            <MaskLine>Four applications,</MaskLine>
+            <MaskLine delay={0.08}>one mill.</MaskLine>
+          </h2>
+          <Rise className="lg:max-w-sm">
+            <p className="text-[0.9375rem] text-ink-soft">
+              Home textiles are where we are most developed. Upholstery, industrial and healthcare
+              programmes are developed to each customer&rsquo;s brief.
+            </p>
+          </Rise>
+        </div>
 
-      <h3 className="mt-14 text-sm font-medium text-ink">Finished to specification</h3>
-      <ul className="mt-4 grid gap-x-10 border-t border-rule sm:grid-cols-2">
-        {FINISHES.map((finish) => (
-          <li key={finish.title} className="border-b border-rule py-4">
-            <p className="text-[0.9375rem] font-medium text-ink">{finish.title}</p>
-            <p className="mt-0.5 text-[0.9375rem] text-ink-soft">{finish.body}</p>
-          </li>
-        ))}
-      </ul>
-
-      <Enquire sector="home" label="Enquire about home & bedding" />
-    </Panel>
-  );
-}
-
-export function Upholstery() {
-  return (
-    <Panel
-      id="upholstery"
-      title={<span className="block">Upholstery</span>}
-      lead="Knitted fabrics for seating and soft furnishings, developed with interior and upholstery businesses."
-    >
-      <div className="mt-10">
-        <Photo
-          src={upholsteryPhoto}
-          alt="Close view of deep green fabric in soft folds"
-          caption="Deep-coloured knitted cloth, in detail."
-        />
+        <div className="mt-16 grid gap-y-20 lg:mt-24 lg:grid-cols-[5fr_1fr_6fr] lg:gap-y-0">
+          <div className="flex flex-col gap-24">
+            {LEFT.map((item) => (
+              <Card key={item.id} item={item} />
+            ))}
+          </div>
+          <div className="hidden lg:block" aria-hidden />
+          <div className="flex flex-col gap-24 lg:mt-56">
+            {RIGHT.map((item) => (
+              <Card key={item.id} item={item} />
+            ))}
+          </div>
+        </div>
       </div>
-      <FirstConversation
-        prompts={[
-          ["The interior", "The furniture or space the fabric is for."],
-          ["The feel and wear", "Handle, drape and the durability it must show."],
-          ["The programme", "Colours, volumes and delivery timing."],
-        ]}
-      />
-      <Enquire sector="upholstery" label="Enquire about upholstery" />
-    </Panel>
-  );
-}
-
-export function Industrial() {
-  return (
-    <Panel
-      id="industrial"
-      title={
-        <>
-          <span className="block">Industrial &amp;</span>
-          <span className="block">Technical Textiles</span>
-        </>
-      }
-      lead="Knitted fabrics engineered for functional and technical applications, developed to your performance brief."
-    >
-      <FirstConversation
-        prompts={[
-          ["The function", "What the fabric must do in use."],
-          ["The conditions", "The environment and standards it must meet."],
-          ["The programme", "Volumes and the delivery schedule."],
-        ]}
-      />
-      <Enquire sector="industrial" label="Enquire about technical textiles" />
-    </Panel>
-  );
-}
-
-export function Medical() {
-  return (
-    <Panel
-      id="medical"
-      title={
-        <>
-          <span className="block">Medical &amp;</span>
-          <span className="block">Healthcare Textiles</span>
-        </>
-      }
-      lead="Knitted textiles for healthcare settings, where hygiene and consumer safety come first."
-    >
-      <FirstConversation
-        prompts={[
-          ["The setting", "Where the fabric will be used, and who it touches."],
-          ["The requirements", "Hygiene, safety and regulatory needs."],
-          ["The programme", "Volumes and delivery timing."],
-        ]}
-      />
-      <Enquire sector="medical" label="Enquire about healthcare textiles" />
-    </Panel>
+    </section>
   );
 }

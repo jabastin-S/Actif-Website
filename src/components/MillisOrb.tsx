@@ -150,24 +150,24 @@ export function MillisOrb() {
         aria-label={ariaLabel}
         aria-pressed={live}
         className={cn(
-          "peer pointer-events-auto relative flex size-14 shrink-0 items-center justify-center rounded-full ring-1 transition-[background-color,box-shadow,transform] duration-500 ease-out hover:scale-105 focus-visible:outline-none focus-visible:shadow-[0_0_0_3px_var(--paper),0_0_0_5px_var(--ink)] md:size-16",
+          "peer pointer-events-auto relative flex size-14 shrink-0 items-center justify-center rounded-full ring-1 transition-[background-color,box-shadow,transform] duration-500 ease-out hover:scale-105 focus-visible:outline-none focus-visible:shadow-[0_0_0_3px_var(--ivory),0_0_0_5px_var(--charcoal)] md:size-16",
           "shadow-[0_10px_28px_-8px_rgb(0_0_0/0.5)]",
           phase === "error"
-            ? "bg-destructive text-paper ring-paper/50"
-            : "bg-ink text-paper ring-paper/30",
-          live && "ring-chap",
+            ? "bg-destructive text-on-dark ring-on-dark/50"
+            : "bg-charcoal text-on-dark ring-on-dark/30",
+          live && "ring-olive-soft",
           phase === "idle" && "animate-[orb-breathe_5s_ease-in-out_infinite]",
         )}
       >
         {/* state rings */}
         {phase === "speaking" && (
           <>
-            <span aria-hidden className="absolute inset-0 rounded-full ring-1 ring-chap animate-[orb-ring_2.4s_var(--ease-out)_infinite]" />
-            <span aria-hidden className="absolute inset-0 rounded-full ring-1 ring-chap/70 animate-[orb-ring_2.4s_var(--ease-out)_0.8s_infinite]" />
+            <span aria-hidden className="absolute inset-0 rounded-full ring-1 ring-olive-soft animate-[orb-ring_2.4s_var(--ease-out)_infinite]" />
+            <span aria-hidden className="absolute inset-0 rounded-full ring-1 ring-olive-soft/70 animate-[orb-ring_2.4s_var(--ease-out)_0.8s_infinite]" />
           </>
         )}
         {phase === "listening" && (
-          <span aria-hidden className="absolute inset-0 rounded-full ring-1 ring-paper/50 animate-[orb-ring_3s_ease-out_infinite]" />
+          <span aria-hidden className="absolute inset-0 rounded-full ring-1 ring-on-dark/50 animate-[orb-ring_3s_ease-out_infinite]" />
         )}
         {(phase === "connecting" || phase === "thinking") && (
           <svg
@@ -175,7 +175,7 @@ export function MillisOrb() {
             viewBox="0 0 64 64"
             className="absolute -inset-1.25 size-[calc(100%+10px)] animate-[orb-spin_1.6s_linear_infinite]"
           >
-            <circle cx="32" cy="32" r="30" fill="none" stroke="var(--chap)" strokeWidth="1.5" strokeDasharray="22 166" strokeLinecap="round" />
+            <circle cx="32" cy="32" r="30" fill="none" stroke="var(--olive-soft)" strokeWidth="1.5" strokeDasharray="22 166" strokeLinecap="round" />
           </svg>
         )}
 
@@ -206,8 +206,8 @@ export function MillisOrb() {
         <span
           aria-hidden
           className={cn(
-            "absolute top-1 right-1 size-2 rounded-full ring-2 ring-ink",
-            phase === "error" ? "bg-paper" : "bg-chap",
+            "absolute top-1 right-1 size-2 rounded-full ring-2 ring-charcoal",
+            phase === "error" ? "bg-ivory" : "bg-olive-soft",
           )}
         />
       </button>
@@ -215,7 +215,7 @@ export function MillisOrb() {
       <span
         aria-hidden
         className={cn(
-          "pointer-events-none whitespace-nowrap bg-ink px-4 py-2 text-[0.8125rem] font-medium text-paper shadow-[0_6px_20px_-6px_rgb(0_0_0/0.45)] ring-1 ring-paper/20 transition-[opacity,transform] duration-500 ease-out",
+          "pointer-events-none whitespace-nowrap bg-charcoal px-4 py-2 text-[0.8125rem] font-medium text-on-dark shadow-[0_6px_20px_-6px_rgb(0_0_0/0.45)] ring-1 ring-on-dark/20 transition-[opacity,transform] duration-500 ease-out",
           showLabel
             ? "translate-x-0 opacity-100"
             : "translate-x-2 opacity-0 peer-hover:translate-x-0 peer-hover:opacity-100 peer-focus-visible:translate-x-0 peer-focus-visible:opacity-100",

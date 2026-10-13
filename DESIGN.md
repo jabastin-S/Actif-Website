@@ -1,81 +1,68 @@
-# ACTIF design system: "Specimen Stage" (branch Design-3)
+# ACTIF design system: "Material Narrative" (branch Design-3-v2)
 
-One idea: the page is a lab bench. A single specimen of knitted cloth stays on the stage while the
-text turns chapter by chapter, and the specimen changes with it: structure, scale and yarn colour.
-The interface borrows the stage's colour, so cloth and chrome always agree.
+Photography-led and typographic. Each chapter has its own composition; nothing repeats two sections
+in a row. Evolved from Design-3 ("Specimen Stage"), whose persistent split-screen was the problem to solve.
 
 ## Colour
 
-Bright paper, graphite ink, and one living colour.
+Warm and mineral, with one cool note for technical and clinical imagery.
 
-| Token | Value | Use |
-|---|---|---|
-| `--paper` | oklch(0.968 0.004 250) | page ground, header, labels on the stage |
-| `--paper-2` | oklch(0.935 0.005 250) | contact band, hover fills |
-| `--ink` | oklch(0.19 0.01 250) | text, primary buttons, footer ground |
-| `--ink-soft` | oklch(0.42 0.012 250) | secondary text (>= 7:1 on paper) |
-| `--rule` | ink at 16% | hairlines between list rows |
-| `--chap` | set per chapter | fills: header mark, button dot, chapter ticks |
-| `--chap-ink` | set per chapter | text-safe version (>= 4.5:1 on paper): numerals, hover, selection |
+| Token | Use |
+|---|---|
+| `--ivory` oklch(0.955 0.014 85) | page ground, header once scrolled, light buttons |
+| `--linen` oklch(0.925 0.017 82) | applications and responsibility grounds |
+| `--stone` oklch(0.875 0.02 80) | sector chapters |
+| `--sand` oklch(0.8 0.035 78) | reserved neutral |
+| `--olive` / `--olive-deep` / `--olive-soft` | numerals and active marks / capacity field and button hover / marks on dark |
+| `--charcoal` / `--charcoal-2` | materials, transition, contact, footer, orb |
+| `--slate` oklch(0.6 0.025 245) | cool technical note (kept for imagery and future use) |
+| `--ink` / `--ink-soft` | text on light (>= 7:1 / >= 4.5:1) |
+| `--on-dark` / `--on-dark-soft` | text on charcoal and olive-deep |
 
-Chapter colours (fill / text-safe): natural `#d8d0bf / #6b6350` (intro, heritage, capabilities),
-butter `#e4cf8e / #76611f` (home), jade `#2f6b57 / #235544` (upholstery), steel `#8d98a3 / #47525d`
-(industrial), aqua `#b9e0db / #27706a` (medical), teal `#4f7f80 / #2f5f61` (responsibility).
-`--chap` and `--chap-ink` are registered `<color>` properties tweened over 1.6 s. Colour is never the
-only carrier of meaning.
+Dark and light alternate by chapter: image, ivory, linen, charcoal, image + ivory, stone, image + ivory, olive,
+linen, charcoal image, charcoal.
 
 ## Type
 
-- **Geologica** (variable, 300-600): display at weight 300 with -0.035em tracking, UI at 400-500.
-  Chosen for a light, precise, slightly technical voice that suits material and engineering.
-- **Source Serif 4**: reading text (`.copy`, 1.125rem / 1.65, measure 58ch).
-- Scale: h1 clamp(2.4rem, 4.1vw, 4.6rem); h2 clamp(2.2rem, 4.2vw, 4.4rem); list titles 1.375-1.5rem;
-  small labels 0.875rem 500. No all-caps eyebrows above headings; no numbered section kickers
-  (the only numerals are the real seven-step process and UN Goal numbers).
+- **Instrument Serif** (400): display, one weight, large and tight (-0.015em, 0.98 leading). Condensed
+  proportions let long lines sit at poster size.
+- **Hanken Grotesk** (400/500/600): reading text, labels, buttons. Body 1.0625rem / 1.7, measure 54ch.
+- No uppercase eyebrows, no numbered kickers. Numerals appear only where they carry information: the
+  seven process stages, the UN Goal numbers and the capacity figures.
 
-## Layout
+## Composition rules
 
-- >= 1024px: two equal columns. Text chapters on the left; the stage is sticky on the right,
-  `100svh - header`. Header is a solid 4rem bar (no transparent overlay on the stage).
-- < 1024px: the stage becomes a sticky strip (`--stage-h`, 22svh clamped 8.5-14rem) under the header and
-  the chapters scroll beneath it. `scroll-padding-top` accounts for header + strip.
-- Contact and footer are full-width; the stage ends before them.
-- Square corners everywhere (radius 0-2px). Depth comes from rules and the stage, not shadows
-  (the Applications dropdown is the only soft shadow). No cards.
+1. No two adjacent chapters share a structure. Used here: full-bleed image with type over it (hero,
+   process, transition), full-width typography (statement, capacity), offset two-column masonry (applications),
+   horizontal scroller (materials), image with an overlapping panel that runs into the next chapter
+   (Home & Bedding), three staggered text columns (sectors), staggered numbered grid (process steps).
+2. A split-screen is allowed only where it is not the default. There is none in this build.
+3. Sections have different heights; headings change position and scale.
+4. Images are never rounded; edges are square. Panels and buttons are square.
+5. Depth comes from overlap and two soft shadows (the overlapping panel and the dropdown).
 
-## The stage (`KnitStage.tsx`)
+## Imagery
 
-One WebGL canvas, fragment shader only. Structures: plain jersey (chevron columns), rib, jersey+rib blend, open
-diamond mesh, waffle; no two neighbouring chapters share a look. Soft cloth folds light the surface; the pointer nudges the light. Specimens glide
-(exponential approach, about 1 s) when the active chapter changes. Idle frames are throttled to
-about 11 fps; the loop pauses off-screen and in hidden tabs. Reduced motion: no loop, specimens snap.
-No WebGL: flat yarn colour with a CSS weave. The caption always reads "Illustrative knit structure":
-the stage stands for the kind of material, not a specific ACTIF product.
-
-## Components
-
-- **Header**: wordmark with a chapter-coloured square, Applications dropdown (disclosure button,
-  Escape/outside-press to close), text links, Enquire button; full-height mobile menu with focus move,
-  scroll lock and Escape.
-- **Button**: ink block, chapter-coloured square at the right that scales on hover; hover fills with
-  `--chap-ink`. Quiet button: text with an underline.
-- **List rows**: hairline-ruled rows (title left, detail right). The only repeated container.
-- **Photos**: three existing repo photographs (origin unrecorded), plain rectangles, 3:2 or 16:9.
-- **Form**: underline fields, labels above, inline validation, hands off via `mailto`.
-- **Voice orb**: 56px (mobile) / 64px (md+) ink disc, fixed bottom-right, in place; states: idle
-  (breathing), connecting/thinking (arc), listening (ring), speaking (rings, bars), error. The Millis SDK
-  (about 2 MB of WebAssembly) loads on first hover, focus or press.
+Thirteen generated images (Figma `generate_image`, model gemini-3.1-flash-lite-image) plus one repo photo.
+Originals are in `assets-source/generated/`; `scripts/optimize-images.py` writes responsive WebP files to
+`public/images/` and the manifest `src/content/images.ts` (srcsets, intrinsic sizes, average colour used as
+placeholder, alt text). Generated imagery is illustrative: the page says so beside the process image,
+in the materials chapter and in the footer, and it never depicts a claimed ACTIF facility or product.
+Source resolution is 1376 px at most for the widest images.
 
 ## Motion
 
-Authored moments only: the stage morph, mask-line headings (once, on enter), the Capacity count-up,
-the dropdown and menu transitions. One easing, `cubic-bezier(0.16, 1, 0.3, 1)`. Everything is
-visible by default and only hidden after hydration when motion is allowed; `prefers-reduced-motion`
-removes all of it.
+Library: `motion` (already installed). Techniques: masked line reveals (headings, once), clip reveal
+(application images, once), short rise (supporting blocks, once), gentle parallax (hero, Home & Bedding,
+process, transition; at most 7% travel), image hover scale (1.045), counter (capacity), hero image settle
+(2.4 s CSS), scroll cue (three loops, then still). Everything is visible by default and hidden only after
+hydration when motion is allowed. `prefers-reduced-motion` removes all of it. No scroll hijacking, no
+perpetual background motion, no cursor effects, no hover-only information.
 
-## Rules
+## Components
 
-1. One specimen, one stage. Do not add a second animated background.
-2. New colour work goes through `--chap` / `--chap-ink`; never hard-code a chapter colour in a component.
-3. Never claim a structure, certificate, figure or client the source does not support.
-4. Headings carry their own weight: no eyebrows, no decorative numbering, no gradient text.
+Header (transparent over the hero, solid ivory after 40 px, Applications dropdown, active-section feedback,
+full-height mobile menu with focus management), Hero, Statement, Applications, Materials (native
+scrolling with previous/next, keyboard-focusable region, progress line), HomeBedding, Sectors, Process,
+Capacity, Responsibility, Transition, Contact (validation, mailto hand-off), Footer, Picture, motion
+primitives, and the Millis voice orb (64 px desktop, 56 px mobile, in place; SDK loaded on demand).

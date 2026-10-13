@@ -5,22 +5,22 @@ primary_target: "src/routes/index.tsx"
 related_targets: []
 ---
 
-# Surface brief: ACTIF landing (/), Design-3 "Specimen Stage"
+# Surface brief: ACTIF landing (/), Design-3 v2 "Material Narrative"
 
-Mode: Persuade. Audience: international B2B buyers vetting a knitted-textile development and manufacturing partner (home & bedding, upholstery, industrial & technical, medical & healthcare). Action: start an enquiry (form to mailto, email, phone, Millis voice orb).
+Mode: Persuade. Audience: international B2B buyers vetting a knitted-textile development and manufacturing partner. Action: start an enquiry (form to mailto, email, phone, Millis voice orb).
 
-Must differ from BOTH earlier designs: (1) ivory/sage/Cormorant centred "luxury editorial" (main), (2) greige/indigo/Bodoni "shade card" with pinked swatch panels and a huge wordmark hero (redesign/actif-luxury).
+Problem being solved: Design-3 used a split-screen (sticky stage + text) for almost every section, which felt predictable. V2 must have varied, art-directed compositions and generated photography, while staying distinct from design 1 (ivory/sage/Cormorant centred editorial) and design 2 (greige/indigo/Bodoni swatch panels).
 
 ## Direction contract
 
-THESIS: The page is a lab bench: one specimen of knitted cloth stays on a persistent stage while the text turns chapter by chapter, and the specimen morphs (structure, scale, yarn colour) to match the chapter. Refuses: stacked full-width marketing sections, card grids, pinked swatches, giant display wordmark, ivory or greige grounds.
+THESIS: A photography-led editorial narrative in which every chapter has its own composition (full-bleed image with type, pure typography, offset masonry, horizontal scroller, overlapping panel, staggered columns). Refuses: repeated split-screens, identical card grids, rounded images.
 
-OWN-WORLD: bright cool paper (#f4f4f1-ish), graphite ink, one living chapter colour (--chap / --chap-ink) shared by stage and interface (natural, butter, jade, steel, aqua, teal). Geologica light display + Source Serif 4 reading text. Square, ruled lists instead of cards; solid ink buttons with a chapter-coloured square; solid header bar.
+OWN-WORLD: warm ivory, linen, stone, deep olive, charcoal; Instrument Serif display with Hanken Grotesk; square edges; generated, illustrative photography in a consistent warm-mineral grade with cool technical and clinical notes.
 
-STORY: A buyer sees a calm macro of real knit structure beside a plain statement of what ACTIF is, scrolls through the four applications as four materials, then through heritage, process, capacity and responsibility as plain ruled lists, and writes in.
+STORY: A cinematic linen hero states what ACTIF makes; a large typographic statement gives heritage; four applications arrive as an offset image masonry; a dark horizontal materials study; Home & Bedding in detail over a full-bleed photograph; three text chapters for the other applications; yarn production panorama and seven steps; capacity as pure type on olive; responsibility; a dark photographic close; contact.
 
-FIRST VIEWPORT: Desktop: left column headline (three lines), serif lead, primary and quiet buttons, four application links with colour squares; right half the sticky stage (plain knit chevrons, soft folds) with an "Illustrative knit structure" caption and a chapter index. Mobile: header, 22svh stage strip, headline, buttons.
+FIRST VIEWPORT: full-bleed warm linen photograph settling in, three-line serif headline bottom-left at poster size, one factual sentence, a light primary button and a quiet text button, scroll cue bottom-right clear of the orb, transparent header.
 
-FORM: scrollytelling split with persistent stage (hand-chosen from brief; no concept-seed roll run).
+FORM: editorial sequence of varied compositions (hand-chosen from brief; no concept-seed roll run).
 
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance

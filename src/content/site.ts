@@ -122,3 +122,38 @@ export const SDGS = [
   { no: 12, title: "Responsible consumption and production", note: "Responsible production" },
   { no: 13, title: "Climate action", note: "Climate action" },
 ] as const;
+
+/** Gateway copy for the four application areas (sector level only; no capabilities are claimed). */
+export const APPLICATION_COPY: Record<SectorId, { line: string }> = {
+  home: {
+    line: "Knitted bed linen for brands selling in Australia, Europe and the USA.",
+  },
+  upholstery: {
+    line: "Knitted fabrics for seating and soft furnishings, developed with interior businesses.",
+  },
+  industrial: {
+    line: "Knitted fabrics for functional and technical use, developed to your performance brief.",
+  },
+  medical: {
+    line: "Knitted textiles for healthcare settings, where hygiene and consumer safety come first.",
+  },
+};
+
+/** What to bring to a first conversation, by sector. Questions, not claims. */
+export const FIRST_CONVERSATION: Record<Exclude<SectorId, "home">, [string, string][]> = {
+  upholstery: [
+    ["The interior", "The furniture or space the fabric is for."],
+    ["The feel and wear", "Handle, drape and the durability it must show."],
+    ["The programme", "Colours, volumes and delivery timing."],
+  ],
+  industrial: [
+    ["The function", "What the fabric must do in use."],
+    ["The conditions", "The environment and standards it must meet."],
+    ["The programme", "Volumes and the delivery schedule."],
+  ],
+  medical: [
+    ["The setting", "Where the fabric will be used, and who it touches."],
+    ["The requirements", "Hygiene, safety and regulatory needs."],
+    ["The programme", "Volumes and delivery timing."],
+  ],
+};

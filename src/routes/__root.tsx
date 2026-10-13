@@ -81,7 +81,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "ACTIF Global Ventures, a unit of Vani Fabrics Private Limited with textile heritage since 1970, develops and manufactures knitted textiles in Tiruppur, India for home, upholstery, industrial and medical applications.",
       },
       { name: "author", content: "ACTIF Global Ventures" },
-      { name: "theme-color", content: "#f3f4f6" },
+      { name: "theme-color", content: "#f4efe6" },
       { name: "robots", content: "index, follow" },
       { property: "og:site_name", content: "ACTIF Global Ventures" },
       { property: "og:url", content: "https://actif.ltd/" },
@@ -119,11 +119,21 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     links: [
       { rel: "canonical", href: "https://actif.ltd/" },
+      {
+        rel: "preload",
+        as: "image",
+        type: "image/webp",
+        href: "/images/heroKnit-1200.webp",
+        imageSrcSet:
+          "/images/heroKnit-480.webp 480w, /images/heroKnit-800.webp 800w, /images/heroKnit-1200.webp 1200w, /images/heroKnit-1376.webp 1376w",
+        imageSizes: "100vw",
+        fetchPriority: "high",
+      },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Geologica:wght@300..600&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Hanken+Grotesk:wght@400;500;600&display=swap",
       },
       {
         rel: "stylesheet",

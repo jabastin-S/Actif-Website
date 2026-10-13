@@ -3,8 +3,7 @@ import { useReducedMotion } from "motion/react";
 
 /**
  * True once mounted and the visitor has not asked for reduced motion. Starts false so the
- * server render and the first client render agree (no hydration mismatch), then enables
- * scroll-linked motion.
+ * server render and the first client render agree (no hydration mismatch).
  */
 export function useMotionOk() {
   const reduced = useReducedMotion();

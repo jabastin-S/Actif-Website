@@ -1,24 +1,77 @@
 import { useEffect, useRef, useState } from "react";
-import { APPLICATIONS, CHAPTERS } from "@/content/chapters";
 import { cn } from "@/lib/utils";
-import { useStage } from "@/components/stage/useStage";
 
-const LINKS = [
-  { label: "Heritage", href: "#heritage" },
-  { label: "Capabilities", href: "#capabilities" },
-  { label: "Responsibility", href: "#responsibility" },
-  { label: "Contact", href: "#contact" },
+const APPLICATIONS = [
+  { id: "home", name: "Home & Bedding" },
+  { id: "upholstery", name: "Upholstery" },
+  { id: "industrial", name: "Industrial & Technical" },
+  { id: "medical", name: "Medical & Healthcare" },
 ] as const;
 
+const LINKS = [
+  { id: "materials", label: "Materials" },
+  { id: "heritage", label: "Heritage" },
+  { id: "capabilities", label: "Capabilities" },
+  { id: "responsibility", label: "Responsibility" },
+  { id: "contact", label: "Contact" },
+] as const;
+
+const SECTION_IDS = [
+  "heritage",
+  "applications",
+  "materials",
+  "home",
+  "upholstery",
+  "industrial",
+  "medical",
+  "manufacturing",
+  "capabilities",
+  "responsibility",
+  "contact",
+];
+
+/** Which section is under the upper-middle of the viewport; used for nav feedback only. */
+function useActiveSection() {
+  const [active, setActive] = useState("");
+  useEffect(() => {
+    const nodes = SECTION_IDS.map((id) => document.getElementById(id)).filter(
+      (node): node is HTMLElement => node !== null,
+    );
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) if (entry.isIntersecting) setActive(entry.target.id);
+      },
+      { rootMargin: "-30% 0px -60% 0px" },
+    );
+    nodes.forEach((node) => observer.observe(node));
+    const onScroll = () => {
+      if (window.scrollY < 120) setActive("");
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, []);
+  return active;
+}
+
 export function Header() {
-  const { active } = useStage();
+  const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [appsOpen, setAppsOpen] = useState(false);
   const menuButton = useRef<HTMLButtonElement>(null);
   const firstMenuLink = useRef<HTMLAnchorElement>(null);
   const appsWrap = useRef<HTMLDivElement>(null);
+  const active = useActiveSection();
 
-  // mobile menu: lock scroll, move focus in, close on Escape and return focus
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   useEffect(() => {
     if (!menuOpen) return;
     const previous = document.body.style.overflow;
@@ -37,7 +90,6 @@ export function Header() {
     };
   }, [menuOpen]);
 
-  // applications dropdown: close on outside press and Escape
   useEffect(() => {
     if (!appsOpen) return;
     const onDown = (event: PointerEvent) => {
@@ -54,24 +106,34 @@ export function Header() {
     };
   }, [appsOpen]);
 
-  const inApplications = (["home", "upholstery", "industrial", "medical"] as string[]).includes(
-    active,
-  );
+  const overHero = !scrolled && !menuOpen;
+  const inApps = APPLICATIONS.some((app) => app.id === active) || active === "applications";
+
+  const linkTone = overHero
+    ? "text-on-dark/80 hover:text-on-dark"
+    : "text-ink-soft hover:text-ink";
 
   return (
     <>
-      <header className="fixed inset-x-0 top-0 z-50 h-[var(--header-h)] border-b border-rule bg-paper">
+      <header
+        className={cn(
+          "fixed inset-x-0 top-0 z-50 h-[var(--header-h)] transition-[background-color,box-shadow] duration-700 ease-[var(--ease-out)]",
+          overHero ? "on-dark bg-transparent" : "bg-ivory shadow-[0_1px_0_var(--rule)]",
+        )}
+      >
         <div className="shell flex h-full items-center justify-between gap-6">
           <a
             href="#top"
             aria-label="ACTIF Global Ventures, back to top"
-            className="flex items-center gap-3 py-2 text-[1.125rem] font-medium tracking-[0.28em] text-ink"
+            className={cn(
+              "text-[1.0625rem] font-semibold tracking-[0.34em] transition-colors duration-700",
+              overHero ? "text-on-dark" : "text-ink",
+            )}
           >
-            <span aria-hidden className="block size-2.5 bg-chap" />
             ACTIF
           </a>
 
-          <nav aria-label="Primary" className="hidden items-center gap-8 lg:flex">
+          <nav aria-label="Primary" className="hidden items-center gap-9 lg:flex">
             <div ref={appsWrap} className="relative">
               <button
                 type="button"
@@ -79,15 +141,16 @@ export function Header() {
                 aria-controls="apps-menu"
                 onClick={() => setAppsOpen((value) => !value)}
                 className={cn(
-                  "flex h-11 items-center gap-2 text-sm font-medium text-ink-soft transition-colors hover:text-ink",
-                  inApplications && "text-ink",
+                  "flex h-11 items-center gap-2 text-sm font-medium transition-colors duration-500",
+                  linkTone,
+                  inApps && (overHero ? "text-on-dark" : "text-ink"),
                 )}
               >
                 Applications
                 <span
                   aria-hidden
                   className={cn(
-                    "block h-1.5 w-1.5 rotate-45 border-r border-b border-current transition-transform duration-300",
+                    "block size-1.5 rotate-45 border-r border-b border-current transition-transform duration-300",
                     appsOpen ? "-translate-y-px -rotate-[135deg]" : "-translate-y-0.5",
                   )}
                 />
@@ -95,19 +158,17 @@ export function Header() {
               <ul
                 id="apps-menu"
                 hidden={!appsOpen}
-                className="absolute top-full left-0 mt-2 w-72 border border-rule bg-paper p-2 shadow-[0_18px_40px_-24px_rgb(0_0_0/0.35)]"
+                className="absolute top-full left-0 mt-2 w-72 bg-ivory p-2 text-ink shadow-[0_24px_48px_-28px_rgb(0_0_0/0.45)]"
               >
                 {APPLICATIONS.map((app) => (
                   <li key={app.id}>
                     <a
-                      href={app.href}
+                      href={`#${app.id}`}
                       onClick={() => setAppsOpen(false)}
-                      className="flex min-h-11 items-center justify-between px-3 text-sm text-ink transition-colors hover:bg-paper-2"
+                      className="flex min-h-11 items-center justify-between px-3 text-sm transition-colors hover:bg-linen"
                     >
                       {app.name}
-                      {active === app.id && (
-                        <span aria-hidden className="size-2 bg-chap-ink" />
-                      )}
+                      {active === app.id && <span aria-hidden className="size-1.5 bg-olive" />}
                     </a>
                   </li>
                 ))}
@@ -115,11 +176,12 @@ export function Header() {
             </div>
             {LINKS.map((link) => (
               <a
-                key={link.href}
-                href={link.href}
+                key={link.id}
+                href={`#${link.id}`}
                 className={cn(
-                  "flex h-11 items-center text-sm font-medium text-ink-soft transition-colors hover:text-ink",
-                  active === link.href.slice(1) && "text-ink",
+                  "flex h-11 items-center text-sm font-medium transition-colors duration-500",
+                  linkTone,
+                  active === link.id && (overHero ? "text-on-dark" : "text-ink"),
                 )}
               >
                 {link.label}
@@ -128,7 +190,13 @@ export function Header() {
           </nav>
 
           <div className="flex items-center gap-3">
-            <a href="#contact" className="btn hidden min-h-11 gap-6 py-2 sm:inline-flex">
+            <a
+              href="#contact"
+              className={cn(
+                "btn hidden min-h-11 gap-6 py-2 sm:inline-flex",
+                overHero && "btn-light",
+              )}
+            >
               Enquire
             </a>
             <button
@@ -137,7 +205,10 @@ export function Header() {
               aria-expanded={menuOpen}
               aria-controls="site-menu"
               onClick={() => setMenuOpen((value) => !value)}
-              className="flex h-11 items-center gap-3 px-1 text-sm font-medium text-ink lg:hidden"
+              className={cn(
+                "flex h-11 items-center gap-3 px-1 text-sm font-medium transition-colors duration-500 lg:hidden",
+                overHero ? "text-on-dark" : "text-ink",
+              )}
             >
               {menuOpen ? "Close" : "Menu"}
               <span aria-hidden className="relative block h-2.5 w-6">
@@ -166,28 +237,30 @@ export function Header() {
         aria-label="Site menu"
         inert={!menuOpen}
         className={cn(
-          "fixed inset-x-0 top-[var(--header-h)] bottom-0 z-40 overflow-y-auto bg-paper px-[var(--gutter)] pt-6 pb-10 transition-[clip-path] duration-[800ms] ease-[var(--ease-out)] lg:hidden",
+          "on-dark fixed inset-0 z-40 flex flex-col justify-between overflow-y-auto bg-charcoal px-[var(--gutter)] pt-[calc(var(--header-h)+2rem)] pb-10 text-on-dark transition-[clip-path] duration-[900ms] ease-[var(--ease-out)] lg:hidden",
           menuOpen ? "[clip-path:inset(0_0_0_0)]" : "[clip-path:inset(0_0_100%_0)]",
         )}
       >
         <nav aria-label="Mobile">
           <ul>
-            {CHAPTERS.filter((c) => c.id !== "intro").map((chapter, index) => (
-              <li key={chapter.id} className="border-b border-rule">
-                <a
-                  ref={index === 0 ? firstMenuLink : undefined}
-                  href={chapter.href}
-                  onClick={() => setMenuOpen(false)}
-                  className="flex min-h-14 items-center justify-between py-3 text-[1.5rem] font-light tracking-[-0.02em] text-ink"
-                >
-                  {chapter.label}
-                  {active === chapter.id && <span aria-hidden className="size-2.5 bg-chap-ink" />}
-                </a>
-              </li>
-            ))}
+            {[...APPLICATIONS.map((a) => ({ id: a.id, label: a.name })), ...LINKS].map(
+              (item, index) => (
+                <li key={item.id} className="border-b border-rule-dark">
+                  <a
+                    ref={index === 0 ? firstMenuLink : undefined}
+                    href={`#${item.id}`}
+                    onClick={() => setMenuOpen(false)}
+                    className="flex min-h-14 items-center justify-between py-2 font-display text-[2rem] leading-none"
+                  >
+                    {item.label}
+                    {active === item.id && <span aria-hidden className="size-2 bg-olive-soft" />}
+                  </a>
+                </li>
+              ),
+            )}
           </ul>
         </nav>
-        <a href="#contact" onClick={() => setMenuOpen(false)} className="btn mt-8 w-full">
+        <a href="#contact" onClick={() => setMenuOpen(false)} className="btn btn-light mt-8 w-full">
           Enquire
         </a>
       </div>
