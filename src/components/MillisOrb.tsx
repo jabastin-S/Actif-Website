@@ -156,7 +156,9 @@ export function MillisOrb() {
             ? "bg-destructive text-on-dark ring-on-dark/50"
             : "bg-charcoal text-on-dark ring-on-dark/30",
           live && "ring-olive-soft",
-          phase === "idle" && "animate-[orb-breathe_5s_ease-in-out_infinite]",
+          // two breaths once the hero entrance has landed, then still: an endless loop in the
+          // corner pulls the eye while reading, and WCAG 2.2.2 caps unpausable motion at 5s
+          phase === "idle" && "animate-[orb-breathe_2.4s_ease-in-out_1.8s_2]",
         )}
       >
         {/* state rings */}

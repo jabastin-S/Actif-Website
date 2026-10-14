@@ -105,11 +105,15 @@ Timing: expo-out `cubic-bezier(0.16, 1, 0.3, 1)` for arrivals; `--ease-soft` / `
 travelling course edge. Feedback 150-300ms, overlays 150-300ms, reveals 0.9-1.4s.
 
 Robustness and performance: content is visible in the server render; scroll reveals hide only after
-hydration and trigger when an element is reached or already passed (one shared, frame-batched scroll
-check). Scroll-linked values are motion values bound to transforms or clip-path, so scrolling does not
+hydration, and the hide snaps (only the reveal animates), then trigger when an element is reached or
+already passed (one shared, frame-batched scroll check). Course masks are applied only while a course
+reveal runs, the hero macro included. The hero room plate loads eagerly: lazy loading would treat it as
+off-screen while `plate-in` clips it shut. Scroll-linked values are motion values bound to transforms or clip-path, so scrolling does not
 re-render React. Metric-matched fallback fonts keep the web-font swap from shifting layout (CLS 0.001
 measured with fonts delayed 1.5s). `prefers-reduced-motion`: no spatial motion, no delays, everything
-visible at once; progress and state feedback remain. The Millis orb keeps its own idle animation.
+visible at once; progress and state feedback remain. The Millis orb breathes twice when idle (from
+1.8s, after the hero entrance; 4.8s of motion, inside WCAG 2.2.2's 5s limit) and then rests; its
+listening, thinking and speaking states animate only during a conversation.
 
 ## Components
 

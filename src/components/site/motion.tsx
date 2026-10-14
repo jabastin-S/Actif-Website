@@ -4,6 +4,14 @@ import { EASE, EASE_STEADY, useMedia, useReached } from "@/lib/motion-hooks";
 import { useMotionOk } from "@/lib/use-motion-ok";
 import { cn } from "@/lib/utils";
 
+/**
+ * Reveals animate one way only. Hiding happens once, at hydration, for content the visitor has
+ * not reached yet, so it snaps: an animated hide would slide visible text out of view near the
+ * fold and run dozens of off-screen animations while the hero entrance is still playing.
+ */
+const reveal = (show: boolean, duration: number, delay: number) =>
+  show ? { duration, delay, ease: EASE } : { duration: 0 };
+
 /* ---------- Text ---------- */
 
 /**
@@ -46,7 +54,7 @@ export function MaskLine({
         className="block"
         initial={false}
         animate={{ y: show ? "0%" : "125%" }}
-        transition={{ duration: 1.1, delay, ease: EASE }}
+        transition={reveal(show, 1.1, delay)}
       >
         {children}
       </motion.span>
@@ -80,7 +88,7 @@ export function ClipReveal({
       className={className}
       initial={false}
       animate={{ clipPath: show ? "inset(0% 0% 0% 0%)" : "inset(0% 0% 100% 0%)" }}
-      transition={{ duration: 1.2, delay, ease: EASE }}
+      transition={reveal(show, 1.2, delay)}
     >
       {children}
     </motion.div>
@@ -157,7 +165,7 @@ export function Rise({
       className={className}
       initial={false}
       animate={{ opacity: show ? 1 : 0, y: show ? 0 : 18 }}
-      transition={{ duration: 0.9, delay, ease: EASE }}
+      transition={reveal(show, 0.9, delay)}
     >
       {children}
     </Tag>

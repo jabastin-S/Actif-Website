@@ -1,4 +1,5 @@
 import { motion, useScroll, useTransform } from "motion/react";
+import { useEffect, useRef, useState } from "react";
 import { COMPANY } from "@/content/site";
 import { useMedia } from "@/lib/motion-hooks";
 import { useMotionOk } from "@/lib/use-motion-ok";
@@ -19,6 +20,23 @@ export function Hero() {
   const plateY = useTransform(scrollY, [0, 900], [0, -70]);
   const titleY = useTransform(scrollY, [0, 900], [0, -28]);
   const depth = motionOk && wide;
+
+  // The course mask is only needed while the CSS entrance runs (as in CourseReveal); once the
+  // macro has formed, drop it so the parallax layer scrolls without a mask over it.
+  const macro = useRef<HTMLDivElement>(null);
+  const [formed, setFormed] = useState(false);
+  useEffect(() => {
+    const node = macro.current;
+    if (!node) return;
+    let live = true;
+    Promise.all(node.getAnimations().map((animation) => animation.finished))
+      .then(() => live && setFormed(true))
+      .catch(() => {});
+    return () => {
+      live = false;
+    };
+  }, []);
+
   return (
     <section
       id="top"
@@ -43,7 +61,8 @@ export function Hero() {
 
         <div className="area-macro md:min-h-[26rem]">
           <div
-            data-course="run"
+            ref={macro}
+            data-course={formed ? "done" : "run"}
             className="course-mask grain relative aspect-[4/3] overflow-hidden bg-linen [animation:course-in_1.4s_var(--ease-soft)_0.12s_both] md:aspect-auto md:h-full md:min-h-[26rem]"
           >
             <Parallax className="absolute inset-0" amount={3}>
@@ -79,8 +98,11 @@ export function Hero() {
           className="area-bed relative z-10 [animation:plate-in_1.1s_var(--ease-out)_0.42s_both] xl:-mr-14 xl:self-end"
         >
           <div className="grain relative aspect-[16/10] overflow-hidden shadow-[0_0_0_10px_var(--ivory)] md:aspect-[16/9] xl:aspect-[16/10]">
+            {/* eager: lazy loading treats the plate as off-screen while plate-in clips it shut,
+                so the photo arrived after the reveal had opened onto the placeholder */}
             <Picture
               name="homeInterior"
+              priority
               sizes="(min-width:1280px) 44vw, (min-width:768px) 54vw, 92vw"
               alt="A calm bedroom corner with neutral linen bedding"
               className="h-full w-full object-cover object-[40%_60%] [animation:plate-settle_1.7s_var(--ease-out)_0.42s_both]"
