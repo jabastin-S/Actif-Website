@@ -14,9 +14,10 @@ export function Transition() {
       </Parallax>
       <div className="absolute inset-0 bg-gradient-to-r from-charcoal/70 via-charcoal/10 to-transparent" />
       <div className="shell absolute inset-0 flex flex-col justify-center">
-        <h2 id="transition-title" className="display max-w-[11ch] text-[clamp(3rem,8.4vw,7rem)]">
+        <h2 id="transition-title" className="display max-w-[14ch] text-[clamp(3rem,8.4vw,7rem)]">
+          {/* the knowledge base's approach starts from the application, not the material */}
           <MaskLine>Start with</MaskLine>
-          <MaskLine delay={0.08}>the material.</MaskLine>
+          <MaskLine delay={0.08}>the application.</MaskLine>
         </h2>
         <a href="#contact" className="btn btn-light mt-8 w-full sm:w-72">
           Start an enquiry

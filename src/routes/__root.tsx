@@ -78,7 +78,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "ACTIF Global Ventures, a unit of Vani Fabrics Private Limited with textile heritage since 1970, develops and manufactures knitted textiles in Tiruppur, India for home, upholstery, industrial and medical applications.",
+          "ACTIF Global Ventures, a unit of Vani Fabrics Pvt. Ltd. with textile manufacturing heritage dating to 1970, develops premium engineered knitted textiles in Tiruppur, India for home and bedding, upholstery, industrial and medical applications.",
       },
       { name: "author", content: "ACTIF Global Ventures" },
       { name: "theme-color", content: "#f4efe6" },
@@ -89,7 +89,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:title", content: "ACTIF Global Ventures" },
       {
         property: "og:description",
-        content: "Knitted textiles, developed and made in Tiruppur by a house with roots in 1970.",
+        content: "Engineered knitted textiles for elevated living, developed in Tiruppur, India.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -101,7 +101,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "@context": "https://schema.org",
           "@type": "Organization",
           name: "ACTIF Global Ventures",
-          legalName: "ACTIF Global Ventures Pvt Ltd",
           url: "https://actif.ltd",
           email: "info@actif.ltd",
           telephone: "+919894602235",
@@ -111,9 +110,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
             addressRegion: "Tamil Nadu",
             addressCountry: "IN",
           },
-          parentOrganization: { "@type": "Organization", name: "Vani Fabrics Private Limited" },
+          parentOrganization: { "@type": "Organization", name: "Vani Fabrics Pvt. Ltd." },
           description:
-            "Knitted textile development and manufacturing for home and bedding, upholstery, industrial and technical, and medical and healthcare applications.",
+            "Premium engineered knitted textile development and manufacturing for home and bedding, upholstery, industrial and technical, and medical and healthcare applications.",
         }),
       },
     ],

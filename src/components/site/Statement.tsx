@@ -28,12 +28,13 @@ export function Statement() {
           <div className="md:col-span-7">
             <div className="max-w-[44rem] space-y-5">
               <p className="copy text-ink">
-                ACTIF Global Ventures is a unit of {COMPANY.parent}, based in Tiruppur, India&rsquo;s
-                knitwear capital.
+                {COMPANY.name} is a unit of {COMPANY.parent} in Tiruppur, Tamil Nadu, developing
+                premium engineered knitted textiles for global customers.
               </p>
               <p className="copy text-ink-soft">
-                We develop and manufacture knitted textiles for home, interior, industrial and
-                healthcare use, with every stage from yarn to finished pack under one roof.
+                We treat textiles as materials that shape how people rest, live, recover and work.
+                Development begins with the intended application, the performance it requires and
+                the experience the finished product must deliver.
               </p>
             </div>
 

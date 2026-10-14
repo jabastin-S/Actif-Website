@@ -32,8 +32,8 @@ photograph + ivory, olive, linen, charcoal photograph, charcoal.
 - **Hanken Grotesk** (400/500/600): reading text, labels, buttons. `.copy` is 1.0625 to 1.1875rem / 1.65,
   measure 52ch; supporting text is never below 1rem except captions.
 - Wordmark: "ACTIF" in Instrument Serif, 1.75rem, 0.3em tracking. No logo file exists.
-- No eyebrows or kickers. Numerals only where they carry information: process stage order, UN Goal
-  numbers, capacity figures (shown static, never counted up).
+- No eyebrows or kickers. Numerals only where they carry information: development step order,
+  bedding and capacity figures (shown static, never counted up).
 
 ## Composition
 
@@ -42,13 +42,15 @@ photograph + ivory, olive, linen, charcoal photograph, charcoal.
    print border. Tablet: macro left, text and room right. Mobile: stacked. Works with motion off.
 2. **Heritage:** full-width statement, then a specification list (title / body rows) set against one sharp macro.
 3. **Applications:** wide / narrow, narrow / wide zigzag on a 12-column grid from 768px, bottoms aligned.
-4. **Materials:** native horizontal scroller on charcoal, buttons and keys.
+4. **Materials:** native horizontal scroller of knitted studies on charcoal, buttons and keys, then
+   the eight knitted structures and the fibre list.
 5. **Home & Bedding:** the flagship gets the largest photograph; its heading sits in the photograph's own
    plaster wall. Range and finishes follow on ivory.
 6. **Upholstery:** inset photograph run to the right edge; the heading crosses from the stone ground onto
    the photograph's pale wall.
 7. **Industrial:** dark, type-led, small macro, horizontal prompt row. **Medical:** the only centred chapter.
-8. **Manufacturing:** photographic band with overlaid heading, then the seven-stage ruled grid.
+8. **Process:** photographic band carrying "Understand the product. Engineer the textile. Deliver it
+   consistently.", then the eight development steps in a ruled grid and the manufacturing journey row.
 9. **Capacity, Responsibility, Transition, Contact, Footer.**
 
 Rules: images and controls are square-edged; depth comes from overlap (hero plates, upholstery heading) and
@@ -94,7 +96,7 @@ heritage macro, the Materials studies, the industrial macro. Room photographs us
   transition, contact); clip reveals with an image settle (applications, the second card of each pair a
   beat later; medical); process stages arrive as a list (stagger capped at 0.21s).
 - **Materials gallery:** arrow keys, Home/End, mouse drag, previous/next snapping to studies, a
-  `01 / 07` position counter, scroll progress bound to a motion value, and on fine pointers a close-up that
+  `01 / 05` position counter, scroll progress bound to a motion value, and on fine pointers a close-up that
   zooms 1.75x toward the cursor (`.loupe`).
 - **Interface:** reading-progress hairline on the header; nav underline grows on hover and stays for the
   active section; Applications dropdown fades and drops 6px (300ms in, 150ms out, inert when closed);

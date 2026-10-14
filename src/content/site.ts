@@ -1,23 +1,23 @@
 /**
  * Single source for ACTIF copy and facts.
  *
- * Sources: the original repository content (home-textiles range, capacity, standards,
- * SDGs, contact) and the 2026 redesign brief (four sectors, Vani Fabrics, 1970 heritage).
- * Items marked `// CONFIRM` are carried over from the source as stated and should be
- * checked by ACTIF before launch. Nothing here is invented: where the source gives no
- * detail (upholstery, industrial, medical) the copy stays at sector level.
+ * Source of truth: "ACTIF Global Ventures: Consolidated Knowledge Base" (the Millis agent
+ * knowledge base). `// KB §n` points to the section each fact comes from. Nothing here goes
+ * beyond it, with one exception kept at the owner's instruction: the phone number, which the
+ * knowledge base marks as unconfirmed. The knowledge base's own qualifiers ("selected",
+ * "options", "subject to validation") are kept wherever it uses them.
  */
 
 export const COMPANY = {
-  name: "ACTIF",
-  legalName: "ACTIF Global Ventures Pvt Ltd",
-  parent: "Vani Fabrics Private Limited",
-  heritageYear: 1970,
-  location: "Tiruppur, Tamil Nadu, India",
-  email: "info@actif.ltd",
-  phone: "+91 98946 02235",
+  // KB §27A: use "ACTIF Global Ventures" unless the legal entity name is verified
+  name: "ACTIF Global Ventures",
+  parent: "Vani Fabrics Pvt. Ltd.", // KB §1
+  heritageYear: 1970, // KB §2
+  location: "Tiruppur, Tamil Nadu, India", // KB §1
+  email: "info@actif.ltd", // KB §22
+  phone: "+91 98946 02235", // owner-confirmed; not in the KB (KB §22 marks it unconfirmed)
   phoneHref: "tel:+919894602235",
-  web: "actif.ltd",
+  web: "actif.ltd", // KB §22
   webHref: "https://actif.ltd",
 } as const;
 
@@ -30,72 +30,124 @@ export const SECTORS: { id: SectorId; name: string }[] = [
   { id: "medical", name: "Medical & Healthcare Textiles" },
 ];
 
+/** Why partners work with ACTIF. KB §21, with §2 and §18. */
 export const STRENGTHS = [
   {
-    title: "Knit to pack, under one roof",
-    body: "Fabric, finishing, cut and sew and packing are run together, so a programme has one team to answer for it.",
+    title: "A development partner",
+    body: "Not simply a fabric supplier: each textile is developed around the final product and the performance it must deliver.",
   },
   {
-    title: "Sustainability designed in",
-    body: "Responsible fibres, energy and chemistry sit inside each process rather than being added at the end.",
+    title: "Knitting since 1970",
+    body: "More than five decades of experience in yarn behaviour, knitted structures, machine configuration and manufacturing consistency.",
   },
   {
-    title: "Built for export",
-    body: "Programmes shaped for buyers in Australia, Europe and the USA.",
+    title: "Customised to the brief",
+    body: "Materials, structures, widths, weights and performance characteristics, developed for each programme.",
   },
   {
-    title: "Traceable by design",
-    body: "Working to international standards, with Digital Product Passport and traceability readiness.", // CONFIRM scope
+    title: "Knitting to finishing, connected",
+    body: "Circular knitting, finishing and selected made-up capabilities, with support for commercial-scale production.",
   },
   {
-    title: "Renewable energy",
-    body: "Solar and wind energy support production at the mill. Ask us for current figures.", // CONFIRM share of supply
+    title: "Repeatable quality",
+    body: "A good sample starts the programme. Consistency builds the business.",
   },
   {
-    title: "Made to the programme",
-    body: "Flexible capacity and quick sample-to-bulk turnaround, tailored to each brand.",
+    title: "Oriented to global markets",
+    body: "Responsible material pathways, with traceability and Digital Product Passport readiness.",
   },
 ] as const;
+
+/* ---------- Home & Bedding (KB §6, §7) ---------- */
+
+export const HOME_LEAD =
+  "Knitted fabrics for contemporary home and lifestyle applications, with specifications tailored to brands, retailers, hospitality businesses and private-label partners.";
 
 export const RANGE = [
-  { name: "Bed sheets", fibres: "Cotton, bamboo, Tencel, blends" },
-  { name: "Fitted sheets", fibres: "Cotton, blends" },
-  { name: "Pillow cases", fibres: "Cotton, bamboo, silk blends" },
-  { name: "Duvet covers", fibres: "Cotton, linen, bamboo" },
-  { name: "Baby collection", fibres: "Organic cotton, bamboo" },
-  { name: "Hospitality collection", fibres: "Cotton-poly blends, high durability" },
+  { name: "Bed and fitted sheets", note: "Flexible, soft structures for a secure mattress fit and ease of movement." },
+  { name: "Mattress covers and ticking", note: "Developed around stretch, softness, breathability and durability, including protective bedding." },
+  { name: "Blankets and throws", note: "Soft, warm, dimensional constructions with customisable weight and hand feel." },
+  { name: "Comfort layers", note: "Knitted structures designed to enhance tactile and comfort performance." },
+  { name: "Pillow cases and duvets", note: "Including hospitality bedding, to each brand's specification." },
+  { name: "Specialty home textiles", note: "Custom constructions created around specific product and brand requirements." },
 ] as const;
 
+/** Selected reference capabilities, not a specification for every fabric (KB §7). */
+export const BEDDING_SELECTED = [
+  { value: "150–160 GSM", text: "Selected jersey bedding range" },
+  { value: "Up to 118 in", text: "Selected finished width (300 cm)" },
+] as const;
+
+/** Finishing possibilities. Every functional claim is validated per application (KB §14). */
 export const FINISHES = [
-  { title: "Antimicrobial protection", body: "Applied to specification; ask us for current performance data." },
-  { title: "Odour control", body: "Fresher fabric between washes." },
-  { title: "Skin friendly", body: "Gentle enough for the whole family." },
-  { title: "Soil release", body: "Stains lift out with ease." },
-  { title: "Moisture management", body: "Wicks and dries efficiently." },
-  { title: "Soft hand and easy care", body: "Low maintenance, made to last through repeated washing." },
-  { title: "Made to specification", body: "Functional finishes tailored to the customer and market." },
+  "Soft finish",
+  "Moisture management",
+  "Soil release",
+  "Easy care",
+  "Water-repellent options",
+  "Antimicrobial options",
+  "UV protection",
+  "Wrinkle resistance",
+  "Fire-retardant options",
+  "Customer-specific finishes",
 ] as const;
 
-export const PROCESS = [
-  { title: "Responsible fibres", body: "Cotton, bamboo, Tencel, organic and blended yarns, chosen for the programme." },
-  { title: "Knitting", body: "Fabric is knitted in-house, the start of the knit-to-pack line." },
-  { title: "Green dyeing", body: "Dyeing built around green chemistry." },
-  { title: "Functional finishing", body: "Antimicrobial, soil-release and moisture-management finishes applied to specification." },
-  { title: "Cut and sew", body: "Cut and sewn to each brand's specification." },
-  { title: "Responsible packaging", body: "Packed with care for the brand's market." },
-  { title: "Global delivery", body: "Shipped to brands in Australia, Europe and the USA." },
+/* ---------- Materials (KB §11, §12) ---------- */
+
+export const STRUCTURES = [
+  { name: "Single Jersey", note: "Soft, versatile and adaptable, including for bedding." },
+  { name: "Rib", note: "Flexible, with strong stretch characteristics." },
+  { name: "Interlock", note: "A smooth, stable and substantial double knit." },
+  { name: "Terry", note: "A loop surface associated with softness and absorbency." },
+  { name: "Fleece", note: "Comfort-oriented, associated with warmth and softness." },
+  { name: "Jacquard", note: "Engineered patterns and dimensional surface effects." },
+  { name: "Pointelle", note: "Decorative openwork with a breathable character." },
+  { name: "Specialty knits", note: "Custom constructions for individual programme requirements." },
 ] as const;
 
+export const FIBRES =
+  "Cotton, polyester, poly-cotton and cotton-poly blends, cotton-Tencel, cotton-bamboo, cotton-linen, modal, viscose, bamboo-based options, recycled and cellulosic fibres, and specialty blends.";
+
+/* ---------- Process (KB §15, §16) ---------- */
+
+export const DEVELOPMENT = [
+  { title: "Application", body: "Understand where and how the textile will be used." },
+  { title: "Material", body: "Select the fibre and yarn combination." },
+  { title: "Construction", body: "Develop the knitted structure around the product's requirements." },
+  { title: "Specification", body: "Define yarn count, gauge, GSM, width, stretch, recovery and thickness." },
+  { title: "Aesthetics", body: "Develop colour, texture, surface character, softness and hand feel." },
+  { title: "Performance", body: "Define the performance required and, where appropriate, functional finishing." },
+  { title: "Validation", body: "Evaluate the textile against agreed specifications and testing requirements." },
+  { title: "Production", body: "Move the approved development into repeatable commercial production." },
+] as const;
+
+export const JOURNEY = [
+  "Material selection",
+  "Circular knitting",
+  "Dyeing",
+  "Fabric finishing",
+  "Cut and sew",
+  "Quality control",
+  "Packing",
+  "Global delivery",
+] as const;
+
+/* ---------- Capacity (KB §17, §27B) ---------- */
+
+/** Stated at different stages of production: shown side by side, never converted or equated. */
 export const CAPACITY = [
-  { value: 150, text: "metric tonnes of greige fabric a month" },
-  { value: 50, text: "metric tonnes of finished fabric a month" },
-  { value: 5, text: "containers shipped a month" },
-] as const; // CONFIRM figures and the scope they apply to
+  { before: "", value: "200+", text: "circular knitting machines" },
+  { before: "About", value: "40", text: "tonnes of knitting capacity a day" },
+  { before: "", value: "150", text: "tonnes of greige knitted fabric a month" },
+  { before: "About", value: "50", text: "tonnes of finished fabric a month" },
+] as const;
+
+/* ---------- Responsibility (KB §19) ---------- */
 
 export const PILLARS = [
   {
     name: "Environmental",
-    items: ["Solar and wind energy", "Water stewardship", "Green chemical processing", "Responsible waste", "Sustainable materials"],
+    items: ["Renewable energy", "Water stewardship", "Responsible chemistry", "Waste management", "Responsible material options"],
   },
   {
     name: "Social",
@@ -103,57 +155,72 @@ export const PILLARS = [
   },
   {
     name: "Governance",
-    items: ["Global compliance", "Supply chain transparency", "Digital Product Passport", "Traceability systems", "Continuous improvement"],
+    items: ["Compliance", "Supply-chain transparency", "Traceability", "Digital Product Passport readiness", "Continuous improvement"],
   },
 ] as const;
 
-export const STANDARDS = [
-  { group: "Environmental", names: ["GOTS", "OEKO-TEX"] },
-  { group: "Social", names: ["SEDEX"] },
-  { group: "Chemical", names: ["ZDHC"] },
-  { group: "Digital readiness", names: ["Digital Product Passport ready", "Traceability enabled"] },
-] as const; // CONFIRM certificate scope, numbers and validity before launch
-
-export const SDGS = [
-  { no: 6, title: "Clean water and sanitation", note: "Water stewardship" },
-  { no: 7, title: "Affordable and clean energy", note: "Renewable energy" },
-  { no: 8, title: "Decent work and economic growth", note: "Safe and ethical employment" },
-  { no: 9, title: "Industry, innovation and infrastructure", note: "Manufacturing innovation" },
-  { no: 12, title: "Responsible consumption and production", note: "Responsible production" },
-  { no: 13, title: "Climate action", note: "Climate action" },
+export const RESPONSIBLE_MATERIALS = [
+  "Recycled fibres",
+  "Organic material options",
+  "Responsible cotton pathways",
+  "Cellulosic fibres",
+  "Durable constructions for longer product life",
+  "Material optimisation",
+  "Waste-conscious development",
 ] as const;
 
-/** Gateway copy for the four application areas (sector level only; no capabilities are claimed). */
+/* ---------- Applications (KB §6 to §10) ---------- */
+
+/** Gateway line for each application card. */
 export const APPLICATION_COPY: Record<SectorId, { line: string }> = {
   home: {
-    line: "Knitted bed linen for brands selling in Australia, Europe and the USA.",
+    line: "Bedding, mattress and lifestyle fabrics for brands, retailers, hospitality and private label.",
   },
   upholstery: {
-    line: "Knitted fabrics for seating and soft furnishings, developed with interior businesses.",
+    line: "Selected knitted fabrics for residential furniture, hospitality interiors and soft furnishings.",
   },
   industrial: {
-    line: "Knitted fabrics for functional and technical use, developed to your performance brief.",
+    line: "Knitted constructions developed around the technical performance an application requires.",
   },
   medical: {
-    line: "Knitted textiles for healthcare settings, where hygiene and consumer safety come first.",
+    line: "Selected knitted solutions for hospital bedding, patient comfort and protective applications.",
   },
 };
 
-/** What to bring to a first conversation, by sector. Questions, not claims. */
+/** Chapter copy for the three non-flagship applications. */
+export const SECTOR_COPY = {
+  upholstery: {
+    lead: "Selected knitted upholstery and interior textiles that balance visual character, tactile experience and everyday performance.",
+    detail:
+      "For residential furniture, hospitality interiors, soft furnishing components, decorative interior textiles and comfort-oriented furniture. Customised by texture, structure, thickness, GSM, stretch, composition, colour, surface finish and functional performance.",
+  },
+  industrial: {
+    lead: "Industrial development begins with the technical performance the final application requires. The knitted construction is adapted around technical parameters rather than conventional fashion criteria.",
+    detail:
+      "Strength, dimensional stability, stretch and recovery, breathability and airflow, moisture management and durability. Each requirement is evaluated and confirmed before we commit to it.",
+  },
+  medical: {
+    lead: "Healthcare textiles demand comfort, hygiene, consistency, durability and functional performance. We develop selected knitted solutions for hospital bedding, patient comfort textiles, mattress and protective applications, healthcare upholstery and reusable textile components.",
+    detail:
+      "Medical and functional claims are tied to the intended use, your requirements and the applicable testing and validation.",
+  },
+} as const;
+
+/** What to bring to a first conversation, by sector. Questions, not claims (KB §24). */
 export const FIRST_CONVERSATION: Record<Exclude<SectorId, "home">, [string, string][]> = {
   upholstery: [
-    ["The interior", "The furniture or space the fabric is for."],
-    ["The feel and wear", "Handle, drape and the durability it must show."],
-    ["The programme", "Colours, volumes and delivery timing."],
+    ["The product", "The furniture or interior the fabric is for, and its market."],
+    ["The feel", "Texture, hand feel, stretch and surface character."],
+    ["The programme", "A sample development or a commercial repeat programme."],
   ],
   industrial: [
-    ["The function", "What the fabric must do in use."],
-    ["The conditions", "The environment and standards it must meet."],
-    ["The programme", "Volumes and the delivery schedule."],
+    ["The application", "What the fabric must do in the final product."],
+    ["The parameters", "Strength, stability, stretch, airflow or moisture behaviour, if known."],
+    ["The validation", "The testing or specification it will be measured against."],
   ],
   medical: [
-    ["The setting", "Where the fabric will be used, and who it touches."],
-    ["The requirements", "Hygiene, safety and regulatory needs."],
-    ["The programme", "Volumes and delivery timing."],
+    ["The use", "Where the textile will be used, and by whom."],
+    ["The requirements", "Comfort, hygiene and durability needs, and any regulations that apply."],
+    ["The validation", "The testing required for its intended use."],
   ],
 };

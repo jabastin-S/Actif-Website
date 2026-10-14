@@ -1,4 +1,4 @@
-import { APPLICATION_COPY, FIRST_CONVERSATION, type SectorId } from "@/content/site";
+import { FIRST_CONVERSATION, SECTOR_COPY, type SectorId } from "@/content/site";
 import { enquiry } from "@/lib/enquiry";
 import { ImageNote } from "./ImageNote";
 import { ClipReveal, CourseReveal, MaskLine, Parallax } from "./motion";
@@ -57,7 +57,10 @@ export function Upholstery() {
         </h2>
       </div>
       <div className="shell grid gap-x-8 gap-y-8 pt-8 md:grid-cols-12 md:grid-rows-[auto_1fr] lg:gap-x-12 lg:pt-12">
-        <p className="copy text-ink md:col-span-5">{APPLICATION_COPY.upholstery.line}</p>
+        <div className="md:col-span-5">
+          <p className="copy text-ink">{SECTOR_COPY.upholstery.lead}</p>
+          <p className="mt-4 max-w-[52ch] text-[1rem] text-ink-soft">{SECTOR_COPY.upholstery.detail}</p>
+        </div>
         <div className="md:col-span-6 md:col-start-7 md:row-span-2 lg:col-span-5 lg:col-start-8">
           <p className="text-[0.9375rem] text-ink-soft">For a first conversation, bring:</p>
           <Prompts id="upholstery" className="mt-2 text-ink" />
@@ -86,7 +89,8 @@ export function Industrial() {
               <br />
               Technical Textiles
             </h2>
-            <p className="copy mt-8 text-on-dark-soft">{APPLICATION_COPY.industrial.line}</p>
+            <p className="copy mt-8 text-on-dark">{SECTOR_COPY.industrial.lead}</p>
+            <p className="mt-4 max-w-[52ch] text-[1rem] text-on-dark-soft">{SECTOR_COPY.industrial.detail}</p>
           </div>
           <div className="relative md:col-span-5 lg:col-span-4 lg:col-start-9">
             <CourseReveal className="aspect-[4/3] overflow-hidden md:aspect-square">
@@ -129,7 +133,8 @@ export function Medical() {
         >
           Medical &amp; Healthcare Textiles
         </h2>
-        <p className="copy mt-6 text-ink">{APPLICATION_COPY.medical.line}</p>
+        <p className="copy mt-6 text-ink">{SECTOR_COPY.medical.lead}</p>
+        <p className="mt-4 max-w-[52ch] text-[1rem] text-ink-soft">{SECTOR_COPY.medical.detail}</p>
         <p className="mt-8 text-[0.9375rem] text-ink-soft">For a first conversation, bring:</p>
         <Prompts id="medical" className="mt-2 grid w-full max-w-[34rem] text-ink md:max-w-[60rem] md:grid-cols-3 md:gap-x-8" />
         <Enquire id="medical" label="Enquire about healthcare textiles" className="mt-8" />

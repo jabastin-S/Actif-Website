@@ -1,6 +1,7 @@
 import { motion, useMotionValueEvent, useScroll, useTransform } from "motion/react";
 import { useEffect, useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
 import type { ImageKey } from "@/content/images";
+import { FIBRES, STRUCTURES } from "@/content/site";
 import { cn } from "@/lib/utils";
 import { CourseReveal } from "./motion";
 import { Picture } from "./Picture";
@@ -12,13 +13,12 @@ const STUDIES: {
   aspect: string;
   width: string;
 }[] = [
-  { image: "knitJersey", title: "Plain jersey knit", note: "Columns of interlocking stitches.", aspect: "aspect-[3/4]", width: "w-[72vw] sm:w-[22rem]" },
-  { image: "knitMesh", title: "Technical knit mesh", note: "Regular openings, engineered structure.", aspect: "aspect-square", width: "w-[78vw] sm:w-[30rem]" },
-  { image: "knitRib", title: "Rib knit", note: "Pronounced vertical ribs.", aspect: "aspect-[4/5]", width: "w-[68vw] sm:w-[24rem]" },
-  { image: "matSheer", title: "Sheer cloth", note: "Light passing through a fine weave.", aspect: "aspect-[3/4]", width: "w-[72vw] sm:w-[21rem]" },
-  { image: "knitDark", title: "Dense technical knit", note: "Tight loops in deep charcoal.", aspect: "aspect-square", width: "w-[78vw] sm:w-[28rem]" },
-  { image: "matThreads", title: "Fine threads", note: "Strands held under tension.", aspect: "aspect-[4/5]", width: "w-[68vw] sm:w-[23rem]" },
-  { image: "matNonwoven", title: "Nonwoven web", note: "Bonded fibres, soft and even.", aspect: "aspect-[3/4]", width: "w-[72vw] sm:w-[21rem]" },
+  // Knitted subjects only, captioned in the knowledge base's words (KB §9, §12, §15).
+  { image: "knitJersey", title: "Single Jersey", note: "Soft, versatile and adaptable, including for bedding.", aspect: "aspect-[3/4]", width: "w-[72vw] sm:w-[22rem]" },
+  { image: "knitMesh", title: "Specialty knits", note: "Custom constructions for individual programmes.", aspect: "aspect-square", width: "w-[78vw] sm:w-[30rem]" },
+  { image: "knitRib", title: "Rib", note: "Flexible, with strong stretch characteristics.", aspect: "aspect-[4/5]", width: "w-[68vw] sm:w-[24rem]" },
+  { image: "knitDark", title: "Technical constructions", note: "Adapted around technical parameters, not fashion criteria.", aspect: "aspect-square", width: "w-[78vw] sm:w-[28rem]" },
+  { image: "matThreads", title: "Yarn", note: "Fibre and yarn, selected for the application.", aspect: "aspect-[4/5]", width: "w-[68vw] sm:w-[23rem]" },
 ];
 
 const ARROW =
@@ -134,8 +134,8 @@ export function Materials() {
             up close.
           </h2>
           <p className="mt-6 max-w-md text-[0.9375rem] text-on-dark-soft">
-            Illustrative studies of the surfaces we work with. They are images, not product
-            specifications.
+            Illustrative studies of the knitted structures we develop. They are images, not
+            product specifications.
             <span className="hidden [@media(hover:hover)_and_(pointer:fine)]:inline">
               {" "}
               Hover a study to look closer; drag or use the arrows to browse.
@@ -216,6 +216,28 @@ export function Materials() {
       <div className="shell mt-6">
         <div aria-hidden className="h-px w-full bg-rule-dark">
           <motion.div className="h-px origin-left bg-on-dark" style={{ scaleX: bar }} />
+        </div>
+      </div>
+
+      <div className="shell mt-14 grid gap-12 lg:mt-20 lg:grid-cols-12 lg:gap-x-10">
+        <div className="lg:col-span-8">
+          <h3 className="display text-[clamp(1.9rem,3vw,2.8rem)]">Knitted structures</h3>
+          <ul className="mt-6 grid gap-x-10 sm:grid-cols-2">
+            {STRUCTURES.map((structure) => (
+              <li key={structure.name} className="border-t border-rule-dark py-4">
+                <p className="display text-[1.6rem] leading-none">{structure.name}</p>
+                <p className="mt-2 text-[0.9375rem] text-on-dark-soft">{structure.note}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="lg:col-span-4">
+          <h3 className="display text-[clamp(1.9rem,3vw,2.8rem)]">Fibres and blends</h3>
+          <p className="mt-6 border-t border-rule-dark pt-4 text-[1rem] leading-relaxed">{FIBRES}</p>
+          <p className="mt-4 text-[0.9375rem] text-on-dark-soft">
+            Chosen for the comfort, performance and commercial needs of each application, and
+            confirmed for each development.
+          </p>
         </div>
       </div>
     </section>

@@ -4,7 +4,7 @@ const LINKS = [
   { href: "#heritage", label: "Heritage" },
   { href: "#applications", label: "Applications" },
   { href: "#materials", label: "Materials" },
-  { href: "#manufacturing", label: "Manufacturing" },
+  { href: "#manufacturing", label: "Process" },
   { href: "#capabilities", label: "Capabilities" },
   { href: "#responsibility", label: "Responsibility" },
   { href: "#contact", label: "Contact" },
@@ -43,7 +43,7 @@ export function Footer() {
 
         <div className="mt-10 flex flex-col gap-3 text-sm text-on-dark-soft sm:flex-row sm:items-center sm:justify-between">
           <p>
-            &copy; {new Date().getFullYear()} {COMPANY.legalName}. All rights reserved.
+            &copy; {new Date().getFullYear()} {COMPANY.name}. All rights reserved.
           </p>
           <p className="max-w-[56ch] sm:text-right">
             Photographs on this site are illustrative images and do not depict ACTIF facilities or

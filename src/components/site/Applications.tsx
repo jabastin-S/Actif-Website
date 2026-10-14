@@ -70,8 +70,8 @@ export function Applications() {
           </h2>
           <div className="lg:max-w-sm">
             <p className="text-[1rem] text-ink-soft">
-              Home textiles are where we are most developed. Upholstery, industrial and healthcare
-              programmes are developed to each customer&rsquo;s brief.
+              The final application determines the textile we develop. Upholstery, industrial and
+              healthcare solutions are selected developments, evaluated against each requirement.
             </p>
             <p className="mt-3 text-xs text-ink-soft">Photographs on this page are illustrative.</p>
           </div>

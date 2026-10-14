@@ -1,4 +1,4 @@
-import { FINISHES, RANGE } from "@/content/site";
+import { BEDDING_SELECTED, FINISHES, HOME_LEAD, RANGE } from "@/content/site";
 import { enquiry } from "@/lib/enquiry";
 import { ImageNote } from "./ImageNote";
 import { ClipReveal, MaskLine, ScrollExpand } from "./motion";
@@ -37,9 +37,17 @@ export function HomeBedding() {
 
       <div className="shell grid gap-10 pt-[var(--space-continue)] lg:grid-cols-12 lg:gap-x-10">
         <div className="lg:col-span-5">
-          <p className="copy text-ink">
-            Our most developed line: knitted bed linen for brands selling in Australia, Europe and
-            the USA, made in the fibres each programme calls for.
+          <p className="copy text-ink">{HOME_LEAD}</p>
+          <dl className="mt-8 border-b border-rule">
+            {BEDDING_SELECTED.map((item) => (
+              <div key={item.text} className="flex flex-wrap items-baseline justify-between gap-x-6 border-t border-rule py-4">
+                <dt className="text-[0.9375rem] text-ink-soft">{item.text}</dt>
+                <dd className="display text-[1.8rem] leading-none text-ink tabular">{item.value}</dd>
+              </div>
+            ))}
+          </dl>
+          <p className="mt-3 text-sm text-ink-soft">
+            Selected reference capabilities, confirmed for each construction and finish.
           </p>
           <a
             href="#contact"
@@ -56,10 +64,10 @@ export function HomeBedding() {
             {RANGE.map((item) => (
               <li
                 key={item.name}
-                className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 border-b border-rule py-4"
+                className="grid gap-x-6 gap-y-1.5 border-b border-rule py-4 sm:grid-cols-[minmax(0,15rem)_1fr]"
               >
                 <p className="display text-[1.8rem] leading-none text-ink">{item.name}</p>
-                <p className="text-[0.9375rem] text-ink-soft">{item.fibres}</p>
+                <p className="text-[0.9375rem] text-ink-soft">{item.note}</p>
               </li>
             ))}
           </ul>
@@ -67,16 +75,22 @@ export function HomeBedding() {
       </div>
 
       <div className="shell pt-[var(--space-continue)] pb-[var(--space-section)]">
-        <ClipReveal>
-          <h3 className="display text-[clamp(1.9rem,3.2vw,3.2rem)] text-ink">
-            Finished to specification.
-          </h3>
-        </ClipReveal>
-        <ul className="mt-8 grid gap-x-10 gap-y-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-6 lg:grid-cols-12 lg:items-end lg:gap-x-10">
+          <ClipReveal className="lg:col-span-6">
+            <h3 className="display text-[clamp(1.9rem,3.2vw,3.2rem)] text-ink">
+              Finished to the application.
+            </h3>
+          </ClipReveal>
+          <p className="max-w-[52ch] text-[1rem] text-ink-soft lg:col-span-5 lg:col-start-8">
+            Finishes are application-specific. Each functional claim is developed and validated
+            against the intended application, your specification and the applicable testing
+            standards.
+          </p>
+        </div>
+        <ul className="mt-8 grid gap-x-10 sm:grid-cols-2 lg:grid-cols-5">
           {FINISHES.map((finish) => (
-            <li key={finish.title} className="border-t border-rule pt-4">
-              <p className="text-[1rem] font-medium text-ink">{finish.title}</p>
-              <p className="mt-1 text-[1rem] text-ink-soft">{finish.body}</p>
+            <li key={finish} className="border-t border-rule py-3.5 text-[1rem] font-medium text-ink">
+              {finish}
             </li>
           ))}
         </ul>

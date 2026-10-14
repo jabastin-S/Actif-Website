@@ -106,7 +106,7 @@ export function Contact() {
         <address className="mt-10 grid grid-cols-2 gap-x-6 gap-y-6 border-t border-rule-dark pt-7 not-italic lg:mt-12 lg:grid-cols-4">
           <div className="col-span-2 sm:col-span-1">
             <p className="text-sm text-on-dark-soft">Company</p>
-            <p className="mt-1 text-[0.9375rem]">{COMPANY.legalName}</p>
+            <p className="mt-1 text-[0.9375rem]">{COMPANY.name}</p>
             <p className="text-[0.9375rem] text-on-dark-soft">{COMPANY.location}</p>
           </div>
           <div>
@@ -135,9 +135,11 @@ export function Contact() {
         </address>
 
         <form noValidate onSubmit={onSubmit} aria-describedby="form-note" className="mt-12 max-w-[64rem] lg:mt-16">
-          <p className="mb-8 max-w-[48ch] text-on-dark-soft">
-            Tell us the application, the product and the market. Prefer to talk it through? Use the
-            voice assistant at the bottom right of this page.
+          <p className="mb-8 max-w-[52ch] text-on-dark-soft">
+            Tell us what you are making, how the fabric should feel and perform, and whether you
+            need a sample development or a commercial programme. Technical details help, but you
+            do not need them to start. Prefer to talk it through? Use the voice assistant at the
+            bottom right of this page.
           </p>
           <div className="grid gap-x-10 gap-y-6 sm:grid-cols-2 sm:gap-y-7">
             <div>

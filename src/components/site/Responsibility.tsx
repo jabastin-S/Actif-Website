@@ -1,4 +1,4 @@
-import { PILLARS, SDGS, STANDARDS } from "@/content/site";
+import { PILLARS, RESPONSIBLE_MATERIALS } from "@/content/site";
 
 const lower = (item: string) =>
   item.startsWith("Digital") ? item : item.charAt(0).toLowerCase() + item.slice(1);
@@ -16,11 +16,12 @@ export function Responsibility() {
             id="responsibility-title"
             className="display max-w-[16ch] text-[clamp(2.8rem,7vw,6rem)] text-ink lg:col-span-7"
           >
-            Responsibility is part of the process.
+            Responsible choices, from fibre to governance.
           </h2>
           <p className="copy text-ink lg:col-span-5 lg:col-start-8 lg:pb-2">
-            ESG is built into each stage of manufacturing rather than added afterwards, with Digital
-            Product Passport and traceability readiness for the markets we ship to.
+            Our sustainability framework covers environmental, social and governance areas, with
+            growing alignment to export-market readiness, ESG integration, traceability and
+            digital readiness.
           </p>
         </div>
 
@@ -36,37 +37,30 @@ export function Responsibility() {
         </div>
 
         <div className="mt-14 grid gap-12 lg:mt-20 lg:grid-cols-12 lg:gap-x-10">
-          <div className="lg:col-span-5">
+          <div className="lg:col-span-6">
             <h3 className="display text-[clamp(1.9rem,3vw,2.8rem)] text-ink">
-              Standards and frameworks we work to.
-            </h3>
-            <ul className="mt-6 space-y-2">
-              {STANDARDS.map((group) => (
-                <li key={group.group} className="flex flex-wrap items-baseline gap-x-4">
-                  <span className="display text-[1.5rem] text-ink">{group.names.join(", ")}</span>
-                  <span className="text-sm text-ink-soft">{group.group}</span>
-                </li>
-              ))}
-            </ul>
-            <p className="mt-5 max-w-[44ch] text-sm text-ink-soft">
-              Listed as supplied by ACTIF. Certificate scope and validity are confirmed on request.
-            </p>
-          </div>
-
-          <div className="lg:col-span-6 lg:col-start-7">
-            <h3 className="display text-[clamp(1.9rem,3vw,2.8rem)] text-ink">
-              UN Global Goals we work towards.
+              Responsible material pathways.
             </h3>
             <ul className="mt-6 grid gap-x-8 sm:grid-cols-2">
-              {SDGS.map((goal) => (
-                <li key={goal.no} className="flex items-baseline gap-4 border-t border-rule py-3.5">
-                  <span className="display w-9 shrink-0 text-[1.6rem] leading-none text-olive tabular">
-                    {goal.no}
-                  </span>
-                  <p className="text-[0.9375rem] text-ink">{goal.title}</p>
+              {RESPONSIBLE_MATERIALS.map((item) => (
+                <li key={item} className="border-t border-rule py-3.5 text-[0.9375rem] text-ink">
+                  {item}
                 </li>
               ))}
             </ul>
+          </div>
+
+          <div className="lg:col-span-5 lg:col-start-8">
+            <h3 className="display text-[clamp(1.9rem,3vw,2.8rem)] text-ink">
+              Certification and documentation.
+            </h3>
+            <p className="mt-6 border-t border-rule pt-4 text-[1rem] text-ink">
+              We share certifications and sustainability claims only when they are currently
+              valid, apply to the operation or product in question, and are officially authorised.
+            </p>
+            <p className="mt-4 text-[0.9375rem] text-ink-soft">
+              Ask us for the documentation that applies to your programme.
+            </p>
           </div>
         </div>
       </div>

@@ -21,14 +21,15 @@ Buyers evaluate by application (home textiles and bedding; upholstery and interi
 ## Capabilities and Constraints
 - Single route `/` (TanStack Start, React 19, Tailwind v4, motion, lucide-react, Radix). No backend; the contact form has no endpoint, so it hands off by mailto.
 - Millis AI web SDK voice agent (public key + agent id from env) must stay in place as a small bottom-right orb: no modal, page, or route change.
-- Home textiles is the documented flagship: bed sheets, fitted sheets, pillow cases, duvet covers, baby collection, hospitality collection; export focus Australia, Europe, USA; claimed capacity 150 MT greige / 50 MT finished fabric / 5 containers per month; certifications listed in the source: GOTS, OEKO-TEX, SEDEX, ZDHC; six UN SDGs (6, 7, 8, 9, 12, 13).
-- Open: detail, capacity and proof for upholstery, industrial and medical sectors are not in the source; never invent it. Certificate scope, validity and numbers are unconfirmed.
+- Source of truth for every company fact: `docs/actif-knowledge-base.txt` (the consolidated knowledge base, also used by the Millis agent). It supersedes the original brief in README.md. Site copy lives in `src/content/site.ts` with `KB §n` references.
+- Keep the knowledge base's qualifiers: upholstery, industrial and medical solutions are "selected"; bedding figures (150-160 GSM jersey, up to 118 in / 300 cm width) are "selected reference capabilities"; finishes are "options" validated per application; capacity figures (200+ machines, ~40 T/day knitting, 150 T/month greige, ~50 T/month finished) are stated at different stages and never equated.
+- Removed on the knowledge base's authority and not to be reintroduced without new evidence: GOTS, OEKO-TEX, SEDEX and ZDHC, the six UN SDGs, "5 containers a month", the baby collection, the legal name "Pvt Ltd" for ACTIF, solar and wind energy, quick sample-to-bulk turnaround.
 
 ## Brand Commitments
-Name "ACTIF" (typeset wordmark; no logo file exists in the repo) / ACTIF GLOBAL VENTURES PVT LTD. Contact on file: info@actif.ltd, +91 98946 02235, actif.ltd, Tiruppur (also spelled Tirupur), Tamil Nadu, India.
+Name "ACTIF" (typeset wordmark; no logo file exists in the repo) / ACTIF Global Ventures, a unit of Vani Fabrics Pvt. Ltd. Contact: info@actif.ltd, actif.ltd, Tiruppur (also spelled Tirupur), Tamil Nadu, India. Phone +91 98946 02235 is kept on the site at the owner's instruction (2026-10-14); the knowledge base still marks it unconfirmed, so the Millis agent will not give it until the knowledge base is updated.
 
 ## Evidence on Hand
-Four textile JPGs in `src/assets`. No certificates, client names, case studies, factory photography, logo file or hero video. Hero video path reserved: `/public/assets/videos/actif-textile-hero.mp4`.
+The consolidated knowledge base (`docs/actif-knowledge-base.txt`). Four textile JPGs in `src/assets`. No certificates, client names, case studies, factory photography, logo file or hero video. Hero video path reserved: `/public/assets/videos/actif-textile-hero.mp4`.
 
 ## Product Principles
 1. Facts first: nothing claimed that the source does not support.

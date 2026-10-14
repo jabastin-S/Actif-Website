@@ -50,12 +50,12 @@ export function Hero() {
           className="display area-title text-[clamp(2.6rem,11.2vw,4.5rem)] text-ink md:text-[clamp(3.8rem,7.6vw,5.1rem)] xl:text-[clamp(4.6rem,6.7vw,6rem)]"
         >
           <span className="sr-only">ACTIF Global Ventures: </span>
-          <MaskLine immediate>Knitted textiles</MaskLine>
+          <MaskLine immediate>Engineered knitted</MaskLine>
           <MaskLine immediate delay={0.09}>
-            for home, interiors,
+            textiles for
           </MaskLine>
           <MaskLine immediate delay={0.18}>
-            industry and <em>care.</em>
+            <em>elevated</em> living.
           </MaskLine>
         </motion.h1>
 
@@ -79,9 +79,9 @@ export function Hero() {
         </div>
 
         <div className="area-text self-end [animation:rise-in_0.9s_var(--ease-out)_0.7s_both]">
-          <p className="max-w-[34ch] text-[1.0625rem] leading-relaxed text-ink-soft">
-            Developed and made in Tiruppur, India. A unit of {COMPANY.parent}, with textile heritage
-            since {COMPANY.heritageYear}.
+          <p className="max-w-[36ch] text-[1.0625rem] leading-relaxed text-pretty text-ink-soft">
+            Not simply a fabric supplier: a development partner for knitted textiles. A unit of{" "}
+            {COMPANY.parent}, Tiruppur, with textile heritage since {COMPANY.heritageYear}.
           </p>
           <div className="mt-6 flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-8 xl:flex-col xl:items-start xl:gap-1">
             <a href="#applications" className="btn w-full sm:w-auto sm:min-w-64">
