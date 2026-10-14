@@ -1,0 +1,280 @@
+import type * as ThreeModule from "three";
+
+export interface FabricScene {
+  /** Scroll progress through the section, 0 (plate entering) to 1 (plate leaving). */
+  setScroll(progress: number): void;
+  /** Close-up of the stitches; the pointer then moves the close-up across the fabric. */
+  setInspect(on: boolean): void;
+  dispose(): void;
+}
+
+interface Options {
+  /** Element the canvas is appended to. */
+  host: HTMLElement;
+  /** The plate: pointer input is read from it. */
+  frame: HTMLElement;
+  lite: boolean;
+  /** Read live, so a change of preference applies without a reload. */
+  motionOk: () => boolean;
+  modelUrl: string;
+}
+
+/* ---------- Composition ---------- */
+
+// the cloth lies tilted away from the viewer so its folds read in depth and the light rakes across
+const TILT = { x: -0.62, y: 0.06, z: -0.1 };
+const PARALLAX = { x: 0.05, y: 0.07 };
+const INSPECT = { distance: 0.26, target: [0.7, -0.35], roam: 1.4 };
+const VIEW_HEIGHT = 6.4; // world units visible top to bottom at the default composition
+
+const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v));
+const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+
+/** Wider as the plate enters, closest to the knit as it is centred, the default as it leaves. */
+function scrollShot(q: number) {
+  const inward = easeInOut(clamp(q / 0.5, 0, 1));
+  const outward = easeInOut(clamp((q - 0.5) / 0.5, 0, 1));
+  return {
+    distance: q < 0.5 ? lerp(1.14, 0.62, inward) : lerp(0.62, 1, outward),
+    tilt: q < 0.5 ? lerp(-0.74, -0.56, inward) : lerp(-0.56, TILT.x, outward),
+  };
+}
+
+export async function createFabricScene(options: Options): Promise<FabricScene> {
+  const { host, frame, lite, motionOk, modelUrl } = options;
+  const [THREE, { GLTFLoader }, { MeshoptDecoder }, { RoomEnvironment }] = await Promise.all([
+    import("three"),
+    import("three/examples/jsm/loaders/GLTFLoader.js"),
+    import("three/examples/jsm/libs/meshopt_decoder.module.js"),
+    import("three/examples/jsm/environments/RoomEnvironment.js"),
+  ]);
+
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
+  let pixelRatio = Math.min(window.devicePixelRatio, lite ? 1.5 : 2);
+  renderer.setPixelRatio(pixelRatio);
+  renderer.toneMapping = THREE.NeutralToneMapping;
+  renderer.shadowMap.enabled = !lite;
+  renderer.shadowMap.type = THREE.PCFShadowMap;
+  renderer.domElement.setAttribute("aria-hidden", "true");
+  renderer.domElement.className = "block h-full w-full";
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(30, 1, 0.05, 100);
+
+  // textile product lighting: soft studio environment, a wide raking key from the upper left
+  // that lets the folds shadow themselves, a cool low fill, and a warm light under the pointer
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  const environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+  pmrem.dispose();
+  scene.environment = environment;
+  scene.environmentIntensity = 0.32;
+  const key = new THREE.SpotLight(0xffeedb, 3.4, 0, 0.62, 1, 0);
+  key.position.set(-10, 6, 7.5); // lower, so it rakes across the folds
+  key.castShadow = !lite;
+  key.shadow.mapSize.setScalar(2048);
+  key.shadow.bias = -0.0004;
+  key.shadow.normalBias = 0.03;
+  key.shadow.radius = 4;
+  key.shadow.camera.near = 6;
+  key.shadow.camera.far = 30;
+  const fill = new THREE.DirectionalLight(0xeee4d6, 0.4); // warm: cotton in shadow stays warm
+  fill.position.set(8, -3, 7);
+  const sky = new THREE.HemisphereLight(0xfff3e2, 0x3a3226, 0.3);
+  const pointer = new THREE.PointLight(0xfff0d8, 0, 3.2, 2);
+  scene.add(key, key.target, fill, sky, pointer);
+
+  const gltf = await new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync(modelUrl);
+  const cloth = gltf.scene;
+  const meshes: ThreeModule.Mesh[] = [];
+  const maxAnisotropy = renderer.capabilities.getMaxAnisotropy();
+  cloth.traverse((object) => {
+    const mesh = object as ThreeModule.Mesh;
+    if (!mesh.isMesh) return;
+    meshes.push(mesh);
+    mesh.castShadow = !lite;
+    mesh.receiveShadow = !lite;
+    // the knit is fine and seen at an angle: full anisotropic filtering keeps it crisp, not smeared
+    for (const value of Object.values(mesh.material as ThreeModule.Material)) {
+      if (value instanceof THREE.Texture) value.anisotropy = maxAnisotropy;
+    }
+  });
+  const swatch = new THREE.Group();
+  swatch.add(cloth);
+  swatch.rotation.set(TILT.x, TILT.y, TILT.z);
+  scene.add(swatch);
+
+  /* ---------- State ---------- */
+
+  const view = {
+    scroll: 1,
+    px: 0, // pointer, -1..1 across the plate
+    py: 0,
+    pxTarget: 0,
+    pyTarget: 0,
+    inspect: 0,
+    inspectTarget: 0,
+    light: 0,
+    lightTarget: 0,
+  };
+  let baseDistance = 12;
+  const pointerNdc = new THREE.Vector2();
+
+  const fit = () => {
+    const { width, height } = frame.getBoundingClientRect();
+    if (!width || !height) return;
+    renderer.setSize(width, height, false);
+    camera.aspect = width / height;
+    const halfV = THREE.MathUtils.degToRad(camera.fov / 2);
+    baseDistance = VIEW_HEIGHT / 2 / Math.tan(halfV) / Math.min(1, camera.aspect / (4 / 3));
+    camera.updateProjectionMatrix();
+  };
+
+  const raycaster = new THREE.Raycaster();
+  const hits: ThreeModule.Intersection[] = [];
+  const focus = new THREE.Vector3();
+
+  /** Ease towards targets and place camera and lights; true while anything is still moving. */
+  const step = () => {
+    const instant = !motionOk();
+    const k = instant ? 1 : 0.1;
+    view.px += (view.pxTarget - view.px) * k;
+    view.py += (view.pyTarget - view.py) * k;
+    view.inspect += (view.inspectTarget - view.inspect) * (instant ? 1 : 0.075);
+    view.light += (view.lightTarget - view.light) * (instant ? 1 : 0.12);
+    const moving =
+      Math.abs(view.pxTarget - view.px) > 1e-4 ||
+      Math.abs(view.pyTarget - view.py) > 1e-4 ||
+      Math.abs(view.inspectTarget - view.inspect) > 1e-4 ||
+      Math.abs(view.lightTarget - view.light) > 1e-3;
+
+    const shot = motionOk() ? scrollShot(view.scroll) : { distance: 1, tilt: TILT.x };
+    const inspect = easeInOut(clamp(view.inspect, 0, 1));
+    const parallax = motionOk() ? 1 - inspect : 0;
+    swatch.rotation.set(
+      lerp(shot.tilt, TILT.x - 0.04, inspect) + view.py * PARALLAX.x * parallax,
+      TILT.y + view.px * PARALLAX.y * parallax,
+      TILT.z,
+    );
+    // in close-up the pointer roams the view across the cloth, like moving a loupe
+    focus.set(
+      lerp(0, INSPECT.target[0]! + view.px * INSPECT.roam, inspect),
+      lerp(0, INSPECT.target[1]! + view.py * INSPECT.roam * 0.75, inspect),
+      lerp(0, 0.55, inspect), // the cloth's surface sits above its base plane on the folds
+    );
+    // move the cloth so the focused point on it sits at the centre of view
+    swatch.position.copy(focus).applyEuler(swatch.rotation).negate();
+    const distance = baseDistance * lerp(shot.distance, INSPECT.distance, inspect);
+    camera.position.set(0, 0, distance);
+    camera.lookAt(0, 0, 0);
+
+    // the pointer light rides just above the fabric under the cursor
+    if (view.light > 0.002) {
+      raycaster.setFromCamera(pointerNdc, camera);
+      hits.length = 0;
+      raycaster.intersectObjects(meshes, false, hits);
+      const hit = hits[0];
+      if (hit) {
+        const lift = lerp(0.9, 0.35, inspect);
+        pointer.position.copy(hit.point).addScaledVector(raycaster.ray.direction, -lift);
+        pointer.distance = lerp(3.2, 1.4, inspect);
+      }
+    }
+    pointer.intensity = view.light * (lite ? 2.4 : 3.2) * lerp(1, 0.6, inspect);
+    return moving;
+  };
+
+  // render on demand: a loop runs only while something is moving, then stops
+  let frameId = 0;
+  let last = 0;
+  const slow: number[] = [];
+  const loop = (now: number) => {
+    frameId = 0;
+    const moving = step();
+    renderer.render(scene, camera);
+    if (last) {
+      slow.push(now - last);
+      if (slow.length > 40) slow.shift();
+      if (slow.length === 40 && slow.reduce((a, b) => a + b, 0) / 40 > 30 && pixelRatio > 1) {
+        pixelRatio = Math.max(1, pixelRatio - 0.5); // adaptive resolution if frames run long
+        renderer.setPixelRatio(pixelRatio);
+        fit();
+        slow.length = 0;
+      }
+    }
+    last = moving ? now : 0;
+    if (moving) frameId = requestAnimationFrame(loop);
+  };
+  const kick = () => {
+    if (!frameId) frameId = requestAnimationFrame(loop);
+  };
+
+  /* ---------- Input ---------- */
+
+  const onMove = (event: PointerEvent) => {
+    const box = frame.getBoundingClientRect();
+    const x = ((event.clientX - box.left) / box.width) * 2 - 1;
+    const y = -(((event.clientY - box.top) / box.height) * 2 - 1);
+    pointerNdc.set(x, y);
+    view.pxTarget = clamp(x, -1, 1);
+    view.pyTarget = clamp(y, -1, 1);
+    if (event.pointerType === "mouse") view.lightTarget = 1;
+    kick();
+  };
+  const onLeave = () => {
+    view.lightTarget = 0;
+    if (!view.inspectTarget) {
+      view.pxTarget = 0;
+      view.pyTarget = 0;
+    }
+    kick();
+  };
+  frame.addEventListener("pointermove", onMove);
+  frame.addEventListener("pointerleave", onLeave);
+
+  const resize = new ResizeObserver(() => {
+    fit();
+    kick();
+  });
+  resize.observe(frame);
+
+  fit();
+  host.appendChild(renderer.domElement);
+  kick();
+  if (import.meta.env.DEV) {
+    // QA handle in development only
+    (window as unknown as { __fabric?: object }).__fabric = { camera, swatch, view, renderer };
+  }
+
+  return {
+    setScroll(progress) {
+      view.scroll = clamp(progress, 0, 1);
+      kick();
+    },
+    setInspect(on) {
+      view.inspectTarget = on ? 1 : 0;
+      if (!on) {
+        view.pxTarget = 0;
+        view.pyTarget = 0;
+      }
+      kick();
+    },
+    dispose() {
+      cancelAnimationFrame(frameId);
+      resize.disconnect();
+      frame.removeEventListener("pointermove", onMove);
+      frame.removeEventListener("pointerleave", onLeave);
+      const textures = new Set<ThreeModule.Texture>();
+      for (const mesh of meshes) {
+        mesh.geometry.dispose();
+        const material = mesh.material as ThreeModule.Material;
+        for (const value of Object.values(material)) if (value instanceof THREE.Texture) textures.add(value);
+        material.dispose();
+      }
+      textures.forEach((texture) => texture.dispose());
+      environment.dispose();
+      renderer.dispose();
+      renderer.domElement.remove();
+    },
+  };
+}

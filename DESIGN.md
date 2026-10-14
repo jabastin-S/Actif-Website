@@ -21,7 +21,7 @@ Warm and mineral, with one cool note for technical and clinical chapters.
 | `--on-dark` / `--on-dark-soft` | text on charcoal and olive-deep |
 
 Ground sequence: ivory (hero, heritage), linen, charcoal, photograph + ivory, stone, charcoal, mist,
-photograph + ivory, olive, linen, charcoal photograph, charcoal.
+photograph + ivory, olive, linen, ivory (accreditations, charcoal plate), charcoal photograph, charcoal.
 
 ## Type
 
@@ -51,7 +51,10 @@ photograph + ivory, olive, linen, charcoal photograph, charcoal.
 7. **Industrial:** dark, type-led, small macro, horizontal prompt row. **Medical:** the only centred chapter.
 8. **Process:** photographic band carrying "Understand the product. Engineer the textile. Deliver it
    consistently.", then the eight development steps in a ruled grid and the manufacturing journey row.
-9. **Capacity, Responsibility, Transition, Contact, Footer.**
+9. **Capacity, Responsibility, Accreditations, Transition, Contact, Footer.** Responsibility carries
+   the ESG pillars, then material pathways. Accreditations is its own chapter on ivory: the claim and
+   documentation note beside the knit plate, then the four standards as a ruled band
+   (`.ruled-cells`: hairlines drawn as cell borders).
 
 Rules: images and controls are square-edged; depth comes from overlap (hero plates, upholstery heading) and
 two soft shadows (dropdown, print border); content max width 1520px.
@@ -95,6 +98,22 @@ heritage macro, the Materials studies, the industrial macro. Room photographs us
 - **Reveals:** masked heading lines (heritage, Home & Bedding, upholstery, manufacturing, capacity rows,
   transition, contact); clip reveals with an image settle (applications, the second card of each pair a
   beat later; medical); process stages arrive as a list (stagger capped at 0.21s).
+- **Knit plate (accreditations), v4:** a draped swatch of fine cotton single jersey, the way a
+  textile sample is photographed (v1-v3 showed a few large twisted loops that read as chain mail).
+  Model: `public/models/cotton-jersey-v4.glb` from `npm run build:model`
+  (`scripts/build-knit-glb.mjs`): a 16 x 12 cloth in soft folds (fold-valley shading and gentle
+  tonal variation in vertex colours) carrying a seamless 4 x 6 stitch jersey tile baked from a
+  yarn-level 3D model into albedo, normal and occlusion/roughness maps (6.6% open area in the knit,
+  fibre striations twisting along each soft single yarn); about 55 wales across the plate.
+  Scene (`src/components/site/knit/fabric-scene.ts`, lazy): textile product lighting (studio
+  environment, a wide raking key that lets the folds shadow themselves, warm low fill), full
+  anisotropic filtering so the knit stays crisp at an angle, Khronos Neutral tone mapping.
+  Interaction (`src/components/site/KnitModel.tsx`): gentle pointer parallax and a warm light that
+  rakes the fibres under the cursor; scroll moves the view from the drape in towards the knit and
+  back (no pinning); Inspect stitches / Full view (Esc) brings the knit up close, where the pointer
+  moves the close-up across the cloth like a loupe. Frames render on demand (0 draws idle, 2 draws
+  a frame); reduced motion: no scroll movement, parallax or transitions; no WebGL: the poster (the
+  default composition) stays and the button hides. Earlier versions: `assets-source/models/`.
 - **Materials gallery:** arrow keys, Home/End, mouse drag, previous/next snapping to studies, a
   `01 / 05` position counter, scroll progress bound to a motion value, and on fine pointers a close-up that
   zooms 1.75x toward the cursor (`.loupe`).

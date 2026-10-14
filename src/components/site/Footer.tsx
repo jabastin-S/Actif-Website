@@ -7,6 +7,7 @@ const LINKS = [
   { href: "#manufacturing", label: "Process" },
   { href: "#capabilities", label: "Capabilities" },
   { href: "#responsibility", label: "Responsibility" },
+  { href: "#accreditations", label: "Accreditations" },
   { href: "#contact", label: "Contact" },
 ];
 

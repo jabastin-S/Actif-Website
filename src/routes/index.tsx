@@ -9,6 +9,7 @@ import { Industrial, Medical, Upholstery } from "@/components/site/Sectors";
 import { Process } from "@/components/site/Process";
 import { Capacity } from "@/components/site/Capacity";
 import { Responsibility } from "@/components/site/Responsibility";
+import { Accreditations } from "@/components/site/Accreditations";
 import { Transition } from "@/components/site/Transition";
 import { Contact } from "@/components/site/Contact";
 import { Footer } from "@/components/site/Footer";
@@ -39,6 +40,7 @@ function Index() {
         <Process />
         <Capacity />
         <Responsibility />
+        <Accreditations />
         <Transition />
         <Contact />
       </main>

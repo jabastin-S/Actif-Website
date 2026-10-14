@@ -3,9 +3,9 @@
  *
  * Source of truth: "ACTIF Global Ventures: Consolidated Knowledge Base" (the Millis agent
  * knowledge base). `// KB §n` points to the section each fact comes from. Nothing here goes
- * beyond it, with one exception kept at the owner's instruction: the phone number, which the
- * knowledge base marks as unconfirmed. The knowledge base's own qualifiers ("selected",
- * "options", "subject to validation") are kept wherever it uses them.
+ * beyond it, with two exceptions supplied by the owner on 2026-10-14: the phone number, which
+ * the knowledge base marks as unconfirmed, and the accreditations list. The knowledge base's
+ * own qualifiers ("selected", "options", "subject to validation") are kept wherever it uses them.
  */
 
 export const COMPANY = {
@@ -157,6 +157,18 @@ export const PILLARS = [
     name: "Governance",
     items: ["Compliance", "Supply-chain transparency", "Traceability", "Digital Product Passport readiness", "Continuous improvement"],
   },
+] as const;
+
+/**
+ * Owner-supplied from ACTIF's reference material (2026-10-14); not in the knowledge base, which
+ * asks that certifications be shown only when currently valid and authorised. Confirm certificate
+ * scope and validity before launch.
+ */
+export const ACCREDITATIONS = [
+  { name: "OEKO-TEX®", body: "Standard 100: confidence in textiles, tested for harmful substances." },
+  { name: "GOTS", body: "Global Organic Textile Standard: certified organic processing." },
+  { name: "GRS", body: "Global Recycled Standard: verified recycled content and traceability." },
+  { name: "BCI", body: "Better Cotton Initiative: sustainably sourced cotton fibre." },
 ] as const;
 
 export const RESPONSIBLE_MATERIALS = [

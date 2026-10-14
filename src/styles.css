@@ -246,6 +246,28 @@
   padding-inline: var(--gutter);
 }
 
+/* Hairlines between the cells of a 1-, 2- or 4-column grid (accreditations). Drawn as cell
+   borders rather than a gap over a ruled ground, which leaks a pixel at fractional widths. */
+.ruled-cells > * + * {
+  border-top: 1px solid var(--rule);
+}
+@media (min-width: 40rem) {
+  .ruled-cells > :nth-child(2) {
+    border-top-width: 0;
+  }
+  .ruled-cells > :nth-child(even) {
+    border-left: 1px solid var(--rule);
+  }
+}
+@media (min-width: 64rem) {
+  .ruled-cells > :nth-child(n) {
+    border-top-width: 0;
+  }
+  .ruled-cells > :nth-child(n + 2) {
+    border-left: 1px solid var(--rule);
+  }
+}
+
 /* ---------- Hero composition ---------- */
 
 .hero-grid {

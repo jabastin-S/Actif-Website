@@ -8,7 +8,8 @@
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "build:model": "node --experimental-strip-types scripts/build-knit-glb.mjs"
   },
   "overrides": {
     "rolldown": "1.2.1"
@@ -64,6 +65,7 @@
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.5.0",
     "tailwindcss": "^4.2.1",
+    "three": "^0.186.1",
     "tw-animate-css": "^1.3.4",
     "vaul": "^1.1.2",
     "vite-tsconfig-paths": "^6.0.2",
@@ -71,15 +73,21 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",
+    "@gltf-transform/core": "^4.5.1",
+    "@gltf-transform/extensions": "^4.5.1",
+    "@gltf-transform/functions": "^4.5.1",
     "@playwright/test": "^1.64.0",
     "@types/node": "^22.16.5",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
+    "@types/three": "^0.186.0",
     "@vitejs/plugin-react": "^5.2.0",
     "eslint": "^9.32.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^15.15.0",
+    "jpeg-js": "^0.4.4",
+    "meshoptimizer": "^1.3.0",
     "nitro": "3.0.260603-beta",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.56.1",

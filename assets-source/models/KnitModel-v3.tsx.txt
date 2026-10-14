@@ -1,0 +1,224 @@
+import { useScroll } from "motion/react";
+import { RotateCcw, ZoomIn, ZoomOut } from "lucide-react";
+import { useEffect, useRef, useState, type KeyboardEvent } from "react";
+import { useReached } from "@/lib/motion-hooks";
+import { useMotionOk } from "@/lib/use-motion-ok";
+import { cn } from "@/lib/utils";
+import type { KnitScene, Structure } from "./knit/knit-scene";
+
+/** Desktop and phone builds of the same swatch (scripts/build-knit-glb.mjs). */
+const MODEL = "/models/knit-jersey-v3.glb";
+const MODEL_LITE = "/models/knit-jersey-v3-lite.glb";
+const POSTER = "/images/knit-lattice-poster.webp";
+
+const STRUCTURES: { id: Structure; label: string }[] = [
+  { id: "jersey", label: "Cotton jersey" },
+  { id: "rib", label: "Fine rib" },
+  { id: "technical", label: "Technical knit" },
+];
+
+const CONTROL =
+  "inline-flex min-h-11 items-center gap-2 px-3 text-sm font-medium transition-colors duration-200 disabled:pointer-events-none disabled:opacity-40";
+
+/**
+ * The knit plate: a dense swatch of single jersey drawn at yarn level (three plies per yarn,
+ * fibre detail, baked contact shadow) that visitors can turn, zoom and inspect. Scrolling past
+ * it moves the camera in towards the stitches and back; the pointer carries a soft raking light;
+ * three structures (jersey, rib, technical) can be compared as visual explorations.
+ *
+ * three.js and the scene load only when the plate is near the viewport; frames render only while
+ * something changes. The poster is the finished swatch: shown before load, without WebGL and in
+ * the server render. Reduced motion: no scroll-driven camera and no transitions; the visitor's
+ * own turning and zooming still work.
+ */
+export function KnitModel({ className }: { className?: string }) {
+  const plate = useRef<HTMLDivElement>(null);
+  const host = useRef<HTMLDivElement>(null);
+  const motionOk = useMotionOk();
+  const motionRef = useRef(motionOk);
+  motionRef.current = motionOk;
+  const near = useReached(plate, 1.8);
+  const { scrollYProgress } = useScroll({ target: plate, offset: ["start end", "end start"] });
+  const sceneRef = useRef<KnitScene | null>(null);
+  const [status, setStatus] = useState<"waiting" | "live" | "failed">("waiting");
+  const [structure, setStructure] = useState<Structure>("jersey");
+  const [inspect, setInspect] = useState(false);
+  const [interacted, setInteracted] = useState(false);
+  const [coarse, setCoarse] = useState(false);
+  const wanted = useRef({ structure, inspect });
+  wanted.current = { structure, inspect };
+
+  useEffect(() => setCoarse(window.matchMedia("(pointer: coarse)").matches), []);
+
+  useEffect(() => {
+    const frame = plate.current;
+    const mount = host.current;
+    if (!near || !frame || !mount) return;
+    let disposed = false;
+    // ?knit=lite|full forces a build for QA; otherwise narrow screens and constrained devices get lite
+    const forced = new URLSearchParams(window.location.search).get("knit");
+    const memory = (navigator as Navigator & { deviceMemory?: number }).deviceMemory ?? 8;
+    const constrained =
+      window.matchMedia("(max-width: 767px)").matches || memory <= 4 || (navigator.hardwareConcurrency ?? 8) <= 2;
+    const lite = forced === "lite" || (forced !== "full" && constrained);
+
+    import("./knit/knit-scene")
+      .then(({ createKnitScene }) =>
+        createKnitScene({
+          host: mount,
+          frame,
+          lite,
+          motionOk: () => motionRef.current,
+          modelUrl: lite ? MODEL_LITE : MODEL,
+          onInteract: () => setInteracted(true),
+        }),
+      )
+      .then((scene) => {
+        if (disposed) return scene.dispose();
+        sceneRef.current = scene;
+        scene.setScroll(scrollYProgress.get());
+        scene.setStructure(wanted.current.structure);
+        scene.setInspect(wanted.current.inspect);
+        setStatus("live");
+      })
+      .catch((error: unknown) => {
+        console.warn("Knit model unavailable; showing the poster.", error);
+        if (!disposed) setStatus("failed");
+      });
+
+    const unsubscribe = scrollYProgress.on("change", (value) => sceneRef.current?.setScroll(value));
+    return () => {
+      disposed = true;
+      unsubscribe();
+      sceneRef.current?.dispose();
+      sceneRef.current = null;
+    };
+  }, [near, scrollYProgress]);
+
+  useEffect(() => sceneRef.current?.setStructure(structure), [structure]);
+  useEffect(() => sceneRef.current?.setInspect(inspect), [inspect]);
+
+  const live = status === "live";
+
+  const onKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    const scene = sceneRef.current;
+    if (!scene) return;
+    const actions: Record<string, () => void> = {
+      ArrowLeft: () => scene.rotateBy(-0.08, 0),
+      ArrowRight: () => scene.rotateBy(0.08, 0),
+      ArrowUp: () => scene.rotateBy(0, -0.06),
+      ArrowDown: () => scene.rotateBy(0, 0.06),
+      "+": () => scene.zoomBy(0.85),
+      "=": () => scene.zoomBy(0.85),
+      "-": () => scene.zoomBy(1 / 0.85),
+      "0": () => {
+        setInspect(false);
+        scene.reset();
+      },
+      Escape: () => setInspect(false),
+    };
+    const action = actions[event.key];
+    if (!action) return;
+    event.preventDefault();
+    action();
+    setInteracted(true);
+  };
+
+  const hint = coarse
+    ? "Swipe sideways to turn it; pinch to zoom."
+    : "Drag to turn it; Ctrl + scroll or pinch to zoom; arrow keys work too.";
+
+  return (
+    <div className={className}>
+      <div
+        ref={plate}
+        role="application"
+        aria-roledescription="interactive 3D model"
+        aria-label="Knitted fabric. Drag, or use the arrow keys, to turn it; plus and minus zoom; 0 resets the view."
+        tabIndex={live ? 0 : -1}
+        onKeyDown={onKeyDown}
+        style={{ ["--knit-fog" as string]: "var(--charcoal)" }}
+        className={cn(
+          "grain relative aspect-[4/3] touch-pan-y select-none overflow-hidden bg-[radial-gradient(120%_95%_at_42%_36%,var(--charcoal-2),var(--charcoal)_72%)] outline-offset-4",
+          live && "cursor-grab active:cursor-grabbing",
+        )}
+      >
+        <img
+          src={POSTER}
+          alt=""
+          aria-hidden
+          loading="lazy"
+          decoding="async"
+          className={cn(
+            "absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ease-[var(--ease-out)]",
+            live && "opacity-0",
+          )}
+        />
+        <div
+          ref={host}
+          className={cn(
+            "absolute inset-0 opacity-0 transition-opacity duration-700 ease-[var(--ease-out)]",
+            live && "opacity-100",
+          )}
+        />
+        <span className="sr-only">
+          A model of single jersey knitting: courses of plied cotton yarn, each loop drawn through
+          the course below.
+        </span>
+      </div>
+
+      {status !== "failed" && (
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-x-6 gap-y-2">
+          <div role="group" aria-label="Knit structure, as a visual exploration" className="flex flex-wrap border border-rule">
+            {STRUCTURES.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                disabled={!live}
+                aria-pressed={structure === item.id}
+                onClick={() => setStructure(item.id)}
+                className={cn(
+                  CONTROL,
+                  structure === item.id ? "bg-charcoal text-on-dark" : "text-ink-soft hover:bg-linen hover:text-ink",
+                )}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+          <div className="flex items-center gap-1">
+            <button
+              type="button"
+              disabled={!live}
+              aria-pressed={inspect}
+              onClick={() => {
+                setInspect((value) => !value);
+                setInteracted(true);
+              }}
+              className={cn(CONTROL, "text-ink hover:bg-linen")}
+            >
+              {inspect ? <ZoomOut aria-hidden className="size-4" /> : <ZoomIn aria-hidden className="size-4" />}
+              {inspect ? "Full view" : "Inspect stitches"}
+            </button>
+            <button
+              type="button"
+              disabled={!live}
+              onClick={() => {
+                setInspect(false);
+                sceneRef.current?.reset();
+              }}
+              className={cn(CONTROL, "text-ink-soft hover:bg-linen hover:text-ink")}
+            >
+              <RotateCcw aria-hidden className="size-4" />
+              Reset view
+            </button>
+          </div>
+        </div>
+      )}
+      <p className="mt-3 text-sm text-ink-soft">
+        Visual explorations of knit structures, not product specifications.
+        {live && !interacted && <span className="hidden sm:inline"> {hint}</span>}
+      </p>
+    </div>
+  );
+}

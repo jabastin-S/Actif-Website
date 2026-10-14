@@ -36,32 +36,17 @@ export function Responsibility() {
           ))}
         </div>
 
-        <div className="mt-14 grid gap-12 lg:mt-20 lg:grid-cols-12 lg:gap-x-10">
-          <div className="lg:col-span-6">
-            <h3 className="display text-[clamp(1.9rem,3vw,2.8rem)] text-ink">
-              Responsible material pathways.
-            </h3>
-            <ul className="mt-6 grid gap-x-8 sm:grid-cols-2">
-              {RESPONSIBLE_MATERIALS.map((item) => (
-                <li key={item} className="border-t border-rule py-3.5 text-[0.9375rem] text-ink">
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div className="lg:col-span-5 lg:col-start-8">
-            <h3 className="display text-[clamp(1.9rem,3vw,2.8rem)] text-ink">
-              Certification and documentation.
-            </h3>
-            <p className="mt-6 border-t border-rule pt-4 text-[1rem] text-ink">
-              We share certifications and sustainability claims only when they are currently
-              valid, apply to the operation or product in question, and are officially authorised.
-            </p>
-            <p className="mt-4 text-[0.9375rem] text-ink-soft">
-              Ask us for the documentation that applies to your programme.
-            </p>
-          </div>
+        <div className="mt-16 grid gap-8 lg:mt-24 lg:grid-cols-12 lg:gap-x-10">
+          <h3 className="display text-[clamp(1.9rem,3vw,2.8rem)] text-ink lg:col-span-4">
+            Responsible material pathways.
+          </h3>
+          <ul className="grid gap-x-8 sm:grid-cols-2 lg:col-span-8 lg:grid-cols-3">
+            {RESPONSIBLE_MATERIALS.map((item) => (
+              <li key={item} className="border-t border-rule py-3.5 text-[0.9375rem] text-ink">
+                {item}
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </section>

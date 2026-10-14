@@ -1,0 +1,608 @@
+import type * as ThreeModule from "three";
+
+type Three = typeof ThreeModule;
+
+/** Knit structures the plate can show. All are visual explorations of the same yarn model. */
+export type Structure = "jersey" | "rib" | "technical";
+
+export interface KnitScene {
+  /** Scroll progress through the section, 0 (plate entering) to 1 (plate leaving). */
+  setScroll(progress: number): void;
+  setStructure(structure: Structure): void;
+  setInspect(on: boolean): void;
+  rotateBy(yaw: number, pitch: number): void;
+  zoomBy(factor: number): void;
+  reset(): void;
+  dispose(): void;
+}
+
+interface Options {
+  /** Element the canvas is appended to. */
+  host: HTMLElement;
+  /** The plate: pointer, touch and wheel input are read from it. */
+  frame: HTMLElement;
+  lite: boolean;
+  /** Read live, so a change of preference applies without a reload. */
+  motionOk: () => boolean;
+  modelUrl: string;
+  /** Called after any user-driven change of view (drag, pinch, wheel), e.g. to hide a hint. */
+  onInteract?: () => void;
+}
+
+/* ---------- Stitch grid (read from the model's asset extras; defaults match the generator) ---------- */
+
+const WALE = 1;
+let COURSE = 0.68;
+
+interface Layout {
+  cols: number;
+  rows: number;
+  /** horizontal scale of each stitch tile (rib contracts) */
+  sx: number;
+  /** uniform scale of the whole structure (technical is a finer gauge) */
+  gauge: number;
+  /** alternate wales turned to purl and set back */
+  rib: boolean;
+  fibres: number;
+  color: [number, number, number];
+  roughness: number;
+  sheen: number;
+  sheenColor: [number, number, number];
+  normal: number;
+}
+
+const LAYOUTS: Record<Structure, Layout> = {
+  jersey: { cols: 14, rows: 17, sx: 1, gauge: 1, rib: false, fibres: 1, color: [0.7, 0.58, 0.42], roughness: 1, sheen: 1, sheenColor: [0.86, 0.8, 0.7], normal: 1 },
+  rib: { cols: 16, rows: 17, sx: 0.86, gauge: 1, rib: true, fibres: 1, color: [0.74, 0.63, 0.48], roughness: 1, sheen: 1, sheenColor: [0.88, 0.82, 0.72], normal: 1 },
+  technical: { cols: 18, rows: 20, sx: 1, gauge: 0.78, rib: false, fibres: 0, color: [0.2, 0.22, 0.25], roughness: 0.6, sheen: 0.35, sheenColor: [0.62, 0.7, 0.78], normal: 0.55 },
+};
+const LITE_SCALE = 0.82; // fewer stitches on constrained devices
+const MAX_COLS = 18;
+const MAX_ROWS = 20;
+
+/* ---------- View ---------- */
+
+const DEFAULT_TILT = { x: 0.4, y: -0.36, z: 0.04 }; // oblique: the depth of the stitches reads
+const YAW_LIMIT = 0.55;
+const PITCH_LIMIT = 0.4;
+const ZOOM_MIN = 0.42;
+const ZOOM_MAX = 1.18;
+const INSPECT_ZOOM = 0.5;
+const COMBINED_MIN = 0.32;
+const COMBINED_MAX = 1.3;
+
+const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v));
+const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
+const hash = (c: number, r: number, k: number) => {
+  const v = Math.sin(c * 127.1 + r * 311.7 + k * 74.7) * 43758.5453;
+  return v - Math.floor(v);
+};
+
+/** Wide view entering, closest as the plate is centred, back to the default as it leaves. */
+function scrollDistance(q: number) {
+  return q < 0.5 ? lerp(1.3, 0.66, easeInOut(q / 0.5)) : lerp(0.66, 1, easeInOut((q - 0.5) / 0.5));
+}
+
+/** Any CSS colour (the site uses oklch tokens) as an sRGB hex, via a 1x1 canvas. */
+function cssToHex(color: string) {
+  const context = document.createElement("canvas").getContext("2d");
+  if (!context) return "#1c1b18";
+  context.fillStyle = color;
+  context.fillRect(0, 0, 1, 1);
+  const [r = 0, g = 0, b = 0] = context.getImageData(0, 0, 1, 1).data;
+  return `#${[r, g, b].map((v) => v.toString(16).padStart(2, "0")).join("")}`;
+}
+
+interface Pose {
+  x: number;
+  y: number;
+  z: number;
+  ry: number;
+  sx: number;
+  s: number;
+  /** 0 hidden, 1 shown; scales the stitch so arrivals and departures grow and shrink */
+  show: number;
+  fibres: number;
+}
+
+interface Slot {
+  c: number;
+  r: number;
+  variant: number;
+  tint: number;
+  from: Pose;
+  to: Pose;
+  now: Pose;
+  delay: number;
+}
+
+function poseFor(c: number, r: number, layout: Layout, lite: boolean): Pose {
+  const cols = Math.round(layout.cols * (lite ? LITE_SCALE : 1));
+  const rows = Math.round(layout.rows * (lite ? LITE_SCALE : 1));
+  const col = c - Math.floor(cols / 2);
+  const row = r - Math.floor(rows / 2);
+  const inside = c < cols && r < rows;
+  const purl = layout.rib && ((col % 2) + 2) % 2 === 1;
+  const g = layout.gauge;
+  return {
+    x: col * WALE * layout.sx * g,
+    y: row * COURSE * g,
+    // a purl wale is the knit loop seen from behind: turned half round and set back so its sinkers meet
+    z: purl ? -0.26 * g : 0,
+    ry: purl ? Math.PI : 0,
+    sx: layout.sx,
+    s: g,
+    show: inside ? 1 : 0,
+    fibres: layout.fibres,
+  };
+}
+
+export async function createKnitScene(options: Options): Promise<KnitScene> {
+  const { host, frame, lite, motionOk, modelUrl, onInteract } = options;
+  const [THREE, { GLTFLoader }, { MeshoptDecoder }, { RoomEnvironment }] = await Promise.all([
+    import("three"),
+    import("three/examples/jsm/loaders/GLTFLoader.js"),
+    import("three/examples/jsm/libs/meshopt_decoder.module.js"),
+    import("three/examples/jsm/environments/RoomEnvironment.js"),
+  ]);
+  const T: Three = THREE;
+
+  const renderer = new T.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
+  let pixelRatio = Math.min(window.devicePixelRatio, lite ? 1.5 : 2);
+  renderer.setPixelRatio(pixelRatio);
+  renderer.toneMapping = T.NeutralToneMapping;
+  renderer.shadowMap.enabled = !lite;
+  renderer.shadowMap.type = T.PCFShadowMap;
+  renderer.domElement.setAttribute("aria-hidden", "true");
+  renderer.domElement.className = "block h-full w-full";
+
+  const scene = new T.Scene();
+  const camera = new T.PerspectiveCamera(26, 1, 0.1, 200);
+
+  // light: soft studio environment, a raking soft-edged key that casts the contact shadows
+  // between overlapping loops, a cool rim, low fill, and a light that follows the pointer
+  const pmrem = new T.PMREMGenerator(renderer);
+  const environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+  pmrem.dispose();
+  scene.environment = environment;
+  scene.environmentIntensity = 0.2;
+  const key = new T.SpotLight(0xffecd2, 4.4, 0, 0.5, 0.9, 0);
+  key.position.set(-9, 11, 14);
+  key.castShadow = !lite;
+  key.shadow.mapSize.setScalar(2048);
+  key.shadow.bias = -0.0003;
+  key.shadow.normalBias = 0.02;
+  key.shadow.radius = 3.5;
+  key.shadow.camera.near = 8;
+  key.shadow.camera.far = 40;
+  const rim = new T.DirectionalLight(0xc6d6e8, 1.4);
+  rim.position.set(9, 4, -10);
+  const fill = new T.HemisphereLight(0xfff4e6, 0x17150f, 0.1);
+  const pointer = new T.PointLight(0xfff1dc, 0, 5, 2);
+  scene.add(key, key.target, rim, fill, pointer);
+
+  const backdrop = new T.Color(cssToHex(getComputedStyle(frame).getPropertyValue("--knit-fog").trim() || "#26241f"));
+  scene.fog = new T.Fog(backdrop, 10, 30);
+
+  const gltf = await new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync(modelUrl);
+  const extras = (gltf.asset as { extras?: { course?: number } }).extras;
+  if (typeof extras?.course === "number") COURSE = extras.course;
+
+  // The file's instanced stitches give us one geometry and material per variant (and its fibres);
+  // the site re-lays them out per structure with its own instance buffers. Quantised positions
+  // carry their dequantisation in the node transform, so it is baked into a float copy here.
+  const bake = (mesh: ThreeModule.Mesh) => {
+    mesh.updateMatrix();
+    const geometry = mesh.geometry.clone();
+    for (const name of ["position", "normal"]) {
+      const attribute = geometry.getAttribute(name);
+      if (!attribute) continue;
+      const out = new Float32Array(attribute.count * attribute.itemSize);
+      for (let i = 0; i < attribute.count; i++) {
+        for (let k = 0; k < attribute.itemSize; k++) out[i * attribute.itemSize + k] = attribute.getComponent(i, k);
+      }
+      geometry.setAttribute(name, new T.BufferAttribute(out, attribute.itemSize));
+    }
+    geometry.applyMatrix4(mesh.matrix);
+    return geometry;
+  };
+  const sources = new Map<string, { geometry: ThreeModule.BufferGeometry; material: ThreeModule.Material }>();
+  gltf.scene.traverse((object) => {
+    const mesh = object as ThreeModule.Mesh;
+    if (!mesh.isMesh) return;
+    sources.set(object.name, { geometry: bake(mesh), material: mesh.material as ThreeModule.Material });
+    mesh.geometry.dispose(); // the quantised original is no longer needed
+  });
+  const variantNames = [...sources.keys()].filter((name) => name.startsWith("stitch-")).sort();
+  const variants = variantNames.length;
+  if (!variants) throw new Error("knit model has no stitch meshes");
+
+  const yarnMaterial = (sources.get(variantNames[0]!)!.material as ThreeModule.MeshPhysicalMaterial).clone();
+  const fibreSource = [...sources.keys()].find((name) => name.startsWith("fibres-"));
+  const fibreMaterial = fibreSource ? (sources.get(fibreSource)!.material as ThreeModule.MeshPhysicalMaterial).clone() : null;
+
+  // slots: every stitch position any structure can use; each keeps its variant and tint
+  const slots: Slot[] = [];
+  for (let r = 0; r < MAX_ROWS; r++) {
+    for (let c = 0; c < MAX_COLS; c++) {
+      const variant = Math.floor(hash(c, r, 1) * variants);
+      const tint = 1 + (hash(c, r, 2) - 0.5) * 0.08;
+      const pose = poseFor(c, r, LAYOUTS.jersey, lite);
+      slots.push({ c, r, variant, tint, from: { ...pose }, to: { ...pose }, now: { ...pose }, delay: 0 });
+    }
+  }
+
+  const swatch = new T.Group();
+  swatch.rotation.set(DEFAULT_TILT.x, DEFAULT_TILT.y, DEFAULT_TILT.z);
+  scene.add(swatch);
+
+  const groups = Array.from({ length: variants }, (_, v) => {
+    const own = slots.filter((slot) => slot.variant === v);
+    const yarnSource = sources.get(`stitch-${v + 1}`)!;
+    const yarn = new T.InstancedMesh(yarnSource.geometry, yarnMaterial, own.length);
+    yarn.castShadow = !lite;
+    yarn.receiveShadow = !lite;
+    yarn.frustumCulled = false;
+    const fibreGeometry = sources.get(`fibres-${v + 1}`)?.geometry;
+    const fibres = fibreGeometry && fibreMaterial ? new T.InstancedMesh(fibreGeometry, fibreMaterial, own.length) : null;
+    if (fibres) fibres.frustumCulled = false;
+    // instance buffers are rewritten every frame during a structure change
+    for (const mesh of [yarn, fibres]) {
+      if (!mesh) continue;
+      mesh.instanceMatrix.setUsage(T.DynamicDrawUsage);
+      mesh.instanceColor = new T.InstancedBufferAttribute(new Float32Array(own.length * 3), 3).setUsage(T.DynamicDrawUsage);
+    }
+    swatch.add(yarn);
+    if (fibres) swatch.add(fibres);
+    return { own, yarn, fibres };
+  });
+
+  // write instance matrices: only stitches that are (or are becoming) visible are drawn
+  const matrix = new T.Matrix4();
+  const pivot = new T.Matrix4().makeTranslation(-0.5, 0, 0);
+  const position = new T.Vector3();
+  const rotation = new T.Quaternion();
+  const scaleVec = new T.Vector3();
+  const up = new T.Vector3(0, 1, 0);
+  const writeInstances = () => {
+    for (const group of groups) {
+      let n = 0;
+      let f = 0;
+      const tint = new T.Color();
+      for (const slot of group.own) {
+        const p = slot.now;
+        if (p.show <= 0.001) continue;
+        matrix.compose(
+          position.set(p.x + 0.5 * p.sx * p.s, p.y, p.z),
+          rotation.setFromAxisAngle(up, p.ry),
+          scaleVec.set(p.sx * p.s * p.show, p.s * p.show, p.s * p.show),
+        );
+        matrix.multiply(pivot);
+        group.yarn.setMatrixAt(n, matrix);
+        // a slight per-stitch tint, as no two loops of natural yarn take the light quite alike
+        tint.setRGB(slot.tint * (1 + (hash(slot.c, slot.r, 3) - 0.5) * 0.02), slot.tint, slot.tint * (1 + (hash(slot.c, slot.r, 4) - 0.5) * 0.03));
+        group.yarn.setColorAt(n, tint);
+        n++;
+        if (group.fibres && p.fibres > 0.01) {
+          scaleVec.multiplyScalar(p.fibres);
+          matrix.compose(position, rotation, scaleVec).multiply(pivot);
+          group.fibres.setMatrixAt(f, matrix);
+          group.fibres.setColorAt(f, tint);
+          f++;
+        }
+      }
+      group.yarn.count = n;
+      group.yarn.instanceMatrix.needsUpdate = true;
+      if (group.yarn.instanceColor) group.yarn.instanceColor.needsUpdate = true;
+      if (group.fibres) {
+        group.fibres.count = f;
+        group.fibres.instanceMatrix.needsUpdate = true;
+        if (group.fibres.instanceColor) group.fibres.instanceColor.needsUpdate = true;
+      }
+    }
+  };
+
+  /* ---------- State ---------- */
+
+  let structure: Structure = "jersey";
+  let transition = 1; // 0..1 progress of a structure change
+  let transitionStart = 0;
+  const TRANSITION_MS = 1100;
+  const fromLook = { color: new T.Color(...LAYOUTS.jersey.color), roughness: 1, sheen: 1, sheenColor: new T.Color(...LAYOUTS.jersey.sheenColor), normal: 1 };
+  const toLook = { color: fromLook.color.clone(), roughness: 1, sheen: 1, sheenColor: fromLook.sheenColor.clone(), normal: 1 };
+
+  const view = {
+    scroll: 1,
+    yaw: 0,
+    pitch: 0,
+    zoom: 1,
+    yawTarget: 0,
+    pitchTarget: 0,
+    zoomTarget: 1,
+    light: 0,
+    lightTarget: 0,
+  };
+  const pointerNdc = new T.Vector2();
+  let baseDistance = 16;
+
+  const fit = () => {
+    const { width, height } = frame.getBoundingClientRect();
+    if (!width || !height) return;
+    renderer.setSize(width, height, false);
+    camera.aspect = width / height;
+    // the default composition shows about ten courses top to bottom
+    const halfV = T.MathUtils.degToRad(camera.fov / 2);
+    baseDistance = (7.6 / 2) / Math.tan(halfV) / Math.min(1, camera.aspect / (4 / 3));
+    camera.updateProjectionMatrix();
+  };
+
+  const applyLook = (t: number) => {
+    yarnMaterial.color.copy(fromLook.color).lerp(toLook.color, t);
+    yarnMaterial.roughness = lerp(fromLook.roughness, toLook.roughness, t);
+    yarnMaterial.sheen = lerp(fromLook.sheen, toLook.sheen, t);
+    yarnMaterial.sheenColor.copy(fromLook.sheenColor).lerp(toLook.sheenColor, t);
+    yarnMaterial.normalScale.setScalar(lerp(fromLook.normal, toLook.normal, t));
+  };
+
+  const raycaster = new T.Raycaster();
+  const plane = new T.Plane();
+  const normal = new T.Vector3();
+  const hit = new T.Vector3();
+
+  /** Advance easing and transitions; returns true while anything is still moving. */
+  const step = (now: number) => {
+    const instant = !motionOk();
+    let moving = false;
+
+    if (transition < 1) {
+      transition = instant ? 1 : clamp((now - transitionStart) / TRANSITION_MS, 0, 1);
+      for (const slot of slots) {
+        const local = instant ? 1 : clamp((transition * TRANSITION_MS - slot.delay) / (TRANSITION_MS - 280), 0, 1);
+        const e = easeInOut(local);
+        const a = slot.from;
+        const b = slot.to;
+        Object.assign(slot.now, {
+          x: lerp(a.x, b.x, e),
+          y: lerp(a.y, b.y, e),
+          z: lerp(a.z, b.z, e),
+          ry: lerp(a.ry, b.ry, e),
+          sx: lerp(a.sx, b.sx, e),
+          s: lerp(a.s, b.s, e),
+          // departing stitches shrink early, arriving ones grow late, so nothing pops
+          show: b.show > a.show ? easeOut(clamp(local * 1.4 - 0.4, 0, 1)) : a.show > b.show ? 1 - easeOut(clamp(local * 1.4, 0, 1)) : b.show,
+          fibres: lerp(a.fibres, b.fibres, e),
+        });
+      }
+      applyLook(easeInOut(transition));
+      writeInstances();
+      moving = moving || transition < 1;
+    }
+
+    const k = instant ? 1 : 0.14;
+    view.yaw += (view.yawTarget - view.yaw) * k;
+    view.pitch += (view.pitchTarget - view.pitch) * k;
+    view.zoom += (view.zoomTarget - view.zoom) * k;
+    view.light += (view.lightTarget - view.light) * (instant ? 1 : 0.12);
+    moving =
+      moving ||
+      Math.abs(view.yawTarget - view.yaw) > 1e-4 ||
+      Math.abs(view.pitchTarget - view.pitch) > 1e-4 ||
+      Math.abs(view.zoomTarget - view.zoom) > 1e-4 ||
+      Math.abs(view.lightTarget - view.light) > 1e-3;
+
+    const scroll = motionOk() ? scrollDistance(view.scroll) : 1;
+    const drift = motionOk() ? lerp(-0.1, 0.05, view.scroll) : 0;
+    swatch.rotation.set(DEFAULT_TILT.x + view.pitch, DEFAULT_TILT.y + view.yaw + drift, DEFAULT_TILT.z);
+    const distance = baseDistance * clamp(scroll * view.zoom, COMBINED_MIN, COMBINED_MAX);
+    camera.position.set(0, 0, distance);
+    camera.lookAt(0, 0, 0);
+    const fog = scene.fog as ThreeModule.Fog;
+    fog.near = distance - 1.5;
+    fog.far = distance + 14;
+
+    // the pointer light sits just above the fabric under the cursor and rakes across the fibres
+    if (view.light > 0.002) {
+      raycaster.setFromCamera(pointerNdc, camera);
+      normal.set(0, 0, 1).applyQuaternion(swatch.quaternion);
+      plane.setFromNormalAndCoplanarPoint(normal, swatch.position);
+      if (raycaster.ray.intersectPlane(plane, hit)) pointer.position.copy(hit).addScaledVector(normal, 1.1 * clamp(view.zoom, 0.5, 1));
+    }
+    pointer.intensity = view.light * (lite ? 2.2 : 3);
+    return moving;
+  };
+
+  // render on demand: a loop runs only while something is moving, then stops
+  let frameId = 0;
+  let last = 0;
+  const slowFrames: number[] = [];
+  const loop = (now: number) => {
+    frameId = 0;
+    const moving = step(now);
+    renderer.render(scene, camera);
+    // adaptive resolution: if frames run long during interaction, step the pixel ratio down
+    if (last) {
+      slowFrames.push(now - last);
+      if (slowFrames.length > 40) slowFrames.shift();
+      const average = slowFrames.reduce((a, b) => a + b, 0) / slowFrames.length;
+      if (slowFrames.length === 40 && average > 30 && pixelRatio > 1) {
+        pixelRatio = Math.max(1, pixelRatio - 0.5);
+        renderer.setPixelRatio(pixelRatio);
+        fit();
+        slowFrames.length = 0;
+      }
+    }
+    last = moving ? now : 0;
+    if (moving) frameId = requestAnimationFrame(loop);
+  };
+  const kick = () => {
+    if (!frameId) frameId = requestAnimationFrame(loop);
+  };
+
+  /* ---------- Input ---------- */
+
+  const pointers = new Map<number, { x: number; y: number }>();
+  let pinch = 0;
+  const setPointer = (event: PointerEvent) => {
+    const box = frame.getBoundingClientRect();
+    pointerNdc.set(((event.clientX - box.left) / box.width) * 2 - 1, -((event.clientY - box.top) / box.height) * 2 + 1);
+  };
+  const onDown = (event: PointerEvent) => {
+    if (event.pointerType === "mouse" && event.button !== 0) return;
+    pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+    if (pointers.size === 2) {
+      const [a, b] = [...pointers.values()] as [{ x: number; y: number }, { x: number; y: number }];
+      pinch = Math.hypot(a.x - b.x, a.y - b.y);
+    }
+    try {
+      frame.setPointerCapture(event.pointerId);
+    } catch {
+      // capture is a nicety (drags that leave the plate); input still works without it
+    }
+  };
+  const onMove = (event: PointerEvent) => {
+    if (event.pointerType === "mouse") {
+      setPointer(event);
+      view.lightTarget = 1;
+    }
+    const previous = pointers.get(event.pointerId);
+    if (previous) {
+      if (pointers.size === 2) {
+        pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+        const [a, b] = [...pointers.values()] as [{ x: number; y: number }, { x: number; y: number }];
+        const distance = Math.hypot(a.x - b.x, a.y - b.y);
+        if (pinch) zoomBy(pinch / distance);
+        pinch = distance;
+      } else {
+        const dx = event.clientX - previous.x;
+        const dy = event.clientY - previous.y;
+        pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+        // touch turns sideways only; vertical swipes stay with the page
+        rotateBy(dx * 0.006, event.pointerType === "touch" ? 0 : dy * 0.005);
+        onInteract?.();
+      }
+    }
+    kick();
+  };
+  const onUp = (event: PointerEvent) => {
+    pointers.delete(event.pointerId);
+    if (pointers.size < 2) pinch = 0;
+  };
+  const onLeave = (event: PointerEvent) => {
+    if (event.pointerType === "mouse") {
+      view.lightTarget = 0;
+      kick();
+    }
+  };
+  // zoom only with Ctrl/Cmd (and trackpad pinch, which reports ctrlKey): plain wheel scrolls the page
+  const onWheel = (event: WheelEvent) => {
+    if (!event.ctrlKey && !event.metaKey) return;
+    event.preventDefault();
+    zoomBy(Math.exp(event.deltaY * 0.0025));
+    onInteract?.();
+  };
+  frame.addEventListener("pointerdown", onDown);
+  frame.addEventListener("pointermove", onMove);
+  frame.addEventListener("pointerup", onUp);
+  frame.addEventListener("pointercancel", onUp);
+  frame.addEventListener("pointerleave", onLeave);
+  frame.addEventListener("wheel", onWheel, { passive: false });
+
+  const resize = new ResizeObserver(() => {
+    fit();
+    kick();
+  });
+  resize.observe(frame);
+
+  /* ---------- API ---------- */
+
+  function rotateBy(yaw: number, pitch: number) {
+    view.yawTarget = clamp(view.yawTarget + yaw, -YAW_LIMIT, YAW_LIMIT);
+    view.pitchTarget = clamp(view.pitchTarget + pitch, -PITCH_LIMIT, PITCH_LIMIT);
+    kick();
+  }
+  function zoomBy(factor: number) {
+    view.zoomTarget = clamp(view.zoomTarget * factor, ZOOM_MIN, ZOOM_MAX);
+    kick();
+  }
+
+  fit();
+  writeInstances();
+  applyLook(1);
+  host.appendChild(renderer.domElement);
+  kick();
+  if (import.meta.env.DEV) {
+    // QA handle in development only: inspect the live scene from the console
+    (window as unknown as { __knit?: object }).__knit = { camera, swatch, renderer, sources, view };
+  }
+
+  return {
+    setScroll(progress) {
+      view.scroll = clamp(progress, 0, 1);
+      kick();
+    },
+    setStructure(next) {
+      if (next === structure) return;
+      const layout = LAYOUTS[next];
+      fromLook.color.copy(yarnMaterial.color);
+      fromLook.roughness = yarnMaterial.roughness;
+      fromLook.sheen = yarnMaterial.sheen;
+      fromLook.sheenColor.copy(yarnMaterial.sheenColor);
+      fromLook.normal = yarnMaterial.normalScale.x;
+      toLook.color.setRGB(...layout.color);
+      toLook.roughness = layout.roughness;
+      toLook.sheen = layout.sheen;
+      toLook.sheenColor.setRGB(...layout.sheenColor);
+      toLook.normal = layout.normal;
+      const span = Math.max(1, MAX_COLS - 1);
+      for (const slot of slots) {
+        slot.from = { ...slot.now };
+        slot.to = poseFor(slot.c, slot.r, layout, lite);
+        slot.delay = (slot.c / span) * 280; // a wave across the wales
+      }
+      structure = next;
+      transition = 0;
+      transitionStart = performance.now();
+      kick();
+    },
+    setInspect(on) {
+      view.zoomTarget = on ? INSPECT_ZOOM : 1;
+      if (on) view.pitchTarget = clamp(view.pitchTarget - 0.08, -PITCH_LIMIT, PITCH_LIMIT);
+      kick();
+    },
+    rotateBy,
+    zoomBy,
+    reset() {
+      view.yawTarget = 0;
+      view.pitchTarget = 0;
+      view.zoomTarget = 1;
+      kick();
+    },
+    dispose() {
+      cancelAnimationFrame(frameId);
+      resize.disconnect();
+      frame.removeEventListener("pointerdown", onDown);
+      frame.removeEventListener("pointermove", onMove);
+      frame.removeEventListener("pointerup", onUp);
+      frame.removeEventListener("pointercancel", onUp);
+      frame.removeEventListener("pointerleave", onLeave);
+      frame.removeEventListener("wheel", onWheel);
+      const textures = new Set<ThreeModule.Texture>();
+      for (const material of [yarnMaterial, fibreMaterial, ...[...sources.values()].map((s) => s.material)]) {
+        if (!material) continue;
+        for (const value of Object.values(material)) if (value instanceof T.Texture) textures.add(value);
+        material.dispose();
+      }
+      textures.forEach((texture) => texture.dispose());
+      sources.forEach(({ geometry }) => geometry.dispose());
+      groups.forEach(({ yarn, fibres }) => {
+        yarn.dispose();
+        fibres?.dispose();
+      });
+      environment.dispose();
+      renderer.dispose();
+      renderer.domElement.remove();
+    },
+  };
+}
