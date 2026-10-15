@@ -94,8 +94,15 @@ export class ClothSim {
   private readonly prev: Float32Array;
   private readonly settled: Float32Array;
   private readonly frameStart: Float32Array;
+  /** an eased return to the settled drape: the shape it starts from, and its progress (s) */
+  private readonly returnFrom: Float32Array;
+  private returnTime = -1;
+  private returnDuration = 1;
+  private returnDrift = 0;
   /** how much the cloth moved in the last step: mean squared speed (units²/s²) */
   moved = 0;
+  /** how far the cloth is from its settled drape: mean squared distance (units²) */
+  drift = 0;
   private readonly invMass: Float32Array;
   /** constraints: offsets of both particles (index x 3), rest length, and each end's share of the correction */
   private readonly ia: Uint32Array;
@@ -166,6 +173,7 @@ export class ClothSim {
     this.prev = new Float32Array(this.count * 3);
     this.settled = new Float32Array(this.count * 3);
     this.frameStart = new Float32Array(this.count * 3);
+    this.returnFrom = new Float32Array(this.count * 3);
     this.invMass = new Float32Array(this.count).fill(1);
     this.anchor = new Int32Array(this.count * 2);
     this.anchorRest = new Float32Array(this.count * 2);
@@ -305,6 +313,10 @@ export class ClothSim {
     const { substeps, iterations } = this.cfg;
     const h = Math.min(dt, 1 / 30) / substeps;
     this.frameStart.set(this.pos);
+    if (this.returnTime >= 0) {
+      this.ease(dt);
+      return;
+    }
     if (this.air) this.blow();
     if (this.recover > 0) this.creep(this.recover * Math.min(dt, 1 / 30));
     for (let s = 0; s < substeps; s++) {
@@ -324,6 +336,12 @@ export class ClothSim {
       sum += d * d;
     }
     this.moved = sum / this.count / (h * substeps) ** 2;
+    let away = 0;
+    for (let o = 0; o < this.pos.length; o++) {
+      const d = this.pos[o]! - this.settled[o]!;
+      away += d * d;
+    }
+    this.drift = away / this.count;
     if (!Number.isFinite(sum)) this.reset();
   }
 
@@ -542,6 +560,7 @@ export class ClothSim {
     radius: number,
     strength: number,
   ) {
+    this.cancelReturn();
     const { pos, prev, invMass, jitter } = this;
     const h = 1 / 60 / this.cfg.substeps;
     for (let i = 0; i < this.count; i++) {
@@ -557,8 +576,54 @@ export class ClothSim {
     }
   }
 
+  /**
+   * Ease back to the settled drape over `seconds`. A pull can flip a fold into its mirror-image
+   * buckle, a second resting shape the solver holds on to; a gradual pull never crosses the
+   * midpoint between the two, so after a disturbance the cloth is eased back as one (no added
+   * speed), as fabric relaxes into the folds it hangs in. Any touch cancels it.
+   */
+  returnToDrape(seconds: number) {
+    this.returnFrom.set(this.pos);
+    this.returnTime = 0;
+    this.returnDuration = seconds;
+    this.returnDrift = this.drift;
+  }
+
+  get returning() {
+    return this.returnTime >= 0;
+  }
+
+  cancelReturn() {
+    if (this.returnTime < 0) return;
+    this.returnTime = -1;
+    this.prev.set(this.pos);
+  }
+
+  private ease(dt: number) {
+    this.returnTime += Math.min(dt, 1 / 30);
+    const t = Math.min(1, this.returnTime / this.returnDuration);
+    const e = t * t * (3 - 2 * t);
+    const { pos, prev, settled, returnFrom: from } = this;
+    for (let o = 0; o < pos.length; o++) {
+      pos[o] = from[o]! + (settled[o]! - from[o]!) * e;
+      prev[o] = pos[o]!;
+    }
+    let moved = 0;
+    for (let o = 0; o < pos.length; o++) {
+      const d = pos[o]! - this.frameStart[o]!;
+      moved += d * d;
+    }
+    this.moved = moved / this.count / Math.min(dt, 1 / 30) ** 2;
+    this.drift = this.returnDrift * (1 - e) ** 2;
+    if (t >= 1) {
+      this.returnTime = -1;
+      this.drift = 0;
+    }
+  }
+
   /** Hold a particle; `drag` then moves it. */
   grab(i: number) {
+    this.cancelReturn();
     if (this.invMass[i] === 0) return;
     this.grabbed = i;
     this.invMass[i] = 0;

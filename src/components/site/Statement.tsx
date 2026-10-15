@@ -12,13 +12,15 @@ export function Statement() {
       className="bg-ivory pt-[var(--space-continue)] pb-[var(--space-section)]"
     >
       <div className="shell">
+        {/* The four set lines fit from 640px up. Below that they would each wrap again into a
+            ragged stack, so on phones the lines flow as one balanced paragraph instead. */}
         <h2
           id="heritage-title"
-          className="display text-[clamp(2.3rem,5.6vw,5.4rem)] text-ink"
+          className="display text-[clamp(2.3rem,5.6vw,5.4rem)] text-ink max-sm:[&>span]:inline max-sm:[&>span>span]:inline"
         >
-          <MaskLine>A textile house with roots</MaskLine>
-          <MaskLine delay={0.08}>in {COMPANY.heritageYear}, making knitted fabrics</MaskLine>
-          <MaskLine delay={0.16}>for the beds, seats, machines</MaskLine>
+          <MaskLine>A textile house with roots</MaskLine>{" "}
+          <MaskLine delay={0.08}>in {COMPANY.heritageYear}, making knitted fabrics</MaskLine>{" "}
+          <MaskLine delay={0.16}>for the beds, seats, machines</MaskLine>{" "}
           <MaskLine delay={0.24}>
             and <em>wards</em> where they work.
           </MaskLine>
@@ -52,8 +54,10 @@ export function Statement() {
             </ul>
           </div>
 
-          <CourseReveal className="md:col-span-5 lg:col-span-4 lg:col-start-9">
-            <div className="grain relative aspect-[4/3] overflow-hidden bg-linen md:aspect-auto md:h-full md:min-h-[24rem]">
+          {/* Beside a one-column list (tablet) the macro is a plate that stays in view; on wide
+              screens, where the list sets its rows in two columns, it runs the list's height. */}
+          <CourseReveal className="md:sticky md:top-[calc(var(--header-h)+2rem)] md:col-span-5 md:self-start lg:col-span-4 lg:col-start-9 xl:static xl:self-stretch">
+            <div className="grain relative aspect-[4/3] overflow-hidden bg-linen md:aspect-[3/4] xl:aspect-auto xl:h-full xl:min-h-[24rem]">
               <Parallax className="absolute inset-0" amount={4}>
                 <Picture
                   name="macroSharp"

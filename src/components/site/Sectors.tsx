@@ -92,7 +92,8 @@ export function Industrial() {
             <p className="copy mt-8 text-on-dark">{SECTOR_COPY.industrial.lead}</p>
             <p className="mt-4 max-w-[52ch] text-[1rem] text-on-dark-soft">{SECTOR_COPY.industrial.detail}</p>
           </div>
-          <div className="relative md:col-span-5 lg:col-span-4 lg:col-start-9">
+          {/* hugs the picture (not the row) so the credit sits on the image's edge */}
+          <div className="relative md:col-span-5 md:self-start lg:col-span-4 lg:col-start-9">
             <CourseReveal className="aspect-[4/3] overflow-hidden md:aspect-square">
               <Picture
                 name="knitDark"

@@ -3,23 +3,27 @@
 The Accreditations plate: `src/components/site/KnitModel.tsx` (UI) and
 `src/components/site/knit/fabric-scene.ts` (three.js scene, lazy-loaded).
 
-## Production (v4): fine cotton single jersey
+## Production (v5): fine cotton single jersey, simulated as cloth
 
-v1-v3 showed a handful of large, twisted loops; however refined, they read as chain mail. v4
-replaces the concept: a continuous piece of fine single jersey lying in soft folds, as a textile
-sample is photographed. ACTIF is a knitting specialist and the section reads "yarn, knit and
-finish", so the fabric is knitted, not woven.
+v4 was a fixed drape baked into a mesh. v5 keeps v4's knit (the same yarn-level maps) and makes
+the cloth live: it hangs from pins and is simulated in the page (`src/components/site/knit/`:
+`cloth-sim.ts` solver, `cloth-surface.ts` + `cloth-shader.ts` GPU surface, `fabric-scene.ts`
+scene and input). v1-v3 showed a handful of large twisted loops that read as chain mail; v4 and
+v5 show a continuous piece of fine jersey, as a textile sample is photographed.
 
-Built by `npm run build:model` (`scripts/build-knit-glb.mjs`; seeded, reproducible). Dev
-dependencies: `@gltf-transform/*`, `meshoptimizer`, `jpeg-js`. No Blender needed.
+Built by `npm run build:model` (`scripts/build-knit-glb.mjs`; Node 22 with
+`--experimental-strip-types`, since it imports the page's own solver). Dev dependencies:
+`@gltf-transform/*`, `meshoptimizer`, `jpeg-js`. No Blender needed.
 
 | Item | Detail |
 | --- | --- |
-| `public/models/cotton-jersey-v4.glb` | 412 KB raw, 279 KB gzip |
-| Cloth | 16 x 12 units, 19,481 vertices, 38,400 triangles, soft folds |
-| Gauge | 0.16 units per wale: 100 wales across the cloth, ~55 across the plate |
+| `public/models/cotton-jersey-v5.glb` | 295 KB raw, 284 KB gzip |
+| Content | the knit material, and the cloth hanging at rest for each solver resolution (full 51 x 34 particles, lite 37 x 25), settled by the solver at build time until it no longer moves; positions stored exactly, normals and texture coordinates quantised, meshopt-packed |
+| Cloth | 15 x 10 units, pinned at uneven gaps and heights (`DRAPE` in `cloth-sim.ts`) |
+| Gauge | 0.16 units per wale: 94 wales across the cloth |
 | Knit tile | 4 wales x 6 courses, 512 px (128 px per wale), seamless |
-| Maps | albedo 58 KB, normal 131 KB, occlusion/roughness 57 KB (JPEG; copies in `v4-maps/`) |
+| Maps | albedo 58 KB, normal 131 KB, occlusion/roughness 57 KB (JPEG; copies in `v5-maps/`) |
+| Poster | `public/images/knit-lattice-poster.webp` (800 x 600, 122 KB): the settled drape, shown before load, without WebGL and on devices that cannot keep the simulation smooth |
 
 ### How the knit is made
 
@@ -32,14 +36,17 @@ dependencies: `@gltf-transform/*`, `meshoptimizer`, `jpeg-js`. No Blender needed
    cotton, slight per-yarn tone, occlusion partly baked so crevices stay dark under direct light)
    are derived from it.
 
-### Cloth and material
+### Material
 
-Five soft folds (each steeper on one side and fading towards its ends) over a gentle undulation;
-fold valleys and low-frequency tone baked into vertex colours. Material: KHR_materials_sheen
-(soft fabric sheen), KHR_texture_transform (tiling), quantised and meshopt-compressed geometry.
+KHR_materials_sheen (soft fabric sheen) and KHR_texture_transform (tiling). Fold shading comes
+from the live surface: lighting and shadows on the simulated folds, plus a fold occlusion term
+from the cloth's curvature (`cloth-shader.ts`).
 
 ## Backups
 
+- v4 (fixed drape baked into a 38,400-triangle mesh): `cotton-jersey-v4.glb`,
+  `build-knit-glb-v4.mjs`, `fabric-scene-v4.ts.txt`, `KnitModel-v4.tsx.txt`, `v4-maps/`,
+  `knit-lattice-poster-v4.webp`. v5's poster is kept as `knit-lattice-poster-v5.webp`.
 - v3 (instanced large-gauge stitches, rib/technical variants): `knit-jersey-v3.glb`,
   `knit-jersey-v3-lite.glb`, `build-knit-glb-v3.mjs`, `knit-scene-v3.ts.txt`,
   `KnitModel-v3.tsx.txt`, `knit-lattice-poster-v3.webp`.

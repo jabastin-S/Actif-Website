@@ -98,22 +98,22 @@ heritage macro, the Materials studies, the industrial macro. Room photographs us
 - **Reveals:** masked heading lines (heritage, Home & Bedding, upholstery, manufacturing, capacity rows,
   transition, contact); clip reveals with an image settle (applications, the second card of each pair a
   beat later; medical); process stages arrive as a list (stagger capped at 0.21s).
-- **Knit plate (accreditations), v4:** a draped swatch of fine cotton single jersey, the way a
-  textile sample is photographed (v1-v3 showed a few large twisted loops that read as chain mail).
-  Model: `public/models/cotton-jersey-v4.glb` from `npm run build:model`
-  (`scripts/build-knit-glb.mjs`): a 16 x 12 cloth in soft folds (fold-valley shading and gentle
-  tonal variation in vertex colours) carrying a seamless 4 x 6 stitch jersey tile baked from a
-  yarn-level 3D model into albedo, normal and occlusion/roughness maps (6.6% open area in the knit,
-  fibre striations twisting along each soft single yarn); about 55 wales across the plate.
-  Scene (`src/components/site/knit/fabric-scene.ts`, lazy): textile product lighting (studio
-  environment, a wide raking key that lets the folds shadow themselves, warm low fill), full
-  anisotropic filtering so the knit stays crisp at an angle, Khronos Neutral tone mapping.
-  Interaction (`src/components/site/KnitModel.tsx`): gentle pointer parallax and a warm light that
-  rakes the fibres under the cursor; scroll moves the view from the drape in towards the knit and
-  back (no pinning); Inspect stitches / Full view (Esc) brings the knit up close, where the pointer
-  moves the close-up across the cloth like a loupe. Frames render on demand (0 draws idle, 2 draws
-  a frame); reduced motion: no scroll movement, parallax or transitions; no WebGL: the poster (the
-  default composition) stays and the button hides. Earlier versions: `assets-source/models/`.
+- **Knit plate (accreditations), v5:** a piece of fine cotton single jersey hanging from pins
+  in soft swags and folds, simulated as cloth. Solver (`src/components/site/knit/cloth-sim.ts`):
+  position-based dynamics (structural, shear and bending constraints, long-range attachments to
+  the pins, a 2% strain limit) at a fixed 60 steps a second, so the drape is the same on every
+  display. Surface (`cloth-surface.ts`, `cloth-shader.ts`): a vertex shader places a dense grid on
+  the particles by Catmull-Rom interpolation, so the knit (the v4 yarn-level maps, 0.16 units a
+  wale) stays fixed to the cloth. Model (`public/models/cotton-jersey-v5.glb`, `npm run
+  build:model`): the knit material and the drape at rest, settled by the page's own solver at
+  build time. Behaviour (`fabric-scene.ts`, `KnitModel.tsx`): a barely visible draught (hem drift
+  about a tenth of a unit), the pointer pressing into the cloth as it moves, drag to pull (within
+  what the cloth allows), tap or click to stir; the cloth settles back to its drape, and a fold a
+  pull has flipped eases back over 1.4s. Pause motion stops the draught (WCAG 2.2.2). Scroll moves
+  the view towards the knit and back; Inspect stitches follows the cloth up close (Esc). Frames
+  run only while the plate is on screen and something moves. Reduced motion: no draught, pressing,
+  stirring or scroll movement; a drag still works. No WebGL, or a device that cannot keep it
+  smooth: the poster (the settled drape) stays, captioned as a render.
 - **Materials gallery:** arrow keys, Home/End, mouse drag, previous/next snapping to studies, a
   `01 / 05` position counter, scroll progress bound to a motion value, and on fine pointers a close-up that
   zooms 1.75x toward the cursor (`.loupe`).
@@ -136,10 +136,40 @@ visible at once; progress and state feedback remain. The Millis orb breathes twi
 1.8s, after the hero entrance; 4.8s of motion, inside WCAG 2.2.2's 5s limit) and then rests; its
 listening, thinking and speaking states animate only during a conversation.
 
+## Responsive
+
+Tested at 320, 360, 375-390, 430, 600, 768, 820, 1024, 1180 and 1440 wide, portrait and
+landscape, with touch emulation below 1180. Content-driven steps, not one per device:
+
+- **36rem (576px):** large phones and small tablets stop stacking full-width plates. The hero
+  takes its plate composition (macro beside the text and the room photograph) and the four
+  applications sit as an even two-up grid with the link under each title.
+- **640px (sm):** the heritage headline sets its four lines; below it they flow as one balanced
+  paragraph (set lines would each wrap again into a ragged stack). The header's quiet Enquire
+  link becomes the dark button.
+- **768px (md):** the 12-column grid and the wide / narrow rhythm. Between 768 and 1279px the
+  heritage macro is a 3:4 plate that stays in view beside the one-column strengths list; from
+  1280px, where the list sets two columns, it runs the list's height.
+- **1024px (lg):** the full navigation bar (it fits with 44px targets on a landscape tablet).
+  Below it, Menu opens a full-height panel with the bar's own structure (Applications expands to
+  its four chapters), Enquire and the email at its foot. While it is open the page behind is
+  inert, the root stops scrolling (iOS needs the root, not only body), the voice orb steps aside,
+  Esc closes it and returns focus, and it closes itself if the viewport reaches 1024px.
+- **Knit plate:** square on phones (a taller drape and touch area), 4:3 from 640px; portrait
+  plates keep most of the drape's height rather than pulling the camera back. `touch-action:
+  pan-y`: a vertical swipe across it scrolls the page, a sideways drag pulls the cloth, a tap
+  stirs it; the caption names the gestures for the pointer in use. Quality starts from the lite
+  profile on phones, low memory or Save-Data, then follows measured frame times: resolution,
+  then shadows, then the draught, then the poster. On constrained devices the draught waits while
+  the page scrolls.
+- **Controls:** every target at least 44px (wordmark, contact links included); buttons tighten
+  their padding on phones so the longer labels stay on one line, and drop the rule below 360px;
+  the select carries its own chevron; image credits are 12px.
+
 ## Components
 
-Header (solid ivory, hairline after scroll, Applications dropdown, active-section feedback, full-height
-mobile menu with focus management), Hero, Statement, Applications, Materials, HomeBedding, Upholstery /
+Header (solid ivory, hairline after scroll, Applications dropdown, active-section feedback, phone
+Enquire link, full-height mobile menu with an inert page behind it), Hero, Statement, Applications, Materials, HomeBedding, Upholstery /
 Industrial / Medical (`Sectors.tsx`), Process, Capacity, Responsibility, Transition, Contact (validation,
 mailto hand-off, sector pre-selection), Footer, Picture, ImageNote, motion primitives (`MaskLine`,
 `ClipReveal`, `Rise`, `Parallax`), and the Millis voice orb (in place, SDK loaded on demand).

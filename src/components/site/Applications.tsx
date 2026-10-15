@@ -17,20 +17,25 @@ type Item = {
 
 /** Wide, narrow / narrow, wide: each row is a different proportion, lined up on a common base. */
 const ITEMS: Item[] = [
-  { id: "home", name: "Home & Bedding", image: "homeKnit", place: "md:col-span-7", shape: "aspect-[4/3]", sizes: "(min-width:768px) 56vw, 92vw" },
-  { id: "upholstery", name: "Upholstery", image: "upholsteryChair", place: "md:col-span-5", shape: "aspect-square md:aspect-[4/5]", sizes: "(min-width:768px) 40vw, 92vw", focus: "object-[42%_center]" },
-  { id: "industrial", name: "Industrial & Technical Textiles", image: "knitMesh", place: "md:col-span-5", shape: "aspect-square md:aspect-[4/5]", sizes: "(min-width:768px) 40vw, 92vw" },
-  { id: "medical", name: "Medical & Healthcare Textiles", image: "medicalFolded", place: "md:col-span-7", shape: "aspect-[4/3]", sizes: "(min-width:768px) 56vw, 92vw" },
+  // large phones and small tablets (36rem up) set the four as an even pair of rows; the
+  // wide / narrow rhythm starts where the 12-column grid has room for it (768px)
+  { id: "home", name: "Home & Bedding", image: "homeKnit", place: "md:col-span-7", shape: "aspect-[4/3] min-[36rem]:aspect-[4/5] md:aspect-[4/3]", sizes: "(min-width:768px) 56vw, (min-width:576px) 46vw, 92vw" },
+  { id: "upholstery", name: "Upholstery", image: "upholsteryChair", place: "md:col-span-5", shape: "aspect-square min-[36rem]:aspect-[4/5]", sizes: "(min-width:768px) 40vw, (min-width:576px) 46vw, 92vw", focus: "object-[42%_center]" },
+  { id: "industrial", name: "Industrial & Technical Textiles", image: "knitMesh", place: "md:col-span-5", shape: "aspect-square min-[36rem]:aspect-[4/5]", sizes: "(min-width:768px) 40vw, (min-width:576px) 46vw, 92vw" },
+  { id: "medical", name: "Medical & Healthcare Textiles", image: "medicalFolded", place: "md:col-span-7", shape: "aspect-[4/3] min-[36rem]:aspect-[4/5] md:aspect-[4/3]", sizes: "(min-width:768px) 56vw, (min-width:576px) 46vw, 92vw" },
 ];
 
 function Card({ item, delay }: { item: Item; delay: number }) {
   return (
     <article className={cn("group", item.place)}>
-      <a href={`#${item.id}`} className="block" aria-label={`${item.name}: see details`}>
+      {/* named by what it shows ("Home & Bedding", "See details"); the photograph inside is
+          decorative here, since the title already names where the link goes */}
+      <a href={`#${item.id}`} className="block">
         <ClipReveal delay={delay}>
           <div className={cn("grain relative overflow-hidden bg-stone", item.shape)}>
             <Picture
               name={item.image}
+              alt=""
               sizes={item.sizes}
               className={cn(
                 "h-full w-full object-cover group-hover:scale-[1.035] group-focus-visible:scale-[1.035]",
@@ -39,14 +44,16 @@ function Card({ item, delay }: { item: Item; delay: number }) {
             />
           </div>
         </ClipReveal>
-        <div className="mt-4 flex flex-wrap items-baseline justify-between gap-x-8 gap-y-1">
+        {/* in the two-up grid (36rem to 768px) the link always sits under the title */}
+        <div className="mt-4 flex flex-wrap items-baseline justify-between gap-x-8 gap-y-1 min-[36rem]:max-md:flex-col min-[36rem]:max-md:items-start">
           <h3 className="display text-[clamp(1.9rem,2.8vw,2.8rem)] leading-[1.02] text-ink">
             {item.name}
           </h3>
           <span className="link-line text-sm font-medium text-ink">See details</span>
         </div>
-        <p className="mt-2 max-w-[44ch] text-[1rem] text-ink-soft">{APPLICATION_COPY[item.id].line}</p>
       </a>
+      {/* outside the link, so its accessible name is what it shows (title, see details) */}
+      <p className="mt-2 max-w-[44ch] text-[1rem] text-ink-soft">{APPLICATION_COPY[item.id].line}</p>
     </article>
   );
 }
@@ -73,11 +80,11 @@ export function Applications() {
               The final application determines the textile we develop. Upholstery, industrial and
               healthcare solutions are selected developments, evaluated against each requirement.
             </p>
-            <p className="mt-3 text-xs text-ink-soft">Photographs on this page are illustrative.</p>
+            <p className="mt-3 text-[0.8125rem] text-ink-soft">Photographs on this page are illustrative.</p>
           </div>
         </div>
 
-        <div className="mt-10 grid gap-x-8 gap-y-12 md:grid-cols-12 md:items-end lg:mt-14 lg:gap-x-10 lg:gap-y-16">
+        <div className="mt-10 grid gap-x-6 gap-y-12 min-[36rem]:grid-cols-2 md:grid-cols-12 md:items-end md:gap-x-8 lg:mt-14 lg:gap-x-10 lg:gap-y-16">
           {ITEMS.map((item, index) => (
             // the second card of each pair follows the first by a beat
             <Card key={item.id} item={item} delay={index % 2 === 1 ? 0.12 : 0} />

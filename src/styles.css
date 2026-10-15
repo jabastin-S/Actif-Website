@@ -143,11 +143,23 @@
   }
 
   html {
+    scrollbar-gutter: stable;
     scroll-behavior: smooth;
     scroll-padding-top: calc(var(--header-h) + 1rem);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
     scrollbar-color: var(--olive-deep) var(--ivory);
+  }
+
+  /* The mobile menu covers the page: the root stops scrolling (body alone does not on iOS) and
+     the voice orb steps aside so it never sits over the menu. */
+  html[data-menu="open"],
+  html[data-menu="open"] body {
+    overflow: hidden;
+  }
+  html[data-menu="open"] [data-orb] {
+    visibility: hidden;
+    opacity: 0;
   }
 
   body {
@@ -281,7 +293,8 @@
 .hero-grid > .area-text { grid-area: text; }
 .hero-grid > .area-bed { grid-area: bed; }
 
-@media (min-width: 768px) {
+/* From large phones up the plates sit side by side; a single column would stretch them. */
+@media (min-width: 36rem) {
   .hero-grid {
     grid-template-columns: 5fr 7fr;
     grid-template-areas: "title title" "macro text" "macro bed";
@@ -304,9 +317,11 @@
   display: inline-flex;
   align-items: center;
   justify-content: space-between;
-  gap: 2.5rem;
+  /* tighter on phones so the longer labels ("Enquire about healthcare textiles") stay on one line */
+  gap: clamp(1rem, 5vw, 2.5rem);
   min-height: 3.25rem;
-  padding: 0.85rem 1.5rem;
+  padding: 0.85rem clamp(1rem, 4.5vw, 1.5rem);
+  text-align: left;
   background: var(--charcoal);
   color: var(--on-dark);
   font-size: 0.9375rem;
@@ -321,6 +336,7 @@
   }
   &::after {
     content: "";
+    flex: none;
     width: 1.8rem;
     height: 1px;
     background: currentColor;
@@ -340,6 +356,12 @@
     opacity: 0.55;
     cursor: not-allowed;
   }
+  /* the smallest phones keep the label whole rather than the rule */
+  @media (max-width: 22.4rem) {
+    &::after {
+      display: none;
+    }
+  }
 }
 
 @utility btn-light {
@@ -355,6 +377,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
+  white-space: nowrap;
   min-height: 3.25rem;
   padding: 0.85rem 0.1rem;
   font-size: 0.9375rem;

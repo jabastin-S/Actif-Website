@@ -140,6 +140,10 @@ export function Materials() {
               {" "}
               Hover a study to look closer; drag or use the arrows to browse.
             </span>
+            <span className="[@media(hover:hover)_and_(pointer:fine)]:hidden">
+              {" "}
+              Swipe or use the arrows to browse.
+            </span>
           </p>
         </div>
         <div className="flex items-center gap-5">

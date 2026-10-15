@@ -22,6 +22,12 @@ interface Options {
   /** Read live, so a change of preference applies without a reload. */
   motionOk: () => boolean;
   modelUrl: string;
+  /**
+   * Called when sustained frame times force a step down that the page should show: "still"
+   * (the idle draught is stopped; the cloth still answers touch) or "poster" (the device cannot
+   * keep the simulation smooth at all; the page shows the still image instead).
+   */
+  onQuality?: (level: "still" | "poster") => void;
 }
 
 /* ---------- Composition ---------- */
@@ -52,7 +58,13 @@ const REACH = 1.3; // furthest a drag can move the cloth (units)
 const TAP = { radius: 1.6, speed: 3.2 };
 const STEP = 1 / 60; // seconds per solver step
 const REST_ENERGY = 2e-4; // mean squared speed (units²/s², frame to frame) below which the cloth is at rest
-const RECOVER = { delay: 1200, rate: 1.2 }; // ms after the last touch; per second
+// the pull back to the composed drape: from `delay` ms after the last touch at `rate` per
+// second; with no draught (paused, reduced motion) it grows to `still` over 3 s, firm enough to
+// lift a fold that a pull flipped into another resting arrangement
+const RECOVER = { delay: 1200, rate: 1.2, still: 6 };
+// after a touch: if the folds are still clearly out of place this long after it (ms), the
+// cloth eases back to its drape over `seconds` (see ClothSim.returnToDrape)
+const RETURN = { after: 2400, drift: 1.5e-3, seconds: 1.4 };
 
 const clamp = (v: number, lo: number, hi: number) =>
   Math.min(hi, Math.max(lo, v));
@@ -74,7 +86,7 @@ function scrollShot(q: number) {
 export async function createFabricScene(
   options: Options,
 ): Promise<FabricScene> {
-  const { host, frame, lite, motionOk, modelUrl } = options;
+  const { host, frame, lite, motionOk, modelUrl, onQuality } = options;
   const [THREE, { GLTFLoader }, { MeshoptDecoder }, { RoomEnvironment }] =
     await Promise.all([
       import("three"),
@@ -260,7 +272,7 @@ export async function createFabricScene(
     air: 0,
     press: 0,
   };
-  const stats = { simMs: 0, surfaceMs: 0, frameMs: 0 };
+  const stats = { simMs: 0, surfaceMs: 0, frameMs: 0, steps: [] as string[] };
   let baseDistance = 12;
   const target = new THREE.Vector3();
   const rest = new THREE.Vector3(...VIEW.target);
@@ -276,8 +288,10 @@ export async function createFabricScene(
     renderer.setSize(width, height, false);
     camera.aspect = width / height;
     const halfV = THREE.MathUtils.degToRad(camera.fov / 2);
-    baseDistance =
-      VIEW.height / 2 / Math.tan(halfV) / Math.min(1, camera.aspect / (4 / 3));
+    // narrower plates (phones) keep most of the drape's height and crop its sides a little,
+    // rather than pulling back until the knit is too small to read
+    const narrow = Math.min(1, camera.aspect / (4 / 3));
+    baseDistance = VIEW.height / 2 / Math.tan(halfV) / narrow ** 0.4;
     camera.updateProjectionMatrix();
   };
 
@@ -339,6 +353,7 @@ export async function createFabricScene(
   } | null = null;
   let calm = 0; // consecutive frames at rest
   let touched = 0; // when the pointer last pressed or held the cloth
+  let disturbed = false; // a touch has moved the cloth since it last rested on its drape
 
   const aim = (event: PointerEvent) => {
     const box = frame.getBoundingClientRect();
@@ -432,6 +447,14 @@ export async function createFabricScene(
   frame.addEventListener("pointercancel", onCancel);
   frame.addEventListener("pointerleave", onLeave);
 
+  // On constrained devices the page's own scrolling comes first: while it scrolls, the barely
+  // visible draught waits (the view still follows the scroll), and resumes once it stops.
+  let scrolledAt = 0;
+  const onScroll = () => {
+    scrolledAt = performance.now();
+  };
+  window.addEventListener("scroll", onScroll, { passive: true });
+
   /** Pointer pressure, the drag and the pointer light, for this frame. */
   const steer = (dt: number) => {
     const p = sim.pointer;
@@ -502,23 +525,47 @@ export async function createFabricScene(
   let frameId = 0;
   let last = 0;
   let onScreen = true;
+  // Quality follows measured frame times, not the device's name: over a 60-frame window of
+  // continuous animation (after the first two seconds, while images and fonts settle), a slow
+  // average steps down one level at a time: resolution, then shadows, then the idle draught,
+  // and finally the still poster.
   const slow: number[] = [];
+  const started = performance.now();
+  let step = 0;
+  const degrade = (average: number) => {
+    if (pixelRatio > 1 && average > 24) {
+      pixelRatio = Math.max(1, pixelRatio - 0.5);
+      renderer.setPixelRatio(pixelRatio);
+      fit();
+    } else if (renderer.shadowMap.enabled && average > 30) {
+      renderer.shadowMap.enabled = false;
+      key.castShadow = false;
+      mesh.castShadow = false;
+      mesh.receiveShadow = false;
+      cloth.needsUpdate = true;
+    } else if (view.playing && average > 36) {
+      view.playing = false;
+      onQuality?.("still");
+    } else if (average > 70 && step++ > 0) {
+      onQuality?.("poster");
+    } else return;
+    stats.steps.push(
+      `${Math.round(performance.now() - started)}ms: ${average.toFixed(1)}ms avg`,
+    );
+  };
   const loop = (now: number) => {
     frameId = 0;
     const dt = last ? Math.min((now - last) / 1000, 1 / 20) : 1 / 60;
-    if (last) {
+    if (last && now - started > 2000) {
       stats.frameMs += (now - last - stats.frameMs) * 0.05;
       slow.push(now - last);
-      if (slow.length > 40) slow.shift();
-      if (
-        slow.length === 40 &&
-        slow.reduce((a, b) => a + b, 0) / 40 > 24 &&
-        pixelRatio > 1
-      ) {
-        pixelRatio = Math.max(1, pixelRatio - 0.5); // adaptive resolution if frames run long
-        renderer.setPixelRatio(pixelRatio);
-        fit();
-        slow.length = 0;
+      if (slow.length > 60) slow.shift();
+      if (slow.length === 60) {
+        const average = slow.reduce((a, b) => a + b, 0) / 60;
+        if (average > 24) {
+          degrade(average);
+          slow.length = 0;
+        }
       }
     }
     last = now;
@@ -528,19 +575,53 @@ export async function createFabricScene(
     if (view.air < 0.02 && !(view.playing && motionOk())) view.air = 0;
     sim.air = view.air;
     const lightMoving = steer(dt);
-    if (down || view.press > 0) touched = now;
+    if (down || view.press > 0) {
+      touched = now;
+      disturbed = true;
+      sim.cancelReturn();
+    }
+    if (disturbed && !down && now - touched > RETURN.after) {
+      if (sim.drift > RETURN.drift) sim.returnToDrape(RETURN.seconds);
+      disturbed = false;
+    }
     // once left alone, the folds creep back to the composed drape
-    sim.recover = now - touched > RECOVER.delay ? RECOVER.rate : 0;
+    const quiet = now - touched - RECOVER.delay;
+    sim.recover =
+      quiet < 0
+        ? 0
+        : view.air > 0
+          ? RECOVER.rate
+          : Math.min(
+              RECOVER.still,
+              RECOVER.rate + (quiet / 3000) * (RECOVER.still - RECOVER.rate),
+            );
     const active =
-      view.air > 0 || view.press > 0 || down?.dragging || calm < 45;
-    if (active) {
+      view.air > 0 ||
+      view.press > 0 ||
+      down?.dragging ||
+      disturbed ||
+      sim.returning ||
+      calm < 45;
+    const yieldToScroll =
+      (lite || stats.simMs > 4) &&
+      now - scrolledAt < 150 &&
+      !down &&
+      view.press === 0 &&
+      !sim.returning;
+    if (active && yieldToScroll) pending = 0;
+    else if (active) {
       const t0 = performance.now();
       pending += dt;
       for (let n = 0; pending >= STEP && n < 2; n++) {
         before.set(sim.pos);
         sim.step(STEP);
         pending -= STEP;
-        calm = sim.moved < REST_ENERGY ? calm + 1 : 0;
+        // at rest: still, and back on the drape (or held as close as the full pull can bring it)
+        calm =
+          sim.moved < REST_ENERGY &&
+          (sim.drift < 1e-4 || sim.recover >= RECOVER.still)
+            ? calm + 1
+            : 0;
       }
       if (pending >= STEP) pending = 0; // a slow device: let time slip rather than fall behind
       const t1 = performance.now();
@@ -621,6 +702,7 @@ export async function createFabricScene(
       frame.removeEventListener("pointerup", onUp);
       frame.removeEventListener("pointercancel", onCancel);
       frame.removeEventListener("pointerleave", onLeave);
+      window.removeEventListener("scroll", onScroll);
       frame.style.cursor = "";
       geometry.dispose();
       particles.dispose();

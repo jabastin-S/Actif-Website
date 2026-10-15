@@ -125,7 +125,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         href: "/images/macroSoft-800.webp",
         imageSrcSet:
           "/images/macroSoft-480.webp 480w, /images/macroSoft-800.webp 800w, /images/macroSoft-896.webp 896w",
-        imageSizes: "(min-width:1280px) 30vw, (min-width:768px) 40vw, 92vw",
+        imageSizes: "(min-width:1280px) 30vw, (min-width:576px) 40vw, 92vw",
         fetchPriority: "high",
       },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },

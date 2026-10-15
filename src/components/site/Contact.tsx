@@ -111,13 +111,13 @@ export function Contact() {
           </div>
           <div>
             <p className="text-sm text-on-dark-soft">Email</p>
-            <a href={`mailto:${COMPANY.email}`} className="link-line mt-1 inline-block py-1 text-[0.9375rem]">
+            <a href={`mailto:${COMPANY.email}`} className="link-line mt-1 inline-flex min-h-11 items-center text-[0.9375rem] [background-position:0_calc(100%-0.6rem)]">
               {COMPANY.email}
             </a>
           </div>
           <div>
             <p className="text-sm text-on-dark-soft">Phone</p>
-            <a href={COMPANY.phoneHref} className="link-line mt-1 inline-block py-1 text-[0.9375rem]">
+            <a href={COMPANY.phoneHref} className="link-line mt-1 inline-flex min-h-11 items-center text-[0.9375rem] [background-position:0_calc(100%-0.6rem)]">
               {COMPANY.phone}
             </a>
           </div>
@@ -127,7 +127,7 @@ export function Contact() {
               href={COMPANY.webHref}
               target="_blank"
               rel="noopener noreferrer"
-              className="link-line mt-1 inline-block py-1 text-[0.9375rem]"
+              className="link-line mt-1 inline-flex min-h-11 items-center text-[0.9375rem] [background-position:0_calc(100%-0.6rem)]"
             >
               {COMPANY.web}
             </a>
@@ -166,14 +166,21 @@ export function Contact() {
             </div>
             <div>
               <label htmlFor="field-sector" className="text-sm font-medium">Application</label>
-              <select {...a11y("sector")} value={fields.sector} onChange={set("sector")} className={`${FIELD} appearance-none rounded-none`}>
-                <option value="" className="text-ink">Select an application</option>
-                {SECTORS.map((sector) => (
-                  <option key={sector.id} value={sector.id} className="text-ink">
-                    {sector.name}
-                  </option>
-                ))}
-              </select>
+              <div className="relative">
+                <select {...a11y("sector")} value={fields.sector} onChange={set("sector")} className={`${FIELD} appearance-none rounded-none pr-8`}>
+                  <option value="" className="text-ink">Select an application</option>
+                  {SECTORS.map((sector) => (
+                    <option key={sector.id} value={sector.id} className="text-ink">
+                      {sector.name}
+                    </option>
+                  ))}
+                </select>
+                {/* the native arrow is removed with the browser styling; this one matches the menu's */}
+                <span
+                  aria-hidden
+                  className="pointer-events-none absolute top-1/2 right-1 block size-2 -translate-y-1/2 rotate-45 border-r border-b border-on-dark"
+                />
+              </div>
             </div>
             <div className="sm:col-span-2">
               <label htmlFor="field-product" className="text-sm font-medium">Product interest</label>

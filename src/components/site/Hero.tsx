@@ -59,17 +59,17 @@ export function Hero() {
           </MaskLine>
         </motion.h1>
 
-        <div className="area-macro md:min-h-[26rem]">
+        <div className="area-macro min-[36rem]:min-h-[22rem] md:min-h-[26rem]">
           <div
             ref={macro}
             data-course={formed ? "done" : "run"}
-            className="course-mask grain relative aspect-[4/3] overflow-hidden bg-linen [animation:course-in_1.4s_var(--ease-soft)_0.12s_both] md:aspect-auto md:h-full md:min-h-[26rem]"
+            className="course-mask grain relative aspect-[4/3] overflow-hidden bg-linen [animation:course-in_1.4s_var(--ease-soft)_0.12s_both] min-[36rem]:aspect-auto min-[36rem]:h-full min-[36rem]:min-h-[22rem] md:min-h-[26rem]"
           >
             <Parallax className="absolute inset-0" amount={3}>
               <Picture
                 name="macroSoft"
                 priority
-                sizes="(min-width:1280px) 30vw, (min-width:768px) 40vw, 92vw"
+                sizes="(min-width:1280px) 30vw, (min-width:576px) 40vw, 92vw"
                 alt="Close view of oatmeal knitted jersey folding in a diagonal ridge"
                 className="h-full w-full object-cover object-[50%_40%] [animation:plate-settle_1.9s_var(--ease-out)_0.12s_both]"
               />
@@ -83,7 +83,7 @@ export function Hero() {
             Not simply a fabric supplier: a development partner for knitted textiles. A unit of{" "}
             {COMPANY.parent}, Tiruppur, with textile heritage since {COMPANY.heritageYear}.
           </p>
-          <div className="mt-6 flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-8 xl:flex-col xl:items-start xl:gap-1">
+          <div className="mt-6 flex flex-wrap items-center gap-x-8 gap-y-1 xl:flex-col xl:items-start">
             <a href="#applications" className="btn w-full sm:w-auto sm:min-w-64">
               Explore applications
             </a>
@@ -103,7 +103,7 @@ export function Hero() {
             <Picture
               name="homeInterior"
               priority
-              sizes="(min-width:1280px) 44vw, (min-width:768px) 54vw, 92vw"
+              sizes="(min-width:1280px) 44vw, (min-width:576px) 54vw, 92vw"
               alt="A calm bedroom corner with neutral linen bedding"
               className="h-full w-full object-cover object-[40%_60%] [animation:plate-settle_1.7s_var(--ease-out)_0.42s_both]"
             />

@@ -1,5 +1,6 @@
 import { motion, useScroll } from "motion/react";
 import { useEffect, useRef, useState } from "react";
+import { COMPANY } from "@/content/site";
 import { cn } from "@/lib/utils";
 
 const APPLICATIONS = [
@@ -28,8 +29,21 @@ const SECTION_IDS = [
   "manufacturing",
   "capabilities",
   "responsibility",
+  // no bar link of its own: listed so the previous section's mark clears while it is in view
+  "accreditations",
   "contact",
 ];
+
+const MENU_ROW =
+  "border-b border-rule-dark transition-[opacity,transform] duration-700 ease-[var(--ease-out)]";
+const MENU_SHOWN = "translate-y-0 opacity-100";
+const MENU_HIDDEN = "translate-y-5 opacity-0";
+// display-size rows, a little smaller on short screens (landscape phones, small Android)
+const MENU_LINK =
+  "flex min-h-14 items-center justify-between py-2 font-display text-[2rem] leading-none [@media(max-height:44rem)]:min-h-12 [@media(max-height:44rem)]:text-[1.75rem]";
+const menuDelay = (open: boolean, index: number) => ({
+  transitionDelay: open ? `${180 + index * 35}ms` : "0ms",
+});
 
 /** Which section is under the upper-middle of the viewport; used for nav feedback only. */
 function useActiveSection() {
@@ -40,7 +54,8 @@ function useActiveSection() {
     );
     const observer = new IntersectionObserver(
       (entries) => {
-        for (const entry of entries) if (entry.isIntersecting) setActive(entry.target.id);
+        for (const entry of entries)
+          if (entry.isIntersecting) setActive(entry.target.id);
       },
       { rootMargin: "-30% 0px -60% 0px" },
     );
@@ -61,8 +76,9 @@ export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [appsOpen, setAppsOpen] = useState(false);
+  const [menuApps, setMenuApps] = useState(false);
   const menuButton = useRef<HTMLButtonElement>(null);
-  const firstMenuLink = useRef<HTMLAnchorElement>(null);
+  const firstMenuItem = useRef<HTMLButtonElement>(null);
   const appsWrap = useRef<HTMLDivElement>(null);
   const active = useActiveSection();
   // Reading progress: a motion value bound straight to the transform, no re-render per scroll.
@@ -75,11 +91,24 @@ export function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // While the menu is open it is the whole page: the rest is inert (focus cannot wander behind
+  // it), the root stops scrolling (body alone does not stop it on iOS) and the voice orb steps
+  // aside so it cannot cover the menu's last item.
   useEffect(() => {
-    if (!menuOpen) return;
-    const previous = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    firstMenuLink.current?.focus();
+    if (!menuOpen) {
+      setMenuApps(false);
+      return;
+    }
+    const root = document.documentElement;
+    root.dataset["menu"] = "open";
+    const behind = [...document.body.children].filter(
+      (node) =>
+        !node.contains(menuButton.current) &&
+        node.id !== "site-menu" &&
+        node.tagName !== "SCRIPT",
+    );
+    behind.forEach((node) => node.setAttribute("inert", ""));
+    firstMenuItem.current?.focus();
     const onKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setMenuOpen(false);
@@ -88,10 +117,22 @@ export function Header() {
     };
     window.addEventListener("keydown", onKey);
     return () => {
-      document.body.style.overflow = previous;
+      delete root.dataset["menu"];
+      behind.forEach((node) => node.removeAttribute("inert"));
       window.removeEventListener("keydown", onKey);
     };
   }, [menuOpen]);
+
+  // the full bar takes over at 1024px (a tablet turned to landscape): close the overlay menu
+  // rather than leave the page locked behind a menu that is no longer shown
+  useEffect(() => {
+    const wide = window.matchMedia("(min-width: 1024px)");
+    const onChange = () => {
+      if (wide.matches) setMenuOpen(false);
+    };
+    wide.addEventListener("change", onChange);
+    return () => wide.removeEventListener("change", onChange);
+  }, []);
 
   useEffect(() => {
     if (!appsOpen) return;
@@ -109,7 +150,8 @@ export function Header() {
     };
   }, [appsOpen]);
 
-  const inApps = APPLICATIONS.some((app) => app.id === active) || active === "applications";
+  const inApps =
+    APPLICATIONS.some((app) => app.id === active) || active === "applications";
 
   const linkTone = "text-ink-soft hover:text-ink";
 
@@ -118,7 +160,9 @@ export function Header() {
       <header
         className={cn(
           "fixed inset-x-0 top-0 z-50 h-[var(--header-h)] bg-ivory transition-shadow duration-700 ease-[var(--ease-out)]",
-          scrolled ? "shadow-[0_1px_0_var(--rule)]" : "shadow-[0_1px_0_transparent]",
+          scrolled
+            ? "shadow-[0_1px_0_var(--rule)]"
+            : "shadow-[0_1px_0_transparent]",
         )}
       >
         <motion.span
@@ -130,12 +174,16 @@ export function Header() {
           <a
             href="#top"
             aria-label="ACTIF Global Ventures, back to top"
-            className="font-display text-[1.75rem] leading-none tracking-[0.3em] text-ink"
+            onClick={() => setMenuOpen(false)}
+            className="inline-flex min-h-11 items-center font-display text-[1.75rem] leading-none tracking-[0.3em] text-ink"
           >
             ACTIF
           </a>
 
-          <nav aria-label="Primary" className="hidden items-center gap-9 lg:flex">
+          <nav
+            aria-label="Primary"
+            className="hidden items-center gap-9 lg:flex"
+          >
             <div ref={appsWrap} className="relative">
               <button
                 type="button"
@@ -154,7 +202,9 @@ export function Header() {
                   aria-hidden
                   className={cn(
                     "block size-1.5 rotate-45 border-r border-b border-current transition-transform duration-300",
-                    appsOpen ? "-translate-y-px -rotate-[135deg]" : "-translate-y-0.5",
+                    appsOpen
+                      ? "-translate-y-px -rotate-[135deg]"
+                      : "-translate-y-0.5",
                   )}
                 />
               </button>
@@ -176,7 +226,9 @@ export function Header() {
                       className="flex min-h-11 items-center justify-between px-3 text-sm transition-colors duration-300 hover:bg-linen"
                     >
                       {app.name}
-                      {active === app.id && <span aria-hidden className="size-1.5 bg-olive" />}
+                      {active === app.id && (
+                        <span aria-hidden className="size-1.5 bg-olive" />
+                      )}
                     </a>
                   </li>
                 ))}
@@ -199,7 +251,14 @@ export function Header() {
             ))}
           </nav>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4 sm:gap-3">
+            <a
+              href="#contact"
+              onClick={() => setMenuOpen(false)}
+              className="btn-quiet min-h-11 py-2 text-sm sm:hidden"
+            >
+              Enquire
+            </a>
             <a
               href="#contact"
               className="btn hidden min-h-11 gap-6 py-2 sm:inline-flex"
@@ -241,39 +300,114 @@ export function Header() {
         aria-label="Site menu"
         inert={!menuOpen}
         className={cn(
-          "on-dark fixed inset-0 z-40 flex flex-col justify-between overflow-y-auto bg-charcoal px-[var(--gutter)] pt-[calc(var(--header-h)+2rem)] pb-10 text-on-dark transition-[clip-path] duration-[900ms] ease-[var(--ease-out)] lg:hidden",
-          menuOpen ? "[clip-path:inset(0_0_0_0)]" : "[clip-path:inset(0_0_100%_0)]",
+          "on-dark fixed inset-0 z-40 flex flex-col overflow-y-auto overscroll-contain bg-charcoal px-[var(--gutter)] pt-[calc(var(--header-h)+1.5rem)] pb-[max(2rem,env(safe-area-inset-bottom))] text-on-dark transition-[clip-path] duration-[900ms] ease-[var(--ease-out)] lg:hidden",
+          menuOpen
+            ? "[clip-path:inset(0_0_0_0)]"
+            : "[clip-path:inset(0_0_100%_0)]",
         )}
       >
+        {/* the same structure as the desktop bar: Applications opens its four chapters */}
         <nav aria-label="Mobile">
           <ul>
-            {[...APPLICATIONS.map((a) => ({ id: a.id, label: a.name })), ...LINKS].map(
-              (item, index) => (
-                <li
-                  key={item.id}
-                  style={{ transitionDelay: menuOpen ? `${180 + index * 35}ms` : "0ms" }}
+            <li
+              className={cn(MENU_ROW, menuOpen ? MENU_SHOWN : MENU_HIDDEN)}
+              style={menuDelay(menuOpen, 0)}
+            >
+              <button
+                ref={firstMenuItem}
+                type="button"
+                aria-expanded={menuApps}
+                aria-controls="menu-apps"
+                onClick={() => setMenuApps((value) => !value)}
+                className={cn(MENU_LINK, "w-full text-left")}
+              >
+                Applications
+                <span
+                  aria-hidden
                   className={cn(
-                    "border-b border-rule-dark transition-[opacity,transform] duration-700 ease-[var(--ease-out)]",
-                    menuOpen ? "translate-y-0 opacity-100" : "translate-y-5 opacity-0",
+                    "mr-1 block size-2.5 rotate-45 border-r border-b border-current transition-transform duration-500 ease-[var(--ease-out)]",
+                    menuApps
+                      ? "translate-y-1 -rotate-[135deg]"
+                      : "-translate-y-1",
                   )}
+                />
+              </button>
+              <div
+                className={cn(
+                  "grid transition-[grid-template-rows] duration-500 ease-[var(--ease-out)]",
+                  menuApps ? "grid-rows-[1fr]" : "grid-rows-[0fr]",
+                )}
+              >
+                <ul
+                  id="menu-apps"
+                  inert={!menuApps}
+                  className="overflow-hidden"
                 >
-                  <a
-                    ref={index === 0 ? firstMenuLink : undefined}
-                    href={`#${item.id}`}
-                    onClick={() => setMenuOpen(false)}
-                    className="flex min-h-14 items-center justify-between py-2 font-display text-[2rem] leading-none"
-                  >
-                    {item.label}
-                    {active === item.id && <span aria-hidden className="size-2 bg-olive-soft" />}
-                  </a>
-                </li>
-              ),
-            )}
+                  {APPLICATIONS.map((app) => (
+                    <li key={app.id}>
+                      <a
+                        href={`#${app.id}`}
+                        onClick={() => setMenuOpen(false)}
+                        aria-current={active === app.id ? "true" : undefined}
+                        className="flex min-h-12 items-center justify-between pl-5 text-[1.0625rem] text-on-dark-soft transition-colors hover:text-on-dark"
+                      >
+                        {app.name}
+                        {active === app.id && (
+                          <span
+                            aria-hidden
+                            className="size-1.5 bg-olive-soft"
+                          />
+                        )}
+                      </a>
+                    </li>
+                  ))}
+                  <li aria-hidden className="h-3" />
+                </ul>
+              </div>
+            </li>
+            {LINKS.map((link, index) => (
+              <li
+                key={link.id}
+                className={cn(MENU_ROW, menuOpen ? MENU_SHOWN : MENU_HIDDEN)}
+                style={menuDelay(menuOpen, index + 1)}
+              >
+                <a
+                  href={`#${link.id}`}
+                  onClick={() => setMenuOpen(false)}
+                  aria-current={active === link.id ? "true" : undefined}
+                  className={MENU_LINK}
+                >
+                  {link.label}
+                  {active === link.id && (
+                    <span aria-hidden className="size-2 bg-olive-soft" />
+                  )}
+                </a>
+              </li>
+            ))}
           </ul>
         </nav>
-        <a href="#contact" onClick={() => setMenuOpen(false)} className="btn btn-light mt-8 w-full">
-          Enquire
-        </a>
+        <div
+          className={cn(
+            "mt-auto pt-8",
+            menuOpen ? MENU_SHOWN : MENU_HIDDEN,
+            "transition-[opacity,transform] duration-700 ease-[var(--ease-out)]",
+          )}
+          style={menuDelay(menuOpen, LINKS.length + 1)}
+        >
+          <a
+            href="#contact"
+            onClick={() => setMenuOpen(false)}
+            className="btn btn-light w-full"
+          >
+            Enquire
+          </a>
+          <a
+            href={`mailto:${COMPANY.email}`}
+            className="mt-2 inline-flex min-h-11 items-center text-[0.9375rem] text-on-dark-soft transition-colors hover:text-on-dark"
+          >
+            {COMPANY.email}
+          </a>
+        </div>
       </div>
     </>
   );

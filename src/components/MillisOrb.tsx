@@ -140,7 +140,8 @@ export function MillisOrb() {
 
   return (
     <div
-      className="pointer-events-none fixed right-4 bottom-[max(1rem,env(safe-area-inset-bottom))] z-50 flex flex-row-reverse items-center gap-3 md:right-8 md:bottom-8"
+      data-orb
+      className="pointer-events-none fixed right-4 bottom-[max(1rem,env(safe-area-inset-bottom))] z-50 flex flex-row-reverse items-center gap-3 transition-[opacity,visibility] duration-300 md:right-8 md:bottom-8"
     >
       <button
         type="button"

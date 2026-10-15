@@ -1,6 +1,7 @@
 {
   "version": "0.0.1",
   "configurations": [
-    { "name": "actif-preview", "runtimeExecutable": "npx", "runtimeArgs": ["vite", "preview", "--port", "4173"], "port": 4173 }
+    { "name": "actif-preview", "runtimeExecutable": "npx", "runtimeArgs": ["vite", "preview", "--port", "4173"], "port": 4173 },
+    { "name": "actif-dev", "runtimeExecutable": "npx", "runtimeArgs": ["vite", "dev", "--port", "5173", "--strictPort"], "port": 5173 }
   ]
 }

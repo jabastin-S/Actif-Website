@@ -50,12 +50,16 @@ export function KnitModel({ className }: { className?: string }) {
     const mount = host.current;
     if (!near || !frame || !mount) return;
     let disposed = false;
-    const memory =
-      (navigator as Navigator & { deviceMemory?: number }).deviceMemory ?? 8;
+    // a starting point only: the scene then follows measured frame times (fabric-scene.ts)
+    const device = navigator as Navigator & {
+      deviceMemory?: number;
+      connection?: { saveData?: boolean };
+    };
     const lite =
       window.matchMedia("(max-width: 767px)").matches ||
-      memory <= 4 ||
-      (navigator.hardwareConcurrency ?? 8) <= 2;
+      (device.deviceMemory ?? 8) <= 4 ||
+      (navigator.hardwareConcurrency ?? 8) <= 2 ||
+      device.connection?.saveData === true;
 
     import("./knit/fabric-scene")
       .then(({ createFabricScene }) =>
@@ -65,6 +69,15 @@ export function KnitModel({ className }: { className?: string }) {
           lite,
           motionOk: () => motionRef.current,
           modelUrl: MODEL,
+          onQuality: (level) => {
+            if (level === "still") setPlaying(false);
+            else {
+              // the device cannot keep the simulation smooth: keep the still drape instead
+              sceneRef.current?.dispose();
+              sceneRef.current = null;
+              setStatus("failed");
+            }
+          },
         }),
       )
       .then((scene) => {
@@ -116,7 +129,9 @@ export function KnitModel({ className }: { className?: string }) {
         role="img"
         aria-label="Fine cotton single jersey hanging in soft folds: an illustrative 3D simulation of the knit."
         className={cn(
-          "grain relative aspect-[4/3] touch-pan-y select-none overflow-hidden bg-[radial-gradient(120%_95%_at_42%_36%,var(--charcoal-2),var(--charcoal)_72%)]",
+          // square on phones (a taller drape and touch area), 4:3 from 640px; vertical swipes
+          // scroll the page, horizontal drags pull the cloth
+          "grain relative aspect-square touch-pan-y select-none overflow-hidden bg-[radial-gradient(120%_95%_at_42%_36%,var(--charcoal-2),var(--charcoal)_72%)] [-webkit-touch-callout:none] sm:aspect-[4/3]",
           live && "cursor-grab",
         )}
       >
@@ -142,7 +157,9 @@ export function KnitModel({ className }: { className?: string }) {
 
       <div className="mt-4 flex flex-wrap items-center justify-between gap-x-6 gap-y-2">
         <p className="text-sm text-ink-soft">
-          Fine cotton single jersey, an illustrative simulation.
+          {status === "failed"
+            ? "Fine cotton single jersey, an illustrative render."
+            : "Fine cotton single jersey, an illustrative simulation."}
           {live && (
             <>
               {" "}

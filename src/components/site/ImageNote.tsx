@@ -17,7 +17,7 @@ export function ImageNote({
   return (
     <span
       className={cn(
-        "pointer-events-none absolute right-2.5 bottom-3 z-10 rotate-180 text-[0.6875rem] leading-none tracking-[0.08em] [writing-mode:vertical-rl] md:right-3 md:bottom-4",
+        "pointer-events-none absolute right-2.5 bottom-3 z-10 rotate-180 text-[0.75rem] leading-none tracking-[0.06em] [writing-mode:vertical-rl] md:right-3 md:bottom-4",
         tone === "light"
           ? "text-on-dark/90 [text-shadow:0_1px_6px_rgb(0_0_0/0.5)]"
           : "text-ink/75",
